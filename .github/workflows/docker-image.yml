@@ -20,11 +20,12 @@ jobs:
 
       - name: Build Docker image
         run: |
+          DOCKER_TAG=$(echo ${{ github.ref }} | sed 's/^refs\/tags\///')
           docker build \
             -f containers/base/Dockerfile \
-            -t ${{ secrets.DOCKER_USERNAME }}/nvim-base:${{ github.ref }} \
+            -t ${{ secrets.DOCKER_USERNAME }}/nvim-base:$DOCKER_TAG \
             -t nvim-base .
 
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/nvim-base:${{ github.ref }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/nvim-base:$DOCKER_TAG

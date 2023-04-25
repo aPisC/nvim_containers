@@ -28,4 +28,5 @@ jobs:
 
       - name: Push Docker image
         run: |
+          DOCKER_TAG=$(echo ${{ github.ref }} | sed 's/^refs\/tags\///')
           docker push ${{ secrets.DOCKER_USERNAME }}/nvim-base:$DOCKER_TAG

@@ -15,6 +15,8 @@ vim.call('plug#begin', '~/.config/nvim/plugged')
   Plug 'tpope/vim-repeat'
   Plug 'tpope/vim-surround'
   Plug 'michaeljsmith/vim-indent-object'
+  Plug 'sindrets/diffview.nvim'
+
   -- Plug 'sbdchd/neoformat'
   Plug 'ThePrimeagen/harpoon'
   Plug 'jedrzejboczar/toggletasks.nvim'

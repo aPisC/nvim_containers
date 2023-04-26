@@ -8,6 +8,9 @@ require("toggleterm").setup({
 require("neogit").setup({
   disable_commit_confirmation = true,
   kind = "tab",
+  integrations = {
+    diffview = true
+  },
   commit_popup = {
     kind = "tab"
   },

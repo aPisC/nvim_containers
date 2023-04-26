@@ -1,5 +1,5 @@
 local Plug = vim.fn['plug#']
-vim.call('plug#begin', '~/.config/nvim/plugged')
+vim.call('plug#begin', '$VIM/plugged')
   -- Deps
   Plug('nvim-telescope/telescope.nvim', { ['tag']= '0.1.0' })
   Plug 'nvim-telescope/telescope-ui-select.nvim'

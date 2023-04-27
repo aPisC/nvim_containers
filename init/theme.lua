@@ -31,6 +31,7 @@ function M.setup(config)
     print("theme " .. theme .. " not found")
   end
 
+  setup_fixes(config)
   M.initialized = true
 end
 
@@ -83,6 +84,17 @@ function setup_tokyo(config)
   -- vim.cmd('hi LineNr cterm=bold ctermfg=121 gui=bold guifg=#7aa2f7 guibg=#232433')
   -- vim.cmd('hi LineNrAbove ctermfg=11 guifg=#444b6a guibg=#232433')
   -- vim.cmd('hi 
+end
+
+function setup_fixes(config)
+  if config.variant == "light" then
+    vim.cmd"hi CoqtailChecked guibg=LightGreen"
+    vim.cmd"hi CoqtailSent    guibg=LightGreen"
+  else
+    vim.cmd"hi CoqtailChecked guibg=DarkGreen"
+    vim.cmd"hi CoqtailSent    guibg=DarkGreen"
+  end
+    vim.cmd"hi coqProofAdmit  guifg=DarkOrange"
 end
 
 return M

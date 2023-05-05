@@ -5,7 +5,10 @@ local has_words_before = function()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
-
+local get_current_line = function()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]
+end
 -- Send feed keys with special codes (used by <S-TAB> mapping)
 local feedkey = function(key, mode)
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
@@ -13,56 +16,71 @@ end
 
 
   cmp.setup({
+    completion = {
+      autocomplete = true,
+      keyword_length = 3,
+      completeopt = 'menu,preview,noinsert',
+    },
     snippet = {
       expand = function(args) vim.fn["vsnip#anonymous"](args.body) end,
-      -- expand = function() end
     },
     window = { },
     mapping = cmp.mapping.preset.insert({
-       ["<CR>"] = cmp.mapping.confirm({ select = false }),
-       -- ["<CR>"] = function(fallback)
-       --   if cmp.visible() then
-       --     cmp.confirm()
-       --     cmp.close()
-       --   else
-       --     fallback()
-       --   end
-       -- end,
-       ["<Tab>"] = function(fallback)
-         if cmp.visible() then
-           cmp.select_next_item()
-         elseif vim.fn["vsnip#available"]() == 1 then                                                                                                  
-           feedkey("<Plug>(vsnip-expand-or-jump)", "")                                                                                                 
-         elseif has_words_before() then                                                                                                                
-           cmp.complete()                                                                                                                              
-         else
-           fallback()
-         end
-       end,
-       ["<Esc>"] = function(fallback)
-         if cmp.visible() then
-           cmp.close()
-         else
-           fallback()
-         end
-       end,
-       ["<S-Tab>"] = function(fallback)
-         if cmp.visible() then
-           cmp.select_prev_item()
-         elseif vim.fn["vsnip#jumpable"](-1) == 1 then                                                                                                 
-           feedkey("<Plug>(vsnip-jump-prev)", "")                                                                                                      
-         else
-           fallback()
-         end
-       end,
+      ['<C-d>'] = cmp.mapping.scroll_docs(4),
+      ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+      ["<CR>"] = cmp.mapping.confirm({ select = false }),
+      ["<Tab>"] = function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item()
+        elseif vim.fn["vsnip#jumpable"](1) == 1 then                                                                                                 
+          feedkey("<Plug>(vsnip-jump-next)", "")                                                                                                      
+        elseif vim.fn["vsnip#available"]() == 1 and get_current_line():match("^[%s%a]*$") ~= nil then                                                                                                  
+          feedkey("<Plug>(vsnip-expand-or-jump)", "")                                                                                                 
+        elseif has_words_before() then                                                                                                                
+          cmp.complete()                                                                                                                              
+        else
+          fallback()
+        end
+      end,
+      ["<Esc>"] = function(fallback)
+        if cmp.visible() then
+          cmp.close()
+        else
+          fallback()
+        end
+      end,
+      ["<S-Tab>"] = function(fallback)
+        if cmp.visible() then
+          cmp.select_prev_item()
+        elseif vim.fn["vsnip#jumpable"](-1) == 1 then                                                                                                 
+          feedkey("<Plug>(vsnip-jump-prev)", "")                                                                                                      
+        else
+          fallback()
+        end
+      end,
       ['<C-Space>'] = cmp.mapping.complete(),
+      ['.'] = function(fallback)
+        if cmp.visible() then
+          cmp.confirm()
+          feedkey(".", "")
+        else
+          fallback()
+        end
+      end,
     }),
-    sources = cmp.config.sources({
-      { name = 'nvim_lsp' },
-      { name = 'vsnip', keyword_pattern = [[^\s*\w+$]], priority = 40 }, 
-    }, {
-      { name = 'buffer' },
-    })
+    sources = cmp.config.sources(
+      {
+        { name = 'nvim_lsp_signature_help' },
+      }, 
+      {
+        { name = 'nvim_lsp' },
+        { name = 'vsnip' }, 
+        { name = 'calc' },
+      },
+      {
+        { name = 'buffer' },
+      }
+    )
   })
 
   -- Set configuration for specific filetype.

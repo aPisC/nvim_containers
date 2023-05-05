@@ -34,6 +34,7 @@ vim.call('plug#begin', os.getenv('VIM_PLUGGED') or '~/.config/nvim/plugged')
   Plug 'nvim-lualine/lualine.nvim'
   Plug('akinsho/bufferline.nvim', { branch = 'v3.7.0' })
   Plug 'folke/trouble.nvim'
+  Plug 'luukvbaal/statuscol.nvim'
 
   -- Theme
   Plug('folke/tokyonight.nvim', { branch = 'main' })
@@ -52,16 +53,19 @@ vim.call('plug#begin', os.getenv('VIM_PLUGGED') or '~/.config/nvim/plugged')
   Plug 'mfussenegger/nvim-lint'
   Plug 'mhartington/formatter.nvim'
 
-  Plug 'ray-x/lsp_signature.nvim'
   Plug 'hrsh7th/vim-vsnip'
   Plug 'hrsh7th/vim-vsnip-integ'
+  Plug 'rafamadriz/friendly-snippets'
   Plug 'hrsh7th/nvim-cmp'
   Plug 'hrsh7th/cmp-nvim-lsp'
   Plug 'hrsh7th/cmp-buffer'
   Plug 'hrsh7th/cmp-path'
-  Plug 'hrsh7th/cmp-cmdline'
   Plug 'hrsh7th/cmp-vsnip'
-  Plug 'rafamadriz/friendly-snippets'
+  Plug 'hrsh7th/cmp-cmdline'
+  Plug 'hrsh7th/cmp-calc'
+  Plug 'hrsh7th/cmp-calc'
+  Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
+
   Plug 'rcarriga/nvim-dap-ui'
   -- Plug('mxsdev/nvim-dap-vscode-js')
   -- Plug('microsoft/vscode-js-debug', {['do'] = "npm install --legacy-peer-deps && npm run compile"})

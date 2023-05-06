@@ -12,9 +12,12 @@ RUN apt install -y silversearcher-ag
 
 # Install NeoVim
 ENV VIM_PLUGGED=/usr/share/nvim
-RUN wget -O /tmp/nvim.deb https://github.com/neovim/neovim/releases/download/v0.8.3/nvim-linux64.deb
-RUN dpkg -i /tmp/nvim.deb
-RUN rm /tmp/nvim.deb
+# RUN wget -O /tmp/nvim.deb https://github.com/neovim/neovim/releases/download/v0.8.3/nvim-linux64.deb
+RUN wget -O /tmp/nvim.tar.gz https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz
+# RUN mkdir -p /usr/share/nvim
+RUN tar -C /usr --strip-components=1 -xzvf /tmp/nvim.tar.gz nvim-linux64
+RUN rm /tmp/nvim.tar.gz
+# RUN ls -la /usr/bin | grep vim && false
 RUN ln -s /usr/bin/nvim /usr/bin/vim
 RUN /usr/bin/python3 -m pip install pynvim
 

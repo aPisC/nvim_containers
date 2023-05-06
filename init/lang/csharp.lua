@@ -1,9 +1,10 @@
 require"init.lsp"
- .ensure_lsp("omnisharp", {
-  handlers = {
-    ["textDocument/definition"] = require('omnisharp_extended').handler,
-  },
- })
+ -- .ensure_lsp("omnisharp", {
+ --  handlers = {
+ --    ["textDocument/definition"] = require('omnisharp_extended').handler,
+ --  },
+ -- })
+ .ensure_lsp("csharp_ls")
  .ensure_treesitter("c_sharp")
 
 

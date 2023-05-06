@@ -67,6 +67,8 @@ function setup_everblush(config)
           contrast = false,
       },
       override = {
+        LineNr = {fg = '#b3b9b8'},
+        Comment = {fg = '#b3b9b8'},
           -- Normal = { fg = '#ffffff', bg = 'comment' },
       },
   })

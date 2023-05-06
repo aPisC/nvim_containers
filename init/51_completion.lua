@@ -19,7 +19,7 @@ end
     completion = {
       autocomplete = true,
       keyword_length = 3,
-      completeopt = 'menu,preview,noinsert',
+      -- completeopt = 'menu,preview,noinsert',
     },
     snippet = {
       expand = function(args) vim.fn["vsnip#anonymous"](args.body) end,

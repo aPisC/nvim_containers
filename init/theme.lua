@@ -96,7 +96,9 @@ function setup_fixes(config)
     vim.cmd"hi CoqtailChecked guibg=DarkGreen"
     vim.cmd"hi CoqtailSent    guibg=DarkGreen"
   end
-    vim.cmd"hi coqProofAdmit  guifg=DarkOrange"
+
+  vim.cmd"hi coqProofAdmit  guifg=DarkOrange"
+  vim.cmd"hi DapStopped guibg=yellow"
 end
 
 return M

@@ -6,6 +6,7 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | sh
 RUN apt update 
 RUN apt install -y nodejs
 RUN apt install -y python3-pip
+RUN apt install -y python3-venv
 
 # Install program deps
 RUN apt install -y silversearcher-ag

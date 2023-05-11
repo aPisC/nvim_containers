@@ -16,6 +16,9 @@ vim.call('plug#begin', (os.getenv('VIM_PLUGGED') or '~/.config/nvim') .. '/plugg
   Plug 'tpope/vim-surround'
   Plug 'michaeljsmith/vim-indent-object'
   Plug 'sindrets/diffview.nvim'
+  Plug 'antoinemadec/FixCursorHold.nvim'                                                                                                                 
+  Plug 'nvim-neotest/neotest'                                                                                                                            
+  Plug 'Issafalcon/neotest-dotnet' 
 
   -- Plug 'sbdchd/neoformat'
   Plug 'ThePrimeagen/harpoon'
@@ -75,6 +78,7 @@ vim.call('plug#begin', (os.getenv('VIM_PLUGGED') or '~/.config/nvim') .. '/plugg
 
   -- Csharp plugins
   Plug "Hoffs/omnisharp-extended-lsp.nvim"
+  -- Plug "Decodetalkers/csharpls-extended-lsp.nvim"
 
   -- Org language plugins
   Plug 'jceb/vim-orgmode'

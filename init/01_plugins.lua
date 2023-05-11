@@ -39,6 +39,7 @@ require("autoformat").setup({
   javascriptreact=true,
   typescriptreact=true,
   markdown=true,
+  cs=true,
 })
 
 
@@ -78,7 +79,7 @@ require("nvim-tree").setup({
     }
   },
   git={
-    ignore=false,
+    ignore=true,
   },
   filters = {
     custom = {

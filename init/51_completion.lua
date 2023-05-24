@@ -16,9 +16,13 @@ end
 
 
   cmp.setup({
+    experimental = {
+      ghost_text = false,
+    },
     completion = {
-      autocomplete = true,
-      keyword_length = 3,
+      -- autocomplete = true,
+      autocomplete = { require('cmp.types').cmp.TriggerEvent.TextChanged },
+      keyword_length = 2,
       -- completeopt = 'menu,preview,noinsert',
     },
     snippet = {

@@ -42,6 +42,8 @@ vim.api.nvim_create_autocmd("FileType", {
   command="setlocal shiftwidth=4 softtabstop=4 expandtab"
 })
 
+vim.api.nvim_create_autocmd("FileType", {pattern="cs", command="setlocal commentstring=//\\ %s"})
+
 require("nvim-web-devicons").set_icon {
   cs = {
     icon = "󰌛",

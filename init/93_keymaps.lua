@@ -5,24 +5,18 @@ vim.keymap.set({'n', 'i', 't'}, "<C-p><C-p>", function() vim.cmd("Telescope comm
 vim.keymap.set({'n', 'i'     }, "<C-p>h", function() require("harpoon.mark").toggle_file() end)
 vim.keymap.set({'n', 'i', 't'}, "<C-p>j", function() require("harpoon.ui").nav_next() end)
 vim.keymap.set({'n', 'i', 't'}, "<C-p>k", function() require("harpoon.ui").nav_prev() end)
-
 vim.keymap.set({'n', 'i', 't'}, '<c-p>f', function() vim.cmd("Telescope git_files") end)
 vim.keymap.set({'n', 'i', 't'}, '<c-p>a', function() vim.cmd('Telescope find_files') end)
-vim.keymap.set({'n', 'i', 't'}, '<c-p>c', function() vim.cmd('Telescope commands') end)
 vim.keymap.set({'n', 'i', 't'}, '<c-p>e', function() vim.cmd('TroubleToggle') end)
 vim.keymap.set({'n', 'i', 't'}, '<c-p>E', vim.diagnostic.goto_next)
-vim.keymap.set({'n', 'i', 't'}, '<c-p>gc', function() vim.cmd('Telescope git_commits') end)
-vim.keymap.set({'n', 'i', 't'}, '<c-p>gb', function() vim.cmd('Telescope git_branches') end)
 vim.keymap.set({'n', 'i', 't'}, "<C-p>b", function() vim.cmd("Telescope toggletasks spawn") end)
 vim.keymap.set({'n', 'i', 't'}, "<C-p>B", function() vim.cmd("Telescope toggletasks select") end)
-
 vim.keymap.set({'n', 'i', 't'}, "<C-p>t", function() if vim.v.count > 0 then vim.cmd("ToggleTerm " .. vim.v.count) else vim.cmd("ToggleTerm") end end)
 vim.keymap.set({'n', 'i', 't'}, '<c-p>g', function() require("neogit").open()  end)
-vim.keymap.set({'n', 'i', 't'}, '<c-p>gg', function() require("neogit").open()  end)
 vim.keymap.set({'n'          }, '<c-p>u', function() vim.cmd('UndotreeToggle') end)
+
 vim.keymap.set({'n', 'i', 't'}, '<c-b>', function() vim.cmd('NvimTreeToggle') end)
-vim.keymap.set({'n', 'i', 't'}, '\\<c-b>', function() vim.cmd('NvimTreeFindFile') end)
-vim.keymap.set({'n'     , 't'}, '<c-p>x', function() vim.cmd('q') end)
+vim.keymap.set({'n', 'i', 't'}, '<C-b><C-b>', function() vim.cmd('NvimTreeFindFile') end)
 
 vim.keymap.set({'n'}, '<A-left>', '<C-o>')
 vim.keymap.set({'n'}, '<A-right>', '<C-i>')

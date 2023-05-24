@@ -19,7 +19,19 @@ end})
 command('Ey', function() vim.cmd("tabe " .. vim.fn.getreg('"')) end, {})
 command('Metals', require("telescope").extensions.metals.commands, {})
 command("ASToggle", function() require("auto-save").toggle() end, {})
+command("DapUi", function() 
+  vim.cmd(":NvimTreeClose")
+  local dapui = require("dapui")
+  dapui.toggle()
+end, {})
 
 -- vim.cmd('autocmd CursorHold  * lua vim.lsp.buf.document_highlight()')
 -- vim.cmd('autocmd CursorHoldI * lua vim.lsp.buf.document_highlight()')
 -- vim.cmd('autocmd CursorMoved * lua vim.lsp.buf.clear_references()')
+--
+
+-- Test commands
+command('TestStop', function() require("neotest").run.stop() end, {})
+command('TestFile', function() require("neotest").run.run(vim.fn.expand("%")) end, {})
+command('TestNearest', function() require("neotest").run.run() end, {})
+command('TestLast', function() require("neotest").run.run() end, {})

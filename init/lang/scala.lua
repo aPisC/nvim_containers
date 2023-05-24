@@ -8,10 +8,28 @@ require("init.lsp")
     ['stdin']= 1,
   }
 end})
+.set_neotest(
+  require("neotest-scala")({
+    -- -- Command line arguments for runner
+    -- -- Can also be a function to return dynamic values
+    -- args = {"--no-color"},
+    -- -- Runner to use. Will use bloop by default.
+    -- -- Can be a function to return dynamic value.
+    -- -- For backwards compatibility, it also tries to read the vim-test scala config.
+    -- -- Possibly values bloop|sbt.
+    runner = "sbt",
+    -- -- Test framework to use. Will use utest by default.
+    -- -- Can be a function to return dynamic value.
+    -- -- Possibly values utest|munit|scalatest.
+    -- framework = "utest",
+  })
+)
 
 local metals_config = utils.merge_deep(
   require("metals").bare_config(),
   {
+    -- root_patterns=  {'build.sbt', 'build.sc', 'build.gradle', 'pom.xml', '.git'}
+    -- root_patterns=  {'.git'},
     settings = {
       testUserInterface = "Test Explorer", 
       showImplicitArguments = true,
@@ -20,6 +38,7 @@ local metals_config = utils.merge_deep(
         "akka.actor.typed.javadsl", 
         "com.github.swagger.akka.javadsl" 
       },
+      -- serverVersion = "0.11.12",
     },
     init_options = {statusBarProvider = "on"},
     capabilities = require("cmp_nvim_lsp").default_capabilities(),

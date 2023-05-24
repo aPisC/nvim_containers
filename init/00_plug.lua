@@ -3,10 +3,12 @@ vim.call('plug#begin', (os.getenv('VIM_PLUGGED') or '~/.config/nvim') .. '/plugg
   -- Deps
   Plug('nvim-telescope/telescope.nvim', { ['tag']= '0.1.0' })
   Plug 'nvim-telescope/telescope-ui-select.nvim'
+  Plug 'prochri/telescope-all-recent.nvim'
   Plug('nvim-treesitter/nvim-treesitter', {['do']= ':TSUpdate'})
   Plug 'nvim-lua/plenary.nvim'
   Plug 'akinsho/toggleterm.nvim'
   Plug 'smiteshp/nvim-navic'
+  Plug 'kkharji/sqlite.lua'
 
   -- Editor plugins    
   Plug 'tpope/vim-sensible'
@@ -72,6 +74,13 @@ vim.call('plug#begin', (os.getenv('VIM_PLUGGED') or '~/.config/nvim') .. '/plugg
   Plug 'rcarriga/nvim-dap-ui'
   -- Plug('mxsdev/nvim-dap-vscode-js')
   -- Plug('microsoft/vscode-js-debug', {['do'] = "npm install --legacy-peer-deps && npm run compile"})
+  
+  -- Neotest packages
+  Plug 'antoinemadec/FixCursorHold.nvim'                                                                                                                 
+  Plug 'nvim-neotest/neotest'                                                                                                                            
+  Plug 'Issafalcon/neotest-dotnet' 
+  Plug 'stevanmilic/neotest-scala'
+
 
   -- Scala lang plugin
   Plug 'scalameta/nvim-metals'

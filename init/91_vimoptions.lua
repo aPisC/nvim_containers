@@ -16,5 +16,6 @@ vim.g.python3_host_prog = '/usr/bin/python3'
 vim.opt.foldlevel = 20
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-vim.opt.signcolumn = "auto:3"
+vim.opt.signcolumn = "auto:2-5"
+vim.opt.equalalways = false
 

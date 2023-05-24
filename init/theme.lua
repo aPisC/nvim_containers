@@ -92,13 +92,14 @@ function setup_fixes(config)
   if config.variant == "light" then
     vim.cmd"hi CoqtailChecked guibg=LightGreen"
     vim.cmd"hi CoqtailSent    guibg=LightGreen"
+    vim.cmd"hi DapStopped guibg=yellow"
   else
     vim.cmd"hi CoqtailChecked guibg=DarkGreen"
     vim.cmd"hi CoqtailSent    guibg=DarkGreen"
+    vim.cmd"hi DapStopped guibg=#555500"
   end
 
   vim.cmd"hi coqProofAdmit  guifg=DarkOrange"
-  vim.cmd"hi DapStopped guibg=yellow"
 end
 
 return M

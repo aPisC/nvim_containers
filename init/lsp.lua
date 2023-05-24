@@ -7,6 +7,7 @@ local M = {
   dap_handlers = {},
   treesitter_names = {},
   formatters = {},
+  neotest_adapters = {},
 }
 
 function M.ensure_lsp(lsp, config)
@@ -36,6 +37,11 @@ function M.set_formatter(filetypes, config)
   end
   return M
 end 
+
+function M.set_neotest(adapter) 
+  table.insert(M.neotest_adapters, adapter)
+  return M
+end
 
 function M.start() 
   require("mason").setup()
@@ -73,6 +79,10 @@ function M.start()
       M.formatters
     )
   }
+  require("neotest").setup({
+    adapters = M.neotest_adapters,
+    
+  })
 
   for i, lsp in ipairs(M.lsp_names) do
     require("lspconfig")[lsp].setup(M.lsp_config[lsp] or {})

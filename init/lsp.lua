@@ -8,7 +8,19 @@ local M = {
   treesitter_names = {},
   formatters = {},
   neotest_adapters = {},
+  tools = {},
 }
+
+function M.ensure_tool(tools)
+  if type(tools) == "table" then
+    for i,k in ipairs(tools) do
+      table.insert(M.tools, k)
+    end
+  else
+    table.insert(M.tools, tools)
+  end
+  return M
+end
 
 function M.ensure_lsp(lsp, config)
   table.insert(M.lsp_names, lsp) 
@@ -45,6 +57,12 @@ end
 
 function M.start() 
   require("mason").setup()
+  require("mason-tool-installer").setup {
+    ensure_installed = M.tools,
+    auto_update = false,
+    run_on_start = true,
+    start_delay = 3000,
+  }
   require("mason-lspconfig").setup {
     -- https://github.com/williamboman/mason-lspconfig.nvim#available-lsp-servers
     ensure_installed = M.lsp_names,

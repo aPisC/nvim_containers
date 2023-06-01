@@ -1,4 +1,5 @@
 require"init.lsp"
+ .ensure_tool({"clang-format"})
  .ensure_lsp("omnisharp", {
    handlers = {
      ["textDocument/definition"] = require('omnisharp_extended').handler,

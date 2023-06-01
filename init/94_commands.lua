@@ -35,3 +35,9 @@ command('TestStop', function() require("neotest").run.stop() end, {})
 command('TestFile', function() require("neotest").run.run(vim.fn.expand("%")) end, {})
 command('TestNearest', function() require("neotest").run.run() end, {})
 command('TestLast', function() require("neotest").run.run() end, {})
+command('TestSummary', function() require(neotest).summary.toggle() end, {})
+
+
+-- Other commands
+command('Term', function() vim.cmd("ToggleTerm") end, {})
+command('Git', function() require"neogit".open() end, {nargs=0, force= true})

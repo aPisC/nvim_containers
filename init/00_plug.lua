@@ -13,7 +13,8 @@ vim.call('plug#begin', (os.getenv('VIM_PLUGGED') or '~/.config/nvim') .. '/plugg
   -- Editor plugins    
   Plug 'tpope/vim-sensible'
   Plug 'tpope/vim-commentary'
-  Plug 'tpope/vim-fugitive'
+  -- Plug 'tpope/vim-fugitive'
+  Plug 'akinsho/git-conflict.nvim'
   Plug 'tpope/vim-repeat'
   Plug 'tpope/vim-surround'
   Plug 'michaeljsmith/vim-indent-object'
@@ -31,7 +32,8 @@ vim.call('plug#begin', (os.getenv('VIM_PLUGGED') or '~/.config/nvim') .. '/plugg
   Plug 'utilyre/barbecue.nvim'
   Plug 'm4xshen/autoclose.nvim'
   Plug 'aca/emmet-ls'
-  Plug 'airblade/vim-gitgutter'
+  -- Plug 'airblade/vim-gitgutter'
+  Plug 'lewis6991/gitsigns.nvim'
   Plug('junegunn/fzf', {['do'] = vim.fn['fzf#install']})
   Plug 'junegunn/fzf.vim'
   Plug 'nvim-tree/nvim-web-devicons' 
@@ -51,6 +53,7 @@ vim.call('plug#begin', (os.getenv('VIM_PLUGGED') or '~/.config/nvim') .. '/plugg
 
   -- LSP plugins
   Plug 'williamboman/mason.nvim'
+  Plug 'WhoIsSethDaniel/mason-tool-installer.nvim'
   Plug 'williamboman/mason-lspconfig.nvim'
   Plug 'neovim/nvim-lspconfig'
   Plug 'mfussenegger/nvim-dap'

@@ -15,11 +15,13 @@ require("neogit").setup({
     kind = "tab"
   },
   popup = {
-    kind = "replace"
+    kind = "tab"
   }
 })
 
+require('gitsigns').setup()
 
+require('git-conflict').setup({})
 
 require('barbecue').setup({
   theme='tokyonight',

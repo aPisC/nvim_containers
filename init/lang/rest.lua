@@ -1,3 +1,7 @@
+require"init.lsp"
+  .ensure_tool("purescript-tidy")
+  .ensure_treesitter({"http", "json"})
+
 require("rest-nvim").setup({
     -- Open request results in a horizontal split
     result_split_horizontal = false,
@@ -10,7 +14,7 @@ require("rest-nvim").setup({
     -- Highlight request on run
     highlight = {
       enabled = true,
-      timeout = 150,
+      timeout = 300,
     },
     result = {
       -- toggle showing URL, HTTP info, headers at top the of result window
@@ -21,13 +25,13 @@ require("rest-nvim").setup({
       -- set them to nil if you want to disable them
       formatters = {
         json = "jq",
-        html = function(body)
-          return vim.fn.system({"tidy", "-i", "-q", "-"}, body)
-        end
+        -- html = function(body)
+        --   return vim.fn.system({"tidy", "-i", "-q", "-"}, body)
+        -- end
       },
     },
     -- Jump to request line on run
-    jump_to_request = false,
+    jump_to_request = true,
     -- env_file = '.env',
     custom_dynamic_variables = {},
     yank_dry_run = true,

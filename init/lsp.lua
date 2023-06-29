@@ -99,6 +99,16 @@ function M.start()
   }
   require("neotest").setup({
     adapters = M.neotest_adapters,
+    icons = {
+      running_animated = { "◜", "◜", "◝", "◝", "◞", "◞", "◟", "◟" },
+    },
+    summary = {
+      mappings = {
+        short = "o",
+        output = "O",
+        stop = "s",
+      }
+    },
     
   })
 

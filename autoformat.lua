@@ -60,6 +60,14 @@ function M.enable(lang)
   end
 end
 
+function M._enable(lang) 
+  if lang == nil or lang == "" then
+    config.enabled = true
+  else
+    config.enabled_lang[lang] = true
+  end
+end
+
 function M.disable(lang) 
   if lang == nil or lang == "" then
     config.enabled = false
@@ -88,6 +96,11 @@ function M.setup(setup_config)
 
   end
 
+  M.configure(setup_config)
+  return M
+end
+
+function M.configure(setup_config)
   for k, v in pairs(setup_config) do
     if v == true then
       config.enabled_lang[k] = true
@@ -100,7 +113,6 @@ function M.setup(setup_config)
       config.formatter[k] = v
     end
   end
-
   return M
 end
 

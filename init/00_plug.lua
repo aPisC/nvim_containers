@@ -9,10 +9,12 @@ vim.call('plug#begin', (os.getenv('VIM_PLUGGED') or '~/.config/nvim') .. '/plugg
   Plug 'akinsho/toggleterm.nvim'
   Plug 'smiteshp/nvim-navic'
   Plug 'kkharji/sqlite.lua'
+  Plug 'jose-elias-alvarez/null-ls.nvim'
 
   -- Editor plugins    
   Plug 'tpope/vim-sensible'
   Plug 'tpope/vim-commentary'
+  Plug 'tiagovla/scope.nvim'
   -- Plug 'tpope/vim-fugitive'
   Plug 'akinsho/git-conflict.nvim'
   Plug 'tpope/vim-repeat'
@@ -82,7 +84,8 @@ vim.call('plug#begin', (os.getenv('VIM_PLUGGED') or '~/.config/nvim') .. '/plugg
   Plug 'antoinemadec/FixCursorHold.nvim'                                                                                                                 
   Plug 'nvim-neotest/neotest'                                                                                                                            
   Plug 'Issafalcon/neotest-dotnet' 
-  Plug 'stevanmilic/neotest-scala'
+  -- Plug 'stevanmilic/neotest-scala'
+  Plug 'aPisC/neotest-scala'
 
 
   -- Scala lang plugin

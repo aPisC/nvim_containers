@@ -1,10 +1,11 @@
 local utils = require("init.utils")
 
 require("init.lsp")
+.ensure_treesitter("scala")
 .set_formatter("scala", {function() 
   return {
     ['exe']= 'scalafmt',
-    ['args']= { '--stdin' },
+    ['args']= { '-c', '/home/bendeguz/workspace/hiya/dliub/.scalafmt.conf',  '--stdin' },
     ['stdin']= 1,
   }
 end})
@@ -21,7 +22,7 @@ end})
     -- -- Test framework to use. Will use utest by default.
     -- -- Can be a function to return dynamic value.
     -- -- Possibly values utest|munit|scalatest.
-    -- framework = "utest",
+    framework = "scalatest",
   })
 )
 
@@ -29,7 +30,7 @@ local metals_config = utils.merge_deep(
   require("metals").bare_config(),
   {
     -- root_patterns=  {'build.sbt', 'build.sc', 'build.gradle', 'pom.xml', '.git'}
-    -- root_patterns=  {'.git'},
+    root_patterns=  {'.git'},
     settings = {
       testUserInterface = "Test Explorer", 
       showImplicitArguments = true,
@@ -38,7 +39,7 @@ local metals_config = utils.merge_deep(
         "akka.actor.typed.javadsl", 
         "com.github.swagger.akka.javadsl" 
       },
-      -- serverVersion = "0.11.12",
+      serverVersion = "0.11.12",
     },
     init_options = {statusBarProvider = "on"},
     capabilities = require("cmp_nvim_lsp").default_capabilities(),

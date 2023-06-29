@@ -1,13 +1,13 @@
 -- Navigation keymaps
-vim.keymap.set({'n', 'i', 't'}, "<C-p>", function() vim.cmd("Telescope buffers") end)
+vim.keymap.set({'n', 'i', 't'}, "<C-p>", function() vim.cmd("Telescope git_files") end)
 vim.keymap.set({'n', 'i', 't'}, "<C-S-p>", function() vim.cmd("Telescope commands") end)
 -- vim.keymap.set({'n', 'i', 't'}, "<C-p><C-p>", function() vim.cmd("Telescope commands") end)
 
 vim.keymap.set({'n', 'i'     }, "<C-g>h", function() require("harpoon.mark").toggle_file() end)
 vim.keymap.set({'n', 'i', 't'}, "<C-g>j", function() require("harpoon.ui").nav_next() end)
 vim.keymap.set({'n', 'i', 't'}, "<C-g>k", function() require("harpoon.ui").nav_prev() end)
-vim.keymap.set({'n', 'i', 't'}, '<c-g>f', function() vim.cmd("Telescope git_files") end)
-vim.keymap.set({'n', 'i', 't'}, '<c-g>a', function() vim.cmd('Telescope find_files') end)
+vim.keymap.set({'n', 'i', 't'}, '<c-g>f', function() vim.cmd("Telescope find_files") end)
+vim.keymap.set({'n', 'i', 't'}, '<c-g>a', function() vim.cmd('Telescope buffers') end)
 vim.keymap.set({'n', 'i', 't'}, '<c-g>e', function() vim.cmd('TroubleToggle') end)
 vim.keymap.set({'n', 'i', 't'}, '<c-g>E', vim.diagnostic.goto_next)
 vim.keymap.set({'n', 'i', 't'}, "<C-g>b", function() vim.cmd("Telescope toggletasks spawn") end)
@@ -17,7 +17,7 @@ vim.keymap.set({'n', 'i', 't'}, '<c-g><c-g>', function() require("neogit").open(
 vim.keymap.set({'n'          }, '<c-g>u', function() vim.cmd('UndotreeToggle') end)
 
 vim.keymap.set({'n', 'i', 't'}, '<c-b>', function() vim.cmd('NvimTreeToggle') end)
-vim.keymap.set({'n', 'i', 't'}, '<C-b><C-b>', function() vim.cmd('NvimTreeFindFile') end)
+-- vim.keymap.set({'n', 'i', 't'}, '<C-b><C-b>', function() vim.cmd('NvimTreeFindFile') end)
 
 vim.keymap.set({'n'}, '<A-left>', '<C-o>')
 vim.keymap.set({'n'}, '<A-right>', '<C-i>')
@@ -51,7 +51,7 @@ vim.keymap.set('n', 'gr', function() vim.cmd("Telescope lsp_references") end)
 vim.keymap.set('n', 'gi', function() vim.cmd("Telescope lsp_implementations") end)
 -- vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help)
 vim.keymap.set('n', '<F2>', vim.lsp.buf.rename)
-vim.keymap.set('n', '<C-space>', vim.lsp.buf.code_action)
+vim.keymap.set({'n', 'i'}, '<M-CR>', vim.lsp.buf.code_action)
 
 vim.keymap.set({'n', 'i'}, "<F5>", function() require("dap").continue() end)
 vim.keymap.set({'n', 'i'}, "<F17>", function() require("dap").terminate() end) -- <S-F5>
@@ -75,6 +75,7 @@ vim.keymap.set({'n', 'i'}, "<F10>", function() require("dap").step_over() end)
 vim.keymap.set({'n', 'i'}, "<F11>", function() require("dap").step_into() end)
 vim.keymap.set({'n', 'i'}, "<F23>", function() require("dap").step_out() end) -- <S-F11>
 vim.keymap.set({'n'     }, "<space>K", vim.diagnostic.open_float)
+vim.keymap.set('n', '<C-k>', function(args) vim.lsp.codelens.run() end)
 vim.keymap.set('n', 'K', function(args)
   if require("dap").session() then
     require("dap.ui.widgets").hover()
@@ -95,7 +96,14 @@ vim.keymap.set({'n', 'i'     }, '<C-s>', function()
   end  
   vim.api.nvim_input(":w<cr>")
 end)
-vim.keymap.set({'n', 'i', 't', 'v'}, '<C-q>', function() vim.cmd('q') end)
+-- vim.keymap.set({'n', 'i', 't', 'v'}, '<C-q>', function() vim.cmd('q') end)
+vim.keymap.set({'n', 'i', 't', 'v'}, '<C-q>', function()
+  if #vim.api.nvim_list_wins() > 1 or vim.bo.buftype == "prompt" then
+    vim.cmd("q")
+  else
+    vim.cmd('bd %') 
+  end
+end)
 vim.keymap.set({          't'}, '<c-w>', '<C-\\><c-n>')
 vim.keymap.set({'n'          }, '<C-d>', '<C-d>zz')
 vim.keymap.set({'n'          }, '<C-u>', '<C-u>zz')

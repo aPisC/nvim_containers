@@ -4,10 +4,26 @@ local M = {
   initialized = false
 }
 
-local default_config = {
-  theme="onedark",
-  variant="dark",
-  transparent=false,
+local default_config = { theme="onedark", variant="dark", transparent=false }
+
+local light_overrides = {
+  DapBreakpoint  = { fg='#993939'    },
+  DapRejected    = { fg='grey'       },
+  DapLogPoint    = { fg='#22547a'    },
+  DapStopped     = { bg='yellow'     },
+  CoqtailChecked = { bg='LightGreen' },
+  CoqtailSent    = { bg='LightGreen' },
+  coqProofAdmit  = { fg='DarkOrange' },
+}
+
+local dark_overrides = {
+  DapBreakpoint  = { fg='#993939'    },
+  DapRejected    = { fg='grey'       },
+  DapLogPoint    = { fg='#22547a'    },
+  DapStopped     = { bg='#555500'    },
+  CoqtailChecked = { bg='DarkGreen'  },
+  CoqtailSent    = { bg='DarkGreen'  },
+  coqProofAdmit  = { fg='DarkOrange' },
 }
 
 function M.assert_setup(config)
@@ -31,7 +47,11 @@ function M.setup(config)
     print("theme " .. theme .. " not found")
   end
 
-  setup_fixes(config)
+  if config.variant == "light" then
+    apply_hl(light_overrides)
+  else
+    apply_hl(dark_overrides)
+  end
   M.initialized = true
 end
 
@@ -88,18 +108,11 @@ function setup_tokyo(config)
   -- vim.cmd('hi 
 end
 
-function setup_fixes(config)
-  if config.variant == "light" then
-    vim.cmd"hi CoqtailChecked guibg=LightGreen"
-    vim.cmd"hi CoqtailSent    guibg=LightGreen"
-    vim.cmd"hi DapStopped guibg=yellow"
-  else
-    vim.cmd"hi CoqtailChecked guibg=DarkGreen"
-    vim.cmd"hi CoqtailSent    guibg=DarkGreen"
-    vim.cmd"hi DapStopped guibg=#555500"
-  end
 
-  vim.cmd"hi coqProofAdmit  guifg=DarkOrange"
+function apply_hl(overrides)
+  for k, ov in pairs(overrides) do
+    vim.api.nvim_set_hl(0, k, ov)
+  end
 end
 
 return M

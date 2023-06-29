@@ -60,11 +60,40 @@ require("auto-save").on()
 
 require("trouble").setup { }
 
+require("scope").setup({})
 require("bufferline").setup({
   options={
-    mode="tabs",
+    -- mode="tabs",
     -- separator_style="slant",
-    diagnostics = "nvim_lsp"
+    diagnostics = "nvim_lsp",
+    left_mouse_command = function (bufnr) 
+      local winid = vim.fn.win_findbuf(bufnr)[1]
+      if winid ~= nil then 
+        vim.fn.win_gotoid(winid)
+        return
+      end
+      vim.cmd("buf " .. bufnr)
+    end,
+    offsets = {
+      {
+          filetype = "dapui_breakpoints",
+          text = "Debugger",
+          highlight = "Directory",
+          separator = true -- use a "true" to enable the default, or set your own character
+      },
+      {
+          filetype = "dapui_scopes",
+          text = "Debugger",
+          highlight = "Directory",
+          separator = true -- use a "true" to enable the default, or set your own character
+      },
+      {
+          filetype = "NvimTree",
+          text = "File Explorer",
+          highlight = "Directory",
+          separator = true -- use a "true" to enable the default, or set your own character
+      },
+    }
   }
 })
 require("lualine").setup({})
@@ -100,7 +129,13 @@ require("nvim-tree").setup({
       restrict_above_cwd=true
     },
     open_file={
-      quit_on_open=false
+      quit_on_open=false,
+      window_picker = {
+        exclude = {
+          filetype = { "notify", "packer", "qf", "diff", "fugitive", "fugitiveblame" },
+          buftype = { "prompt", "nofile", "terminal", "help" },
+        },
+      },
     }
   }
 })
@@ -109,15 +144,30 @@ local builtin = require("statuscol.builtin")
 local cfg = {
   setopt = true,   
   thousands = false,     -- or line number thousands separator string ("." / ",")
-  relculright = false,   -- whether to right-align the cursor line number with 'relativenumber' set
+  relculright = true,   -- whether to right-align the cursor line number with 'relativenumber' set
   ft_ignore = nil,       -- lua table with filetypes for which 'statuscolumn' will be unset
   bt_ignore = nil,       -- lua table with 'buftype' values for which 'statuscolumn' will be unset
   segments = {
-    { text = { "%s" }, click = "v:lua.ScSa" },
+    {
+      sign = { name = { "GitSigns" }, maxwidth = 1, auto = false },
+      click = "v:lua.ScSa"
+    },
+    {
+      sign = { name = { "Diagnostic" }, fillchar=" ", maxwidth = 1, auto = false },
+      click = "v:lua.ScSa"
+    },
+    {
+      sign = { name = { ".*" }, maxwidth = 1, colwidth = 1, auto = true, wrap = true },
+      click = "v:lua.ScSa"
+    },
     {
       text = { builtin.lnumfunc, "" },
       condition = { true, builtin.not_empty },
       click = "v:lua.ScLa",
+    },
+    {
+      sign = { name = { "Dap" }, fillchar=" ", maxwidth = 1, auto = true },
+      click = "v:lua.ScSa"
     },
     {
       text = { '%{foldlevel(v:lnum) > foldlevel(v:lnum - 1) ? (foldclosed(v:lnum) == -1 ? "" : "") : " " }', " " },       -- table of strings or functions returning a string
@@ -125,19 +175,10 @@ local cfg = {
       hl = "FoldColumn",     -- %# highlight group label, applies to each text element
       condition = { true },  -- table of booleans or functions returning a boolean
       sign = {               -- table of fields that configure a sign segment
-        -- at least one of "name", "text", and "namespace" is required
-        -- legacy signs are matched against the defined sign name e.g. "DiagnosticSignError"
-        -- extmark signs can be matched agains either the namespace or the sign text itself
-        -- name = { ".*" },     -- table of lua patterns to match the sign name against
-        -- text = { ".*" },     -- table of lua patterns to match the extmark sign text against
-        -- namespace = { ".*" },-- table of lua patterns to match the extmark sign namespace against
-        -- below values list the default when omitted:
         maxwidth = 1,        -- maximum number of signs that will be displayed in this segment
         colwidth = 2,        -- number of display cells per sign in this segment
-        auto = false,        -- when true, the segment will not be drawn if no signs matching
-        -- the pattern are currently placed in the buffer.
-        wrap = false,        -- when true, signs in this segment will also be drawn on the
-        -- virtual or wrapped part of a line (when v:virtnum != 0).
+        auto = false,        -- when true, the segment will not be drawn if no signs matching the pattern are currently placed in the buffer.
+        wrap = false,        -- when true, signs in this segment will also be drawn on the virtual or wrapped part of a line (when v:virtnum != 0).
         fillchar = " ",      -- character used to fill a segment with less signs than maxwidth
         fillcharhl = nil,    -- highlight group used for fillchar (SignColumn/CursorLineSign if omitted)
       }

@@ -149,15 +149,19 @@ local cfg = {
   bt_ignore = nil,       -- lua table with 'buftype' values for which 'statuscolumn' will be unset
   segments = {
     {
-      sign = { name = { "GitSigns" }, maxwidth = 1, auto = false },
+      sign = { name = { "GitSigns" }, maxwidth = 1, colwidth=1, auto = false, wrap=true },
       click = "v:lua.ScSa"
     },
     {
-      sign = { name = { "Diagnostic" }, fillchar=" ", maxwidth = 1, auto = false },
+      sign = { name = { "Diagnostic" }, fillchar=" ", maxwidth = 1, colwidth=1, auto = false, wrap=false },
       click = "v:lua.ScSa"
     },
+    -- {
+    --   sign = { name = { "LightBulb" }, fillchar=" ", maxwidth = 1, auto = false, wrap=false },
+    --   click = "v:lua.ScSa"
+    -- },
     {
-      sign = { name = { ".*" }, maxwidth = 1, colwidth = 1, auto = true, wrap = true },
+      sign = { name = { ".*" }, maxwidth = 1, colwidth = 1, auto = false, wrap = false },
       click = "v:lua.ScSa"
     },
     {
@@ -205,6 +209,13 @@ local cfg = {
     GitSignsChangedelete    = builtin.gitsigns_click,
     GitSignsDelete          = builtin.gitsigns_click,
     gitsigns_extmark_signs_ = builtin.gitsigns_click,
+    LightBulbSign           = function(args) vim.lsp.buf.code_action() end, 
   },
 }
  require("statuscol").setup(cfg)
+
+
+require('nvim-lightbulb').setup({
+  autocmd = {enabled = true},
+  ignore = {"null-ls"},
+})

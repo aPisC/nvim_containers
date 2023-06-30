@@ -13,6 +13,7 @@ vim.keymap.set({'n', 'i', 't'}, '<c-g>E', vim.diagnostic.goto_next)
 vim.keymap.set({'n', 'i', 't'}, "<C-g>b", function() vim.cmd("Telescope toggletasks spawn") end)
 vim.keymap.set({'n', 'i', 't'}, "<C-g>B", function() vim.cmd("Telescope toggletasks select") end)
 vim.keymap.set({'n', 'i', 't'}, "<C-g>t", function() if vim.v.count > 0 then vim.cmd("ToggleTerm " .. vim.v.count) else vim.cmd("ToggleTerm") end end)
+vim.keymap.set({'n', 'i', 't'}, "<C-g>r", function() require('dap').repl.toggle({height=10}) end)
 vim.keymap.set({'n', 'i', 't'}, '<c-g><c-g>', function() require("neogit").open()  end)
 vim.keymap.set({'n'          }, '<c-g>u', function() vim.cmd('UndotreeToggle') end)
 

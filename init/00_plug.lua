@@ -10,18 +10,18 @@ vim.call('plug#begin', (os.getenv('VIM_PLUGGED') or '~/.config/nvim') .. '/plugg
   Plug 'smiteshp/nvim-navic'
   Plug 'kkharji/sqlite.lua'
   Plug 'jose-elias-alvarez/null-ls.nvim'
+  Plug 'antoinemadec/FixCursorHold.nvim'                                                                                                                 
 
   -- Editor plugins    
   Plug 'tpope/vim-sensible'
   Plug 'tpope/vim-commentary'
+  Plug 'kosayoda/nvim-lightbulb'
   Plug 'tiagovla/scope.nvim'
-  -- Plug 'tpope/vim-fugitive'
   Plug 'akinsho/git-conflict.nvim'
   Plug 'tpope/vim-repeat'
   Plug 'tpope/vim-surround'
   Plug 'michaeljsmith/vim-indent-object'
   Plug 'sindrets/diffview.nvim'
-  Plug 'antoinemadec/FixCursorHold.nvim'                                                                                                                 
   Plug 'nvim-neotest/neotest'                                                                                                                            
   Plug 'Issafalcon/neotest-dotnet' 
 

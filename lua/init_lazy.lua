@@ -1,7 +1,8 @@
+-- Start Lazy package manager
+--
 require("keymaps")
 require("vimopts")
 
--- Start Lazy package manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -22,13 +23,16 @@ require("lazy").setup({
   {import="plugins.ui"},
   {import="plugins.theme"},
   {import="plugins.telescope"},
-  {import="plugins.db"},
+  {import="plugins.hydra"},
 
   {import="plugins.lsp"},
+  {import="plugins.copilot"},
+  {import="plugins.langs.json"},
+  {import="plugins.langs.scala"},
   {import="plugins.langs.typescript"},
-  {import="plugins.langs.csharp"},
   {import="plugins.langs.http"},
   {import="plugins.langs.emmet"},
+  {import="plugins.langs.lua"},
 })
 
 function file_exists(name)

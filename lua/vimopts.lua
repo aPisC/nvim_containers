@@ -1,4 +1,7 @@
 -- Vim options
+--
+--
+--
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.tabstop = 2
@@ -23,4 +26,4 @@ vim.opt.fcs = {
 vim.api.nvim_create_autocmd({ "BufEnter" }, { pattern = { "*" }, command = "normal zx", })
 -- vim.opt.signcolumn = "auto:2-5"
 vim.opt.equalalways = false
-
+vim.opt.shell="/bin/bash"

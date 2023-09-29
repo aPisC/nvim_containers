@@ -1,2 +1,2 @@
-lua package.path = '/usr/share/nvim/?.lua;' .. '/usr/share/nvim/?/init.lua;'  .. package.path
-lua dofile("/usr/share/nvim/init.lua")
+lua package.path = '/usr/share/nvim/runtime/lua/?.lua;' .. '/usr/share/nvim/runtime/lua/?/init.lua;'  .. package.path
+lua dofile("/usr/share/nvim/runtime/init.lua")

@@ -12,6 +12,8 @@ package.path = '/root/.config/nvim/?.lua;' .. '/root/.config/nvim/?/init.lua;'  
 
 require("init.00_plug")
 require("init.01_plugins")
+require("init.02_statuscol")
+require("init.03_lualine")
 require("init.05_telescope")
 require("init.06_tasks")
 require("init.51_completion")

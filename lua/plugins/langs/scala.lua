@@ -1,33 +1,52 @@
+local metals_au_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
+
 return {
   -- LSP
   {
     'scalameta/nvim-metals',
-    opts = {
-      -- root_patterns=  {'.git'},
-      settings = {
-        testUserInterface = "Test Explorer",
-        showImplicitArguments = true,
-        showImplicitConversionsAndClasses = true,
-        excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
-        serverVersion = "1.0.1",
-      }, 
-      init_options = {statusBarProvider = "on"},
-      capabilities = require("cmp_nvim_lsp").default_capabilities(),
-      on_attach = function(client, bufnr) require("metals").setup_dap() end,
-    },
+    opts = function()
+      local capabilities = vim.tbl_deep_extend("force",
+        {},
+        vim.lsp.protocol.make_client_capabilities(),
+        require("cmp_nvim_lsp").default_capabilities(),
+        {
+          workspace = {
+            configuration = false
+          }
+        }
+      )
+
+      return {
+        -- root_patterns=  {'.git'},
+        settings = {
+          testUserInterface = "Test Explorer",
+          showImplicitArguments = true,
+          showImplicitConversionsAndClasses = true,
+          excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
+          serverVersion = "1.0.1",
+        },
+        init_options = {statusBarProvider = "on"},
+        capabilities = capabilities,
+        on_attach = function(client, bufnr) require("metals").setup_dap() end,
+      }
+    end,
     config = function(plug, opts)
-      local metals_config = vim.tbl_deep_extend("force", require("metals").bare_config(), opts)
+      local metals_config = vim.tbl_deep_extend(
+        "force",
+        require("metals").bare_config(),
+        opts
+      )
+
       -- Start metals
       vim.api.nvim_create_autocmd("FileType", {
         pattern = { "scala", "sbt", "java" },
-        callback = function() 
-          require("metals").initialize_or_attach(metals_config) 
+        callback = function()
+          require("metals").initialize_or_attach(metals_config)
         end,
-        group = vim.api.nvim_create_augroup("nvim-metals", { clear = true }),
+        group = metals_au_group,
       })
 
       -- dap config
-      require("metals").setup_dap()
       require("dap").configurations.scala = {
         {
           type = "scala",
@@ -39,7 +58,6 @@ return {
         }
       }
     end,
-
   },
 
   -- Neotest
@@ -47,8 +65,8 @@ return {
   {
     'nvim-neotest/neotest',
     deps = { { 'aPisC/neotest-scala'} },
-    opts = function(plug, opts) 
-      table.insert(opts.adapters, 
+    opts = function(plug, opts)
+      table.insert(opts.adapters,
         require("neotest-scala")({
           runner = "sbt",
           framework = "scalatest"

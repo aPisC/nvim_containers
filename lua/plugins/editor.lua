@@ -15,31 +15,36 @@ return {
   },
   {'tpope/vim-sensible'},
   {'tpope/vim-commentary'},
-  {'tpope/vim-surround'},
+  {
+    "kylechui/nvim-surround",
+    event = "VeryLazy",
+    opts = { }
+  },
   {'michaeljsmith/vim-indent-object'},
   {
     'tiagovla/scope.nvim',
     opts = {},
   },
-  {                                                                                                                                                                                     
-    'stevearc/stickybuf.nvim',                                                                                                                                                          
-    opts = {                                                                                                                                                                            
-      get_auto_pin = function(bufnr)                                                                                                                                                    
-        local buftype = vim.bo[bufnr].buftype                                                                                                                                           
-        local filetype = vim.bo[bufnr].filetype                                                                                                                                         
-        local bufname = vim.api.nvim_buf_get_name(bufnr)                                                                                                                                
+  {
+    'stevearc/stickybuf.nvim',
+    opts = {
+      get_auto_pin = function(bufnr)
+        local buftype = vim.bo[bufnr].buftype
+        local filetype = vim.bo[bufnr].filetype
+        local bufname = vim.api.nvim_buf_get_name(bufnr)
 
-        if vim.startswith(filetype, "dapui_") then return "filetype" end                                                                                                                
-        if vim.startswith(filetype, "dap-") then return "filetype" end                                                                                                                  
-        if vim.startswith(filetype, "toggleterm") then return "filetype" end                                                                                                            
-        if vim.startswith(filetype, "httpResult") then return "filetype" end                                                                                                            
-        if vim.startswith(filetype, "blame") then return "filetype" end                                                                                                            
-        if vim.startswith(filetype, "dbout") then return "filetype" end                                                                                                            
-        if vim.startswith(filetype, "dbui") then return "filetype" end                                                                                                            
+        if vim.startswith(filetype, "dapui_") then return "filetype" end
+        if vim.startswith(filetype, "dap-") then return "filetype" end
+        if vim.startswith(filetype, "toggleterm") then return "filetype" end
+        if vim.startswith(filetype, "httpResult") then return "filetype" end
+        if vim.startswith(filetype, "blame") then return "filetype" end
+        if vim.startswith(filetype, "dbout") then return "filetype" end
+        if vim.startswith(filetype, "dbui") then return "filetype" end
+        if vim.startswith(filetype, "Neogit") then return nil end
 
-        return require("stickybuf").should_auto_pin(bufnr)                                                                                                                              
-      end                                                                                                                                                                               
-    },                                                                                                                                                                                  
+        return require("stickybuf").should_auto_pin(bufnr)
+      end
+    },
   },
   {
     'junegunn/fzf',
@@ -57,24 +62,45 @@ return {
   {
     'Pocco81/auto-save.nvim',
     opts = {
+      trigger_events = {"InsertLeave"},
       condition = function(buf)
         local fn = vim.fn
-        local utils = require("auto-save.utils.data")
+        local filetype = fn.getbufvar(buf, "&filetype")
 
-        if
-          fn.getbufvar(buf, "&modifiable") == 1 and
-          utils.not_in(fn.getbufvar(buf, "&filetype"), {
-            "sql"
-          }) then
-          return true -- met condition(s), can save
+        -- Disable on non-exsting buffers
+        if not vim.api.nvim_buf_is_valid(buf) then return false end
+
+        -- Disable on not modifiable buffers
+        if not fn.getbufvar(buf, "&modifiable") == 1 then return false end
+
+        -- Disable on Neogit buffers
+        if string.match(filetype, "^Neogit") then return false end
+        -- Disable on specific filetypes
+        --
+        if vim.tbl_contains({
+            "sql",
+            "neo-tree",
+            "sbt",
+
+          }, filetype)
+        then return false end
+
+        -- Disable on specific file names
+        local disables_file_patterns = {
+          "Dependencies.scala$",
+        }
+        local filename = vim.api.nvim_buf_get_name(0)
+        for _, pattern in ipairs(disables_file_patterns) do
+          if string.match(filename, pattern) then return false end
         end
-        return false -- can't save
+
+        return true
       end,
     }
   },
   {
     'akinsho/toggleterm.nvim',
-    opts = { 
+    opts = {
       start_in_insert = true,
       size = 5,
     }
@@ -93,7 +119,8 @@ return {
     end,
     keys = {
        -- { "s", mode = { "n", "o", "x" }, function() require("flash").jump() end, desc = "Flash" },
-      { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+      -- { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+      { "S", mode = { "n", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
       -- { "<Tab>", mode = { "n", "o", "x" }, function() require("flash").jump() end, desc = "Flash" },
       { "<S-Tab>", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
       { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
@@ -155,7 +182,7 @@ return {
       scan = {
         global_cwd = true,    -- vim.fn.getcwd(-1, -1)
       },
-      tasks = { },  
+      tasks = { },
       -- toggleterm = {
       --   start_in_insert=true,
       --   close_on_exit = false,

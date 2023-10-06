@@ -45,17 +45,16 @@ local vscodeLaunchFile = "./.vscode/launch.json"
 
 
 if file_exists(workspaceInitFile) then
-  dofile(workspaceInitFile) 
+  dofile(workspaceInitFile)
 
   vim.api.nvim_create_autocmd({ "BufWritePost" }, { pattern = { "nvim.lua" }, callback=function()
     if (vim.fn.expand("%:.") == ".vscode/nvim.lua") then
       print("Reload workspace config...")
-      dofile(workspaceInitFile) 
+      dofile(workspaceInitFile)
     end
   end })
 end
 
 if file_exists(vscodeLaunchFile) then
-  require("dap.ext.vscode").load_launchjs(vscodeLaunchFile) 
+  require("dap.ext.vscode").load_launchjs(vscodeLaunchFile)
 end
-

@@ -1,7 +1,7 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = function(plug, opts) 
+    opts = function(plug, opts)
       table.insert(opts.ensure_installed, "json")
       table.insert(opts.ensure_installed, "http")
       return opts
@@ -16,7 +16,7 @@ return {
   -- },
   {
     'aPisC/rest.nvim',
-    deps = { 
+    deps = {
       { "nvim-lua/plenary.nvim" },
       { "nvim-treesitter/nvim-treesitter" },
     },
@@ -24,19 +24,23 @@ return {
       require("rest-nvim").setup(opts)
 
       local aug = vim.api.nvim_create_augroup("RestNvim", {clear=true})
-      vim.api.nvim_create_autocmd("FileType", { callback = function() 
-        vim.keymap.set({'n', 'i'}, '<C-space>', function(args) require("rest-nvim").run() end, {buffer=true} )
-        vim.api.nvim_buf_create_user_command(0, "RestRun", function(args) require("rest-nvim").run() end, {})
-        vim.api.nvim_buf_create_user_command(0, "RestPreview", function(args) vim.inspect(require("rest-nvim").run(true)) end, {})
-        vim.api.nvim_buf_create_user_command(0, "RestLast", function(args) require("rest-nvim").last() end, {})
-      end })
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "http",
+        callback = function()
+          vim.keymap.set({'n', 'i'}, '<M-CR>', function(args) require("rest-nvim").run() end, {buffer=true} )
+          vim.keymap.set({'n', 'i'}, '<M-?>', function(args) require("rest-nvim").run(true) end, {buffer=true} )
+        end
+      })
+      vim.api.nvim_buf_create_user_command(0, "RestRun", function(args) require("rest-nvim").run() end, {})
+      vim.api.nvim_buf_create_user_command(0, "RestPreview", function(args) vim.inspect(require("rest-nvim").run(true)) end, {})
+      vim.api.nvim_buf_create_user_command(0, "RestLast", function(args) require("rest-nvim").last() end, {})
       vim.api.nvim_create_user_command("Rest", function() vim.cmd":e .vscode/requests.http" end, {})
     end,
     opts = {
       -- Open request results in a horizontal split
-      result_split_horizontal = false,
+      result_split_horizontal = true,
       -- Keep the http file buffer above|left when split horizontal|vertical
-      result_split_in_place = false,
+      result_split_in_place = true,
       -- Skip SSL verification, useful for unknown certificates
       skip_ssl_verification = true,
       -- Encode URL before making request

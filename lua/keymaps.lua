@@ -8,13 +8,13 @@ vim.keymap.set({'n'}, '<A-right>', '<C-i>')
 vim.keymap.set({'n'}, '<C-t>', ':tabnew<CR>')
 
 
-vim.keymap.set('n', '<C-b>', function() vim.cmd"NvimTreeToggle" end )
-vim.keymap.set({'n', 'i'     }, '<C-s>', function() 
+vim.keymap.set('n', '<C-b>', function() vim.cmd"Neotree" end )
+vim.keymap.set({'n', 'i'     }, '<C-s>', function()
   local tries = 0
   while tries < 10 and vim.api.nvim_get_mode().mode == "i" do
     vim.api.nvim_input("<esc>")
     tries = tries + 1
-  end  
+  end
   vim.api.nvim_input(":w<cr>")
 end)
 -- vim.keymap.set({'n', 'i', 't', 'v'}, '<C-q>', function() vim.cmd('q') end)
@@ -22,7 +22,7 @@ vim.keymap.set({'n', 'i', 't', 'v'}, '<C-q>', function()
   if #vim.api.nvim_list_wins() > 1 or vim.bo.buftype == "prompt" then
     vim.cmd("q")
   else
-    vim.cmd('bd %') 
+    vim.cmd('bd %')
   end
 end)
 vim.keymap.set({          't'}, '<c-w>', '<C-\\><c-n>')
@@ -36,11 +36,11 @@ vim.keymap.set({'n'          }, 'cP', 'viWpgvy')
 vim.keymap.set({'v'          }, 'p', 'pgvy')
 vim.keymap.set({'v'          }, '>', '>gv')
 vim.keymap.set({'v'          }, '<', '<gv')
-vim.keymap.set({     'i', 'v'}, '<C-z>', function() 
+vim.keymap.set({     'i', 'v'}, '<C-z>', function()
   vim.cmd('undo')
   if vim.api.nvim_get_mode().mode ~= "i" then
-    vim.api.nvim_input("<esc>i") 
-  end  
+    vim.api.nvim_input("<esc>i")
+  end
 end)
 vim.keymap.set({     'i', 'v'}, '<C-y>', function() vim.cmd('redo') end)
 vim.keymap.set({'n'          }, '<space>', 'ciw')
@@ -94,6 +94,10 @@ vim.keymap.set('s', '(', '(<C-r>")')
 vim.keymap.set('s', '[', '[<C-r>"]')
 vim.keymap.set('s', '{', '{<C-r>"}')
 
+-- Delete maps
+vim.keymap.set('n', '<S-Delete>', 'dd')
+vim.keymap.set('i', '<S-Delete>', '<C-o>dd')
+
 -- HU keymaps
 vim.keymap.set({'n',      'v'}, 'ő', '[', {remap=true})
 vim.keymap.set({'n',      'v'}, 'Ő', '{', {remap=true})
@@ -108,4 +112,3 @@ vim.keymap.set({'n',      'v'}, 'á', "'", {remap=true})
 vim.keymap.set({'n',      'v'}, 'Á', '"', {remap=true})
 vim.keymap.set({'n',      'v'}, 'ű', "\\", {remap=true})
 vim.keymap.set({'n',      'v'}, 'Ű', '|', {remap=true})
-

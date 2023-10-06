@@ -2,7 +2,7 @@ return {
   {
     'nvim-telescope/telescope.nvim',
     priority=60,
-    dependencies = { 
+    dependencies = {
       'nvim-lua/plenary.nvim',
     },
     keys = {
@@ -16,9 +16,9 @@ return {
     opts = function() return {
       extensions = {
         ["ui-select"] = {
-          require("telescope.themes").get_ivy {}
+          require ("telescope.themes").get_dropdown {}
+          -- require("telescope.themes").get_ivy {}
           -- require("telescope.themes").get_cursor {}
-          -- require("telescope.themes").get_dropdown {}
         }
       }
     } end,

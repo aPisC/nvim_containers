@@ -17,7 +17,7 @@ local M = {
 
   {
     'williamboman/mason-lspconfig.nvim',
-    opts = function(plug, opts) 
+    opts = function(plug, opts)
       table.insert(opts.ensure_installed, "omnisharp")
       return opts
     end,
@@ -27,7 +27,7 @@ local M = {
 
     'neovim/nvim-lspconfig',
     deps = { {'Hoffs/omnisharp-extended-lsp.nvim'} },
-    opts = function(plug, opts) 
+    opts = function(plug, opts)
       opts.servers.omnisharp = {
         cmd = { "omnisharp" },
         handlers = {
@@ -58,7 +58,8 @@ local M = {
   },
   {
     'mhartington/formatter.nvim',
-    opts = function(plug, opts) 
+    opts = function(plug, opts)
+      opts.autoformat["cs"] = true
       opts.filetype["cs"] = {
         { require"formatter.filetypes.cs".clangformat }
       }
@@ -67,7 +68,7 @@ local M = {
   },
   {
     "jay-babu/mason-nvim-dap.nvim",
-    opts = function(plug, opts) 
+    opts = function(plug, opts)
       table.insert(opts.ensure_installed, "coreclr")
       opts.handlers["coreclr"] = function(config)
         require("mason-nvim-dap").default_setup(config)

@@ -1,5 +1,4 @@
 return {
-
   {
     'norcalli/nvim-colorizer.lua',
     opts = {},
@@ -13,48 +12,83 @@ return {
     opts = {}
   },
   {
-    'nvim-tree/nvim-tree.lua',
+    "nvim-neo-tree/neo-tree.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "MunifTanjim/nui.nvim",
+      's1n7ax/nvim-window-picker',
+    },
     opts = {
-      renderer = {
-        add_trailing = true,
-        group_empty = true,
-        icons = {
-          glyphs = {
-            git = {
-              ignored = ""
+        sources = {
+          "filesystem",
+          "buffers",
+          "git_status",
+          -- "document_symbols",
+        },
+        open_files_do_not_replace_types = { "terminal", "trouble", "qf" },
+        default_component_configs = {
+          git_status = {
+            symbols = {
+              added     = "",
+              modified  = "",
+              deleted   = "✖",
+              renamed   = "󰁕",
+              untracked = "✚",
+              ignored   = "",
+              unstaged  = "",
+              staged    = "󰄴",
+              conflict  = "",
+            }
+          },
+        },
+        source_selector = {
+          winbar = true,
+          sources = {
+            { source = "filesystem" },
+            { source = "buffers" },
+            { source = "git_status" },
+            -- { source = "document_symbols" },
+          },
+        },
+        filesystem = {
+          scan_mode = "deep",
+          follow_current_file = {
+            enabled = true, -- This will find and focus the file in the active buffer every time
+            --               -- the current file is changed while the tree is open.
+            leave_dirs_open = true, -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
+          },
+          group_empty_dirs = true,
+          filtered_items = {
+            hide_dotfiles = true,
+            always_show = {
+              ".gitignore",
+              ".vscode",
+              ".github",
+              ".env",
+              ".env.*",
+            },
+          },
+          window = {
+            mappings = {
+              ["gs"] = "git_add_file",
+              ["ga"] = "git_add_file",
+              ["gu"] = "git_unstage_file",
+              ["Z"] = "expand_all_nodes",
             }
           }
         },
-      },
-      update_focused_file = {
-        enable = true,
-      },
-      git={
-        ignore=true,
-      },
-      filters = {
-        custom = {
-           '\\.bloop$',
-           '\\.git$',
-           '\\.bsp$',
-           '\\.metals$',
-           'node_modules$'
+        git_status = {
+          window = {
+            mappings = {
+              ["s"] = "git_add_file",
+              ["u"] = "git_unstage_file",
+              ["c"] = "git_commit",
+              ["p"] = "git_push",
+            }
+          }
         }
-      },
-      actions={
-        change_dir={
-          restrict_above_cwd=true
-        },
-        open_file={
-          quit_on_open=false,
-          window_picker = {
-            exclude = {
-              filetype = { "notify", "packer", "qf", "diff", "fugitive", "fugitiveblame", "dbui", "dbout" },
-              buftype = { "prompt", "nofile", "terminal", "help" },
-            },
-          },
-        }
-      }
+
     }
   },
   {
@@ -77,7 +111,7 @@ return {
         tsserver = " ",
         emmet_ls = " ",
         metals = " ",
-        omnnisharp = "󰌛 ",
+        omnisharp = "󰌛 ",
       }
 
       local function lsp_client()
@@ -137,8 +171,7 @@ return {
           component_separators = { left = '', right = ''},
           section_separators = { left = '', right = ''},
           disabled_filetypes = {
-            statusline = {},
-            winbar = {},
+            "neo-tree",
           },
           ignore_focus = {},
           always_divide_middle = true,
@@ -191,6 +224,7 @@ return {
   {
     'akinsho/bufferline.nvim',
     dependencies = 'nvim-tree/nvim-web-devicons',
+    enabled = false,
     opts = {
       options={
         -- mode="tabs",
@@ -218,7 +252,7 @@ return {
               separator = true -- use a "true" to enable the default, or set your own character
           },
           {
-              filetype = "NvimTree",
+              filetype = "neo-tree",
               text = "File Explorer",
               highlight = "Directory",
               separator = true -- use a "true" to enable the default, or set your own character
@@ -257,7 +291,7 @@ return {
         setopt = true,
         thousands = false,
         relculright = true,
-        ft_ignore = nil,
+        ft_ignore = { "neo-tree" },
         bt_ignore = nil,
         segments = {
           {
@@ -288,7 +322,7 @@ return {
           {
             text = { '%{foldlevel(v:lnum) > foldlevel(v:lnum - 1) ? (foldclosed(v:lnum) == -1 ? "" : "") : " " }', " " },       -- table of strings or functions returning a string
             click = "v:lua.ScFa",  -- %@ click function label, applies to each text element
-            hl = "FoldColumn",     -- %# highlight group label, applies to each text element
+            -- hl = "FoldColumn",     -- %# highlight group label, applies to each text element
             condition = { true },  -- table of booleans or functions returning a boolean
             sign = {               -- table of fields that configure a sign segment
               maxwidth = 1,        -- maximum number of signs that will be displayed in this segment

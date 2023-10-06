@@ -1,6 +1,10 @@
 return {
   {
     'anuvyklack/hydra.nvim',
+    keys = {
+      "gb",
+      "<C-w>",
+    },
     opts = {
       barbar = {
         name = 'Barbar',
@@ -48,7 +52,7 @@ return {
           { 'h', '<C-w>h' },
           { 'j', '<C-w>j' },
           { 'k', '<C-w>k' },
-          { 'l', '<C-w>l' }, 
+          { 'l', '<C-w>l' },
 
           { '<left>', '<C-w>h' },
           { '<down>', '<C-w>j' },

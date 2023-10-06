@@ -28,15 +28,32 @@ return {
       vim.keymap.set('n', 'gr', function() vim.cmd("Telescope lsp_references") end)
       vim.keymap.set('n', 'gi', function() vim.cmd("Telescope lsp_implementations") end)
       vim.keymap.set('n', '<F2>', vim.lsp.buf.rename)
-      vim.keymap.set('n', '<M-CR>', vim.lsp.buf.code_action )
+      -- if not vim.fn.mapcheck("<M-CR>", "n") then
+        vim.keymap.set('n', '<M-CR>', vim.lsp.buf.code_action )
+      -- end
       vim.keymap.set('n', 'K', vim.lsp.buf.hover)
       vim.keymap.set('n', '<C-g>e', vim.diagnostic.goto_next)
+
+
+      -- show diagnostic on CursorHold
+      local augrp = vim.api.nvim_create_augroup("LspCursorHold", {})
+      vim.api.nvim_create_autocmd("CursorHold", {
+        pattern = { "*" },
+        callback = function()
+          vim.diagnostic.open_float()
+        end,
+        group = augrp,
+      })
     end,
     init = function()
-      vim.diagnostic.config({underline=false, severity_sort=true})
+      vim.diagnostic.config({
+        underline=true,
+        severity_sort=true,
+        float = true,
+        update_in_insert = true,
+      })
     end
   },
-  {'rafamadriz/friendly-snippets'},
   {
 
     "L3MON4D3/LuaSnip",
@@ -79,6 +96,9 @@ return {
       {'<F23>', function() require("dap").step_out() end, mode={'n', 'i'}},
       {'<C-g>r', function() require("dap").repl.toggle({height=10}) end}
     },
+    init = function()
+      -- require("dap").defaults.fallback.switchbuf = "useopen"
+    end,
   },
   {
     -- DAP UI
@@ -89,7 +109,7 @@ return {
       require("dapui").setup(opts)
 
       vim.api.nvim_create_user_command("DapUi", function()
-        vim.cmd(":NvimTreeClose")
+        vim.cmd(":Neotree action=close")
         require("dapui").toggle()
       end, {})
       vim.api.nvim_create_user_command("DapRun", function() require('dap').run() end, {})
@@ -97,10 +117,15 @@ return {
       vim.api.nvim_create_user_command("DapRepl", function() require('dap').repl.toggle({height=10}) end, {})
 
       dap.listeners.before['event_stopped']['dapui_event_handling'] = function(session, body)
-        vim.cmd(":NvimTreeClose")
+        vim.cmd(":Neotree action=close")
         require("dapui").open()
       end
       dap.listeners.after['event_terminated']['dap-ui'] = function(session, body)
+        if not body.restart then
+          require("dapui").close()
+        end
+      end
+      dap.listeners.after['terminated']['dap-ui'] = function(session, body)
         if not body.restart then
           require("dapui").close()
         end
@@ -141,7 +166,7 @@ return {
   {
     -- Neotest
     'nvim-neotest/neotest',
-    deps = {
+    dependencies = {
       {'nvim-treesitter/nvim-treesitter'},
       {'antoinemadec/FixCursorHold.nvim'},
       { 'nvim-lua/plenary.nvim'},
@@ -257,14 +282,18 @@ return {
       handlers = { }
     }
   },
-    -- Completion
+    -- LspKind
+  {
+    'onsails/lspkind.nvim',
+    config = function(plug, opts) end
+  },
   {
     -- Completion
     'hrsh7th/nvim-cmp',
     dependencies = {
       {'hrsh7th/cmp-nvim-lsp-signature-help'},
       {'hrsh7th/cmp-nvim-lsp'},
-      { 'saadparwaiz1/cmp_luasnip' },
+      {'saadparwaiz1/cmp_luasnip'},
       {'hrsh7th/cmp-calc'},
       {'hrsh7th/cmp-buffer'},
       {'hrsh7th/cmp-path'},
@@ -274,9 +303,10 @@ return {
       local cmp = require("cmp")
       local copilot_suggestions_available, copilot_suggestions = pcall(require, "copilot.suggestion")
       local luasnip = require("luasnip")
+      local lspkind = require("lspkind")
 
       return {
-        experimental = { ghost_text = true },
+        experimental = { ghost_text = { hl_group = "CmpGhostText" } },
         completion = {
           autocomplete = false,
           -- autocomplete = { require('cmp.types').cmp.TriggerEvent.TextChanged },
@@ -300,6 +330,32 @@ return {
             { name = 'buffer' },
           }
         ),
+        formatting = {
+          format = lspkind.cmp_format({
+            mode = "symbol",
+            maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+            ellipsis_char = '...', -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
+            symbol_map = {
+              Copilot = "",
+              TypeParameter = "󰬛",
+            }
+          })
+        },
+        sorting = {
+          priority_weight = 2,
+          comparators = {
+            cmp.config.compare.offset,
+            -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
+            cmp.config.compare.exact,
+            cmp.config.compare.score,
+            cmp.config.compare.recently_used,
+            cmp.config.compare.locality,
+            cmp.config.compare.kind,
+            cmp.config.compare.sort_text,
+            cmp.config.compare.length,
+            cmp.config.compare.order,
+          },
+        },
         mapping = cmp.mapping.preset.insert({
           ['<C-d>'] = cmp.mapping.scroll_docs(4),
           ['<C-u>'] = cmp.mapping.scroll_docs(-4),
@@ -321,6 +377,8 @@ return {
           ["<Esc>"] = function(fallback)
             if cmp.visible() then
               cmp.close()
+            elseif copilot_suggestions_available and copilot_suggestions.is_visible() then
+              copilot_suggestions.dismiss()
             else
               fallback()
             end
@@ -330,11 +388,19 @@ return {
               cmp.select_prev_item()
             elseif luasnip.jumpable(-1) then
               luasnip.jump(-1)
+            elseif copilot_suggestions_available and copilot_suggestions.is_visible() then
+              copilot_suggestions.accept_line()
             else
               fallback()
             end
           end, {'i', 's'}),
-          ['<C-Space>'] = cmp.mapping.complete(),
+          -- ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-Space>'] = function(fallback)
+            cmp.complete()
+            if copilot_suggestions_available and copilot_suggestions.is_visible() then
+              copilot_suggestions.dismiss()
+            end
+          end,
           -- ['.'] = function(fallback)
           --   if cmp.visible() and cmp.get_active_entry() ~= nil then
           --     cmp.confirm()

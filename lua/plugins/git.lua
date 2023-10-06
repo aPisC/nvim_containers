@@ -1,6 +1,7 @@
 return {
   {
     'akinsho/git-conflict.nvim',
+    event = "VeryLazy",
     opts = {}
   },
   {
@@ -11,7 +12,8 @@ return {
       "sindrets/diffview.nvim",
       "ibhagwan/fzf-lua",
     },
-    config = function(plug, opts) 
+    cmd = { "Git", "Neogit" },
+    config = function(plug, opts)
       require("neogit").setup(opts)
 
       vim.api.nvim_create_user_command('Git', function() require"neogit".open() end, {nargs=0, force= true})
@@ -23,37 +25,19 @@ return {
   {
     "f-person/git-blame.nvim",
     priority=40,
+    event = "VeryLazy",
     opts = {
       enabled = true,
-      highlight_group = "NonText", 
+      highlight_group = "NonText",
       virtual_text_column = 80,
       message_template = "  ◆ [<date>] <author> <sha> <summary>",
       date_format = "%Y.%m.%d",
       message_when_not_committed = "  ◆ Not Committed Yet"
     }
   },
-  -- {
-  --   'TimUntersberger/neogit',
-  --   deps = {
-  --     {'sindrets/diffview.nvim'},
-  --   }
-  --   opts = {
-  --     disable_commit_confirmation = true,
-  --     kind = "tab",
-  --     integrations = {
-  --       diffview = true
-  --     },
-  --     commit_popup = {
-  --       kind = "tab"
-  --     },
-  --     popup = {
-  --       kind = "tab"
-  --     }
-
-  --   }
-  -- },
   {
     'lewis6991/gitsigns.nvim',
     config = true,
+    event = "VeryLazy",
   },
 }

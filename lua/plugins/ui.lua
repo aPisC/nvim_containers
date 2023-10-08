@@ -7,6 +7,17 @@ return {
     end
   },
   {
+    "RRethy/vim-illuminate",
+    opts = { },
+    config = function(plug, opts)
+      require('illuminate').configure(opts)
+    end
+  },
+  {
+    'anuvyklack/pretty-fold.nvim',
+     opts = {},
+  },
+  {
     'norcalli/nvim-colorizer.lua',
     opts = {"*"},
     init=function()
@@ -304,15 +315,6 @@ return {
           },
         }
       }
-    }
-  },
-  {
-    'kosayoda/nvim-lightbulb',
-    opts = {
-      autocmd = {enabled = true},
-      ignore = {
-        clients = {"null-ls"},
-      },
     }
   },
   {

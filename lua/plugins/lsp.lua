@@ -55,6 +55,15 @@ return {
     end
   },
   {
+    'kosayoda/nvim-lightbulb',
+    opts = {
+      autocmd = {enabled = true},
+      ignore = {
+        clients = {},
+      },
+    }
+  },
+  {
 
     "L3MON4D3/LuaSnip",
     dependencies = { "rafamadriz/friendly-snippets" },

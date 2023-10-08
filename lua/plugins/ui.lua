@@ -202,7 +202,7 @@ return {
         return table.concat(status, "  ") .. " " .. spinners[frame + 1]
       end
 
-      -- local git_blame = require('gitblame')
+      local git_blame = require('gitblame')
 
       local config = {
         options = {
@@ -231,7 +231,12 @@ return {
           },
           lualine_c = {
             -- 'filename',
-            -- { git_blame.get_current_blame_text, cond = git_blame.is_blame_text_available },
+            {
+              git_blame.get_current_blame_text,
+              cond = function()
+                return vim.g.gitblame_enabled == 1 and git_blame.is_blame_text_available()
+              end
+            },
             { lsp_progress },
           },
           lualine_x = {

@@ -27,12 +27,13 @@ return {
     priority=40,
     event = "VeryLazy",
     opts = {
-      enabled = true,
+      enabled = false,
       highlight_group = "NonText",
       virtual_text_column = 80,
-      message_template = "  ◆ [<date>] <author> <sha> <summary>",
+      message_template = "[<date>] <author> <sha> <summary>",
       date_format = "%Y.%m.%d",
-      message_when_not_committed = "  ◆ Not Committed Yet"
+      message_when_not_committed = "Not Committed Yet",
+      display_virtual_text = false,
     }
   },
   {

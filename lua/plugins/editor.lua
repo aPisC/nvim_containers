@@ -7,6 +7,10 @@ return {
   -- },
   {'mbbill/undotree'},
   {
+    'chentoast/marks.nvim',
+    opts = {}
+  },
+  {
     'folke/trouble.nvim',
     opts = { },
     keys = {

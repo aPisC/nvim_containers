@@ -1,14 +1,24 @@
 return {
   {
-    'norcalli/nvim-colorizer.lua',
+    'rcarriga/nvim-notify',
     opts = {},
+    config = function()
+      vim.notify = require("notify")
+    end
+  },
+  {
+    'norcalli/nvim-colorizer.lua',
+    opts = {"*"},
     init=function()
       vim.opt.termguicolors = true
     end
   },
-  {'smiteshp/nvim-navic'},
   {
     'utilyre/barbecue.nvim',
+    dependencies = {
+      "smiteshp/nvim-navic",
+      "nvim-tree/nvim-web-devicons",
+    },
     opts = {}
   },
   {
@@ -17,7 +27,30 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-tree/nvim-web-devicons",
       "MunifTanjim/nui.nvim",
-      's1n7ax/nvim-window-picker',
+      {
+        's1n7ax/nvim-window-picker',
+        version = '2.*',
+        opts = {
+          hint = 'floating-big-letter',
+          picker_config = {
+            floating_big_letter = {
+              font = 'ansi-shadow',
+            },
+          },
+          filter_rules = {
+            include_current_win = true,
+            autoselect_one = true,
+            -- filter using buffer options
+            bo = {
+              filetype = { 'neo-tree', "neo-tree-popup", "notify" },
+              buftype = { 'terminal', "quickfix" },
+            },
+            wo = {
+               winhighlight = { "Normal:ShadeOverlay", "Normal:ShadeBrightnessPopup" },
+            },
+          },
+        }
+      },
     },
     opts = {
         sources = {
@@ -41,6 +74,13 @@ return {
               conflict  = "",
             }
           },
+        },
+        window = {
+          mappings = {
+            ["<cr>"] = "open_with_window_picker",
+            ["S"] = "split_with_window_picker",
+            ["s"] = "vsplit_with_window_picker",
+          }
         },
         source_selector = {
           winbar = true,

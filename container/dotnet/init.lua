@@ -22,9 +22,11 @@ require("lazy").setup({
   {import="plugins.ui"},
   {import="plugins.theme"},
   {import="plugins.telescope"},
+  {import="plugins.hydra"},
   {import="plugins.db"},
 
   {import="plugins.lsp"},
+  {import="plugins.copilot"},
   {import="plugins.langs.typescript"},
   {import="plugins.langs.csharp"},
   {import="plugins.langs.http"},
@@ -41,17 +43,16 @@ local vscodeLaunchFile = "./.vscode/launch.json"
 
 
 if file_exists(workspaceInitFile) then
-  dofile(workspaceInitFile) 
+  dofile(workspaceInitFile)
 
   vim.api.nvim_create_autocmd({ "BufWritePost" }, { pattern = { "nvim.lua" }, callback=function()
     if (vim.fn.expand("%:.") == ".vscode/nvim.lua") then
       print("Reload workspace config...")
-      dofile(workspaceInitFile) 
+      dofile(workspaceInitFile)
     end
   end })
 end
 
 if file_exists(vscodeLaunchFile) then
-  require("dap.ext.vscode").load_launchjs(vscodeLaunchFile) 
+  require("dap.ext.vscode").load_launchjs(vscodeLaunchFile)
 end
-

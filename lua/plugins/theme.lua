@@ -44,6 +44,9 @@ return {
   },
   {
     'navarasu/onedark.nvim',
+    dependencies = {
+      "levouh/tint.nvim"
+    },
     -- lazy = true,
     opts = {
       style = 'darker',
@@ -53,5 +56,24 @@ return {
       require('onedark').setup(opts)
       require('onedark').load()
     end
+  },
+  {
+    "levouh/tint.nvim",
+    enabled = true,
+    opts = {
+      tint = -10,
+      tint_background_colors = true,
+      -- highlight_ignore_patterns = { "WinSeparator", "Status.*"},
+      window_ignore_function = function(winid)
+        local bufid = vim.api.nvim_win_get_buf(winid)
+        local buftype = vim.api.nvim_buf_get_option(bufid, "buftype")
+        local floating = vim.api.nvim_win_get_config(winid).relative ~= ""
+        local filetyle = vim.api.nvim_buf_get_option(bufid, "filetype")
+
+        -- Do not tint `terminal` or floating windows, tint everything else
+        -- vim.notify("filetype: " .. filetype)
+        return buftype == "terminal" or floating or filetype == "neo-tree"
+      end
+    }
   },
 }

@@ -7,10 +7,6 @@ return {
   -- },
   {'mbbill/undotree'},
   {
-    'chentoast/marks.nvim',
-    opts = {}
-  },
-  {
     'folke/trouble.nvim',
     opts = { },
     keys = {
@@ -70,6 +66,9 @@ return {
       condition = function(buf)
         local fn = vim.fn
         local filetype = fn.getbufvar(buf, "&filetype")
+
+        -- Only enable in normal mode
+        if vim.api.nvim_get_mode().mode ~= 'n' then return false end
 
         -- Disable on non-exsting buffers
         if not vim.api.nvim_buf_is_valid(buf) then return false end
@@ -133,7 +132,7 @@ return {
   },
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
-    deps = { { 'nvim-treesitter/nvim-treesitter' } },
+    dependencies = { { 'nvim-treesitter/nvim-treesitter' } },
     opts = {
       textobjects = {
         select = {

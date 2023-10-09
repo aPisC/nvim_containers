@@ -56,6 +56,7 @@ return {
   },
   {
     'kosayoda/nvim-lightbulb',
+    enabled=false,
     opts = {
       autocmd = {enabled = true},
       ignore = {
@@ -112,7 +113,7 @@ return {
   {
     -- DAP UI
     'rcarriga/nvim-dap-ui',
-    deps = { {'mfussenegger/nvim-dap' } },
+    dependencies = { {'mfussenegger/nvim-dap' } },
     config = function(plug, opts)
       local dap = require("dap")
       require("dapui").setup(opts)
@@ -242,6 +243,7 @@ return {
         if type(autoformat) == "function" then
           vim.api.nvim_create_autocmd({ "BufWritePost" }, {
             pattern = { "*." .. ft },
+            group = autoformatgroup,
             callback = function()
               if autoformat() then
                 vim.cmd("FormatWrite")
@@ -251,6 +253,7 @@ return {
         elseif autoformat then
           vim.api.nvim_create_autocmd({ "BufWritePost" }, {
             pattern = { "*." .. ft },
+            group = autoformatgroup,
             command = "FormatWrite",
           })
         end
@@ -319,7 +322,7 @@ return {
         completion = {
           autocomplete = false,
           -- autocomplete = { require('cmp.types').cmp.TriggerEvent.TextChanged },
-          keyword_length = 2,
+          keyword_length = 3,
           keyword_pattern = [[\%(-\?\d\+\%(\.\d\+\)\?\|\h\w*\%(-\w*\)*\)]],
           -- completeopt = 'menu,preview,noinsert', a
         },
@@ -370,12 +373,12 @@ return {
           ['<C-u>'] = cmp.mapping.scroll_docs(-4),
           ["<CR>"] = cmp.mapping.confirm({ select = false }),
           ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
+            if copilot_suggestions_available and copilot_suggestions.is_visible() then
+              copilot_suggestions.accept_word()
             elseif luasnip.expand_or_jumpable() then
               luasnip.expand_or_jump()
-            elseif copilot_suggestions_available and copilot_suggestions.is_visible() then
-              copilot_suggestions.accept_word()
+            elseif cmp.visible() then
+              cmp.select_next_item()
               -- elseif vim.fn["vsnip#available"]() == 1 and get_current_line():match("^[%s%a]*$") ~= nil then
               -- elseif has_words_before() then
               --   cmp.complete()
@@ -384,21 +387,21 @@ return {
             end
           end, {'i', 's'}),
           ["<Esc>"] = function(fallback)
-            if cmp.visible() then
+            if copilot_suggestions_available and copilot_suggestions.is_visible() then
+            copilot_suggestions.dismiss()
+            elseif cmp.visible() then
               cmp.close()
-            elseif copilot_suggestions_available and copilot_suggestions.is_visible() then
-              copilot_suggestions.dismiss()
             else
               fallback()
             end
           end,
           ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
+            if copilot_suggestions_available and copilot_suggestions.is_visible() then
+              copilot_suggestions.accept_line()
             elseif luasnip.jumpable(-1) then
               luasnip.jump(-1)
-            elseif copilot_suggestions_available and copilot_suggestions.is_visible() then
-              copilot_suggestions.accept_line()
+            elseif cmp.visible() then
+              cmp.select_prev_item()
             else
               fallback()
             end
@@ -450,13 +453,4 @@ return {
       end
     end
   },
-  -- {'hrsh7th/vim-vsnip-integ'},
-  -- {
-  --   -- Snippets
-  --   'hrsh7th/vim-vsnip',
-  --   deps = {
-  --     {'hrsh7th/vim-vsnip-integ'},
-  --     {'rafamadriz/friendly-snippets'},
-  --   }
-  -- },
 }

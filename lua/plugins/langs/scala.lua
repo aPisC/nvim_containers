@@ -61,10 +61,9 @@ return {
   },
 
   -- Neotest
-  { 'aPisC/neotest-scala'},
   {
     'nvim-neotest/neotest',
-    deps = { { 'aPisC/neotest-scala'} },
+    dependencies = { { 'aPisC/neotest-scala'} },
     opts = function(plug, opts)
       table.insert(opts.adapters,
         require("neotest-scala")({

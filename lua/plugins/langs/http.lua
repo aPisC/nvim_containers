@@ -16,7 +16,7 @@ return {
   -- },
   {
     'aPisC/rest.nvim',
-    deps = {
+    dependencies = {
       { "nvim-lua/plenary.nvim" },
       { "nvim-treesitter/nvim-treesitter" },
     },

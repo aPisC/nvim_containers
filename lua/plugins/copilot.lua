@@ -51,11 +51,11 @@ return {
     },
     priority=60,
     opts = function(plug, opts)
-      table.insert(opts.sources, {
-        name = "copilot",
-        group_index = 1,
-        priority = 1000,
-      })
+      -- table.insert(opts.sources, {
+      --   name = "copilot",
+      --   group_index = 1,
+      --   priority = 1000,
+      -- })
 
       table.insert(
         opts.sorting.comparators,

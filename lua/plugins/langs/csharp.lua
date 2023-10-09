@@ -22,11 +22,10 @@ local M = {
       return opts
     end,
   },
-  {'Hoffs/omnisharp-extended-lsp.nvim'},
   {
 
     'neovim/nvim-lspconfig',
-    deps = { {'Hoffs/omnisharp-extended-lsp.nvim'} },
+    dependencies = { {'Hoffs/omnisharp-extended-lsp.nvim'} },
     opts = function(plug, opts)
       opts.servers.omnisharp = {
         cmd = { "omnisharp" },

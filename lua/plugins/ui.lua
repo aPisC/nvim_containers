@@ -1,4 +1,5 @@
 return {
+  {'yaocccc/vim-showmarks'},
   {
     'rcarriga/nvim-notify',
     opts = {},
@@ -111,14 +112,16 @@ return {
           },
           group_empty_dirs = true,
           filtered_items = {
-            hide_dotfiles = true,
+            visible = false,
+            hide_dotfiles = false,
+            hide_gitignored = true,
             always_show = {
-              ".gitignore",
               ".vscode",
-              ".github",
-              ".env",
-              ".env.*",
             },
+            hide_by_pattern =  {
+              ".bsp",
+              ".git",
+            }
           },
           window = {
             mappings = {
@@ -160,6 +163,7 @@ return {
       local lsp_icons = {
         copilot = " ",
         tsserver = " ",
+        ["typescript-tools"] = " ",
         emmet_ls = " ",
         metals = " ",
         omnisharp = "󰌛 ",

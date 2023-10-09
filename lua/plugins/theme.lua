@@ -61,8 +61,8 @@ return {
     "levouh/tint.nvim",
     enabled = true,
     opts = {
-      tint = -10,
-      tint_background_colors = true,
+      tint = -40,
+      tint_background_colors = false,
       -- highlight_ignore_patterns = { "WinSeparator", "Status.*"},
       window_ignore_function = function(winid)
         local bufid = vim.api.nvim_win_get_buf(winid)
@@ -72,7 +72,8 @@ return {
 
         -- Do not tint `terminal` or floating windows, tint everything else
         -- vim.notify("filetype: " .. filetype)
-        return buftype == "terminal" or floating or filetype == "neo-tree"
+
+        return buftype == "terminal" or buftype == "nofile" or floating or filetype == "neo-tree"
       end
     }
   },

@@ -8,7 +8,7 @@ vim.keymap.set({'n'}, '<A-right>', '<C-i>')
 vim.keymap.set({'n'}, '<C-t>', ':tabnew<CR>')
 
 
-vim.keymap.set('n', '<C-b>', function() vim.cmd"Neotree action=show toggle" end )
+vim.keymap.set('n', '<C-b>', function() vim.cmd"Neotree action=focus toggle" end )
 vim.keymap.set({'n', 'i'     }, '<C-s>', function()
   local tries = 0
   while tries < 10 and vim.api.nvim_get_mode().mode == "i" do
@@ -26,6 +26,7 @@ vim.keymap.set({'n', 'i', 't', 'v'}, '<C-q>', function()
   end
 end)
 vim.keymap.set({          't'}, '<c-w>', '<C-\\><c-n>')
+-- vim.keymap.set({          't'}, '<esc>', '<C-\\><c-n>')
 vim.keymap.set({'n'          }, '<C-d>', '<C-d>zz')
 vim.keymap.set({'n'          }, '<C-u>', '<C-u>zz')
 vim.keymap.set({'n'          }, '<C-o>', '<C-o>zz')

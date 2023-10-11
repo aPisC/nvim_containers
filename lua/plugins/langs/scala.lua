@@ -37,11 +37,14 @@ return {
         opts
       )
 
+      require("metals").config = metals_config
+
       -- Start metals
       vim.api.nvim_create_autocmd("FileType", {
         pattern = { "scala", "sbt", "java" },
         callback = function()
-          require("metals").initialize_or_attach(metals_config)
+          local config = require("metals").config
+          require("metals").initialize_or_attach(config)
         end,
         group = metals_au_group,
       })

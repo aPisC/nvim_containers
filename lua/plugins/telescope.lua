@@ -14,6 +14,9 @@ return {
       { "<C-g>S", function() vim.cmd"Telescope lsp_workspace_symbols" end },
     },
     opts = function() return {
+      defaults = {
+        path_display = { "smart" },
+      },
       extensions = {
         ["ui-select"] = {
           require ("telescope.themes").get_dropdown {}

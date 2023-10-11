@@ -105,7 +105,7 @@ return {
     'akinsho/toggleterm.nvim',
     opts = {
       start_in_insert = true,
-      size = 5,
+      size = 10,
     }
   },
   {

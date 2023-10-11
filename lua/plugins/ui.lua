@@ -54,7 +54,7 @@ return {
             autoselect_one = true,
             -- filter using buffer options
             bo = {
-              filetype = { 'neo-tree', "neo-tree-popup", "notify" },
+              filetype = { 'neo-tree', "neo-tree-popup", "notify", "Trouble" },
               buftype = { 'terminal', "quickfix" },
             },
             wo = {

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+EDITOR=${1:-base}
+IMAGE=apisc/nvim-$EDITOR
+WDNAME=$(basename $(pwd))
+CONTAINER=nvim-$EDITOR-$WDNAME-$(pwd | md5sum | cut -d " " -f1)
+
+if ! docker container inspect $CONTAINER > /dev/null 2>&1 ; then
+  docker run \
+    -d \
+    -v $(pwd):/workspace \
+    -e DISPLAY \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    --name $CONTAINER \
+    $IMAGE 
+fi
+
+docker start $CONTAINER
+
+shift
+docker exec -it $CONTAINER vim $@
+
+docker stop -t 0 $CONTAINER > /dev/null 2>&1 
+

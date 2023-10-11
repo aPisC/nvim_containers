@@ -1,0 +1,12 @@
+#!/bin/bash
+
+WDNAME=$(basename $(pwd))
+COMPOSE=nvim-compose-$WDNAME-$(pwd | md5sum | cut -d " " -f1)
+CONTAINER=nvim-1
+
+docker compose -f .vscode/docker-compose.yaml -p $COMPOSE up -d
+
+docker exec -it $COMPOSE-$CONTAINER vim $@
+
+docker compose -f .vscode/docker-compose.yaml -p $COMPOSE stop &
+

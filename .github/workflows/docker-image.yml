@@ -31,21 +31,21 @@ jobs:
             -t ${{ secrets.DOCKER_USERNAME }}/nvim-dotnet:$DOCKER_TAG \
             -t ${{ secrets.DOCKER_USERNAME }}/nvim-dotnet:latest \
             -t nvim-dotnet .
-          docker build \
-            -f container/latex/Dockerfile \
-            -t ${{ secrets.DOCKER_USERNAME }}/nvim-latex:$DOCKER_TAG \
-            -t ${{ secrets.DOCKER_USERNAME }}/nvim-latex:latest \
-            -t nvim-latex .
-          docker build \
-            -f container/coq/Dockerfile \
-            -t ${{ secrets.DOCKER_USERNAME }}/nvim-coq:$DOCKER_TAG \
-            -t ${{ secrets.DOCKER_USERNAME }}/nvim-coq:latest \
-            -t nvim-coq .
+          # docker build \
+          #   -f container/latex/Dockerfile \
+          #   -t ${{ secrets.DOCKER_USERNAME }}/nvim-latex:$DOCKER_TAG \
+          #   -t ${{ secrets.DOCKER_USERNAME }}/nvim-latex:latest \
+          #   -t nvim-latex .
+          # docker build \
+          #   -f container/coq/Dockerfile \
+          #   -t ${{ secrets.DOCKER_USERNAME }}/nvim-coq:$DOCKER_TAG \
+          #   -t ${{ secrets.DOCKER_USERNAME }}/nvim-coq:latest \
+          #   -t nvim-coq .
 
       - name: Push Docker image
         run: |
           DOCKER_TAG=$(echo ${{ github.ref }} | sed 's/^refs\/tags\///')
           docker push -a ${{ secrets.DOCKER_USERNAME }}/nvim-base
           docker push -a ${{ secrets.DOCKER_USERNAME }}/nvim-dotnet
-          docker push -a ${{ secrets.DOCKER_USERNAME }}/nvim-latex
-          docker push -a ${{ secrets.DOCKER_USERNAME }}/nvim-coq
+          # docker push -a ${{ secrets.DOCKER_USERNAME }}/nvim-latex
+          # docker push -a ${{ secrets.DOCKER_USERNAME }}/nvim-coq

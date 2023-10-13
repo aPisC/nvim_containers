@@ -113,3 +113,6 @@ vim.keymap.set({'n',      'v'}, 'á', "'", {remap=true})
 vim.keymap.set({'n',      'v'}, 'Á', '"', {remap=true})
 vim.keymap.set({'n',      'v'}, 'ű', "\\", {remap=true})
 vim.keymap.set({'n',      'v'}, 'Ű', '|', {remap=true})
+
+-- Format
+vim.keymap.set({'n', 'v', 'i'}, '<C-f>', function() vim.cmd("Format") end)

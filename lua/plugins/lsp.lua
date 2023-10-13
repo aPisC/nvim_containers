@@ -239,25 +239,28 @@ return {
 
       -- Configure autoformat
       local autoformatgroup = vim.api.nvim_create_augroup("Autoformat", {})
-      for ft, autoformat in pairs(opts.autoformat) do
-        if type(autoformat) == "function" then
-          vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-            pattern = { "*." .. ft },
-            group = autoformatgroup,
-            callback = function()
-              if autoformat() then
-                vim.cmd("FormatWrite")
-              end
-            end
-          })
-        elseif autoformat then
-          vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-            pattern = { "*." .. ft },
-            group = autoformatgroup,
-            command = "FormatWrite",
-          })
-        end
-      end
+      -- for ft, autoformat in pairs(opts.autoformat) do
+      --   if type(autoformat) == "function" then
+      --     vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+      --       pattern = { "*." .. ft },
+      --       group = autoformatgroup,
+      --       callback = function()
+      --         if autoformat() then
+      --           vim.cmd("FormatWrite")
+      --         end
+      --       end
+      --     })
+      --   elseif autoformat then
+      --     vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+      --       pattern = { "*." .. ft },
+      --       group = autoformatgroup,
+      --       callback = function()
+      --         print("Formatting")
+      --         vim.cmd("FormatWrite")
+      --       end
+      --     })
+      --   end
+      -- end
     end,
   },
   {

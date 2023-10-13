@@ -53,6 +53,7 @@ return function(system_dist_config)
       {import="plugins.hydra"},
       {import="plugins.lsp"},
       {import="plugins.copilot", enabled = dist_config.copilot},
+      {import="plugins.langs.csharp", enabled = dist_config.csharp},
       {import="plugins.langs.emmet", enabled = dist_config.emmet},
       {import="plugins.langs.http", enabled = dist_config.http},
       {import="plugins.langs.json", enabled = dist_config.json},

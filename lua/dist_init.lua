@@ -18,17 +18,17 @@ return function(system_dist_config)
 
   -- Configure plugins by dist config
   local default_dist_config = {
-    features = {
-      copilot = false,
-      csharp = false,
-      emmet = false,
-      http = false,
-      json = true,
-      lua = false,
-      scala = false,
-      typescript = false,
-    },
-    plugins = {}
+    -- modules by its name
+    copilot = false,
+    csharp = false,
+    emmet = false,
+    http = false,
+    json = true,
+    lua = false,
+    scala = false,
+    typescript = false,
+
+    -- plugins on indexes
   }
 
   function create_dist_config()
@@ -41,6 +41,9 @@ return function(system_dist_config)
       has_workspace_configs and workspace_configs or {}
     )
 
+    local collected_plugins = {}
+
+
     local config = {
       {import="plugins.editor"},
       {import="plugins.git"},
@@ -49,17 +52,19 @@ return function(system_dist_config)
       {import="plugins.telescope"},
       {import="plugins.hydra"},
       {import="plugins.lsp"},
-      {import="plugins.copilot", enabled = dist_config.features.copilot},
-      {import="plugins.langs.emmet", enabled = dist_config.features.emmet},
-      {import="plugins.langs.http", enabled = dist_config.features.http},
-      {import="plugins.langs.json", enabled = dist_config.features.json},
-      {import="plugins.langs.lua", enabled = dist_config.features.lua},
-      {import="plugins.langs.scala", enabled = dist_config.features.scala},
-      {import="plugins.langs.typescript", enabled = dist_config.features.typescript},
+      {import="plugins.copilot", enabled = dist_config.copilot},
+      {import="plugins.langs.emmet", enabled = dist_config.emmet},
+      {import="plugins.langs.http", enabled = dist_config.http},
+      {import="plugins.langs.json", enabled = dist_config.json},
+      {import="plugins.langs.lua", enabled = dist_config.lua},
+      {import="plugins.langs.scala", enabled = dist_config.scala},
+      {import="plugins.langs.typescript", enabled = dist_config.typescript},
     }
 
-
-    for _, plugin in ipairs(dist_config.plugins) do table.insert(config, plugin) end
+    -- Collect plugins from configs
+    for _, plugin in ipairs(default_dist_config) do table.insert(config, plugin) end
+    for _, plugin in ipairs(system_dist_config) do table.insert(config, plugin) end
+    for _, plugin in ipairs(has_workspace_configs and workspace_configs or {}) do table.insert(config, plugin) end
 
     return config
   end

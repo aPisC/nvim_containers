@@ -4,8 +4,20 @@ return {
   -- LSP
   {
     'scalameta/nvim-metals',
-    opts = function()
-      local capabilities = vim.tbl_deep_extend("force",
+    opts = {
+      -- root_patterns=  {'.git'},
+      settings = {
+        testUserInterface = "Test Explorer",
+        showImplicitArguments = true,
+        showImplicitConversionsAndClasses = true,
+        excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
+        serverVersion = "1.0.1",
+      },
+      init_options = {statusBarProvider = "on"},
+    },
+    config = function(plug, opts)
+      -- Create metals config
+      local metals_capabilities = vim.tbl_deep_extend("force",
         {},
         vim.lsp.protocol.make_client_capabilities(),
         require("cmp_nvim_lsp").default_capabilities(),
@@ -13,38 +25,30 @@ return {
           workspace = {
             configuration = false
           }
+        },
+        opts.capabilities or {}
+      )
+
+      local metals_config = vim.tbl_deep_extend(
+        "force", 
+        require("metals").bare_config(),
+        opts, 
+        {
+          capabilities = capabilities,
+          on_attach = function(client, bufnr) 
+            require("metals").setup_dap() 
+            if type(opts.on_attach) == "function" then
+              opts.on_attach(client, bufnr)
+            end
+          end,
         }
       )
-
-      return {
-        -- root_patterns=  {'.git'},
-        settings = {
-          testUserInterface = "Test Explorer",
-          showImplicitArguments = true,
-          showImplicitConversionsAndClasses = true,
-          excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
-          serverVersion = "1.0.1",
-        },
-        init_options = {statusBarProvider = "on"},
-        capabilities = capabilities,
-        on_attach = function(client, bufnr) require("metals").setup_dap() end,
-      }
-    end,
-    config = function(plug, opts)
-      local metals_config = vim.tbl_deep_extend(
-        "force",
-        require("metals").bare_config(),
-        opts
-      )
-
-      require("metals").config = metals_config
 
       -- Start metals
       vim.api.nvim_create_autocmd("FileType", {
         pattern = { "scala", "sbt", "java" },
         callback = function()
-          local config = require("metals").config
-          require("metals").initialize_or_attach(config)
+          require("metals").initialize_or_attach(metals_config)
         end,
         group = metals_au_group,
       })

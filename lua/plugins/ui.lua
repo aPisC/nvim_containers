@@ -3,7 +3,8 @@ return {
   {
     'rcarriga/nvim-notify',
     opts = {},
-    config = function()
+    config = function(_, opts)
+      require("notify").setup(opts)
       vim.notify = require("notify")
     end
   },
@@ -343,7 +344,7 @@ return {
         thousands = false,
         relculright = true,
         ft_ignore = { "neo-tree" },
-        bt_ignore = nil,
+        bt_ignore = { "terminal" },
         segments = {
           {
             sign = { name = { "GitSigns" }, maxwidth = 1, colwidth=1, auto = false, wrap=true },

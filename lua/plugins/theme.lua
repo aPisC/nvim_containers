@@ -16,32 +16,32 @@ local custom_overrides = {
 }
 
 return {
-  {
-    'folke/tokyonight.nvim',
-    branch = 'main',
-    lazy = true
-  },
+  -- {
+  --   'folke/tokyonight.nvim',
+  --   branch = 'main',
+  --   lazy = true
+  -- },
 
-  {
-    'Everblush/nvim',
-    lazy = true
-  },
-  {
-    'Mofiqul/vscode.nvim',
-    lazy = false,
-    opts = {
-      style = "dark",
-      transparent = false,
-      italic_comments = true,
-      disable_nvimtree_bg = true,
-      group_overrides = custom_overrides,
-    },
-    config = function(plug, opts)
-      local vscode = require('vscode')
-      vscode.setup(opts)
-      vscode.load()
-    end
-  },
+  -- {
+  --   'Everblush/nvim',
+  --   lazy = true
+  -- },
+  -- {
+  --   'Mofiqul/vscode.nvim',
+  --   lazy = false,
+  --   opts = {
+  --     style = "dark",
+  --     transparent = false,
+  --     italic_comments = true,
+  --     disable_nvimtree_bg = true,
+  --     group_overrides = custom_overrides,
+  --   },
+  --   config = function(plug, opts)
+  --     local vscode = require('vscode')
+  --     vscode.setup(opts)
+  --     vscode.load()
+  --   end
+  -- },
   {
     'navarasu/onedark.nvim',
     dependencies = {
@@ -49,6 +49,7 @@ return {
     },
     -- lazy = true,
     opts = {
+      transparent = true,
       style = 'darker',
       highlights = custom_overrides,
     },

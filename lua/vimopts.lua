@@ -14,7 +14,7 @@ vim.opt.termguicolors=true
 vim.opt.clipboard="unnamedplus"
 -- vim.opt.switchbuf="useopen"
 -- vim.opt.verbose = 1
-vim.opt.cmdheight = 1
+vim.opt.cmdheight = 0
 vim.g.python3_host_prog = '/usr/bin/python3'
 
 vim.opt.foldlevel = 20

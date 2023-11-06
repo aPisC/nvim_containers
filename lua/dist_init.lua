@@ -19,6 +19,7 @@ return function(system_dist_config)
   -- Configure plugins by dist config
   local default_dist_config = {
     -- modules by its name
+    db = false,
     copilot = false,
     csharp = false,
     emmet = false,
@@ -53,6 +54,7 @@ return function(system_dist_config)
       {import="plugins.hydra"},
       {import="plugins.lsp"},
       {import="plugins.copilot", enabled = dist_config.copilot},
+      {import="plugins.db", enabled = dist_config.db},
       {import="plugins.langs.csharp", enabled = dist_config.csharp},
       {import="plugins.langs.emmet", enabled = dist_config.emmet},
       {import="plugins.langs.http", enabled = dist_config.http},

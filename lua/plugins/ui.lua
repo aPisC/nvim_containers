@@ -2,7 +2,9 @@ return {
   {'yaocccc/vim-showmarks'},
   {
     'rcarriga/nvim-notify',
-    opts = {},
+    opts = {
+      background_colour = "#000000",
+    },
     config = function(_, opts)
       require("notify").setup(opts)
       vim.notify = require("notify")
@@ -55,7 +57,7 @@ return {
             autoselect_one = true,
             -- filter using buffer options
             bo = {
-              filetype = { 'neo-tree', "neo-tree-popup", "notify", "Trouble" },
+              filetype = { 'neo-tree', "neo-tree-popup", "notify", "Trouble", "dbui", "dbout" },
               buftype = { 'terminal', "quickfix" },
             },
             wo = {

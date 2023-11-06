@@ -7,4 +7,5 @@ require("dist_init")({
     lua = false,
     scala = false,
     typescript =  false,
+    db = true,
 })

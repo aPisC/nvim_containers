@@ -12,7 +12,10 @@ local custom_overrides = {
   CmpGhostText   = { fg='#888888'    },
   CopilotAnnotation = { fg='#888888', link = "CmpGhostText" },
   CopilotSuggestion = { fg='#888888', link = "CmpGhostText" },
-  CursorLine = { bg = '#333333' },
+  -- CursorLine = { bg = '#333333' },
+  VertSplit = { bg = '#282c34', fg='#000000' },
+  NeoTreeVertSplit = { bg = '#282c34', fg='#000000' },
+  NeoTreeWinSeparator = { bg = '#282c34', fg='#000000' },
 }
 
 return {
@@ -74,7 +77,7 @@ return {
         -- Do not tint `terminal` or floating windows, tint everything else
         -- vim.notify("filetype: " .. filetype)
 
-        return buftype == "terminal" or buftype == "nofile" or floating or filetype == "neo-tree"
+        return false -- buftype == "terminal" or buftype == "nofile" or floating or filetype == "neo-tree"
       end
     }
   },

@@ -47,7 +47,7 @@ return {
           }
         },
         mode = 'n',
-        body = '<C-w>',
+        -- body = '<C-w>',
         heads = {
           { 'h', '<C-w>h' },
           { 'j', '<C-w>j' },

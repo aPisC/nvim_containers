@@ -85,7 +85,7 @@ vim.keymap.set({'v'          }, '<A-j>',  ":m '>+1<CR>gv=gv")
 vim.keymap.set({'v'          }, '<A-up>', ":m '<-2<CR>gv=gv")
 vim.keymap.set({'v'          }, '<A-k>',  ":m '<-2<CR>gv=gv")
 
-vim.keymap.set('',              '<esc>', ':noh <cr>', {remap = true})
+vim.keymap.set({'n',         },              '<esc>', ':noh <cr>', {remap = true})
 
 -- Select mode wrap
 vim.keymap.set('s', '"', '"<C-r>""')

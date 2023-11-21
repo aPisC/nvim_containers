@@ -1,10 +1,24 @@
+local SymbolKind = vim.lsp.protocol.SymbolKind
+
 return {
   {
     -- LSP config
     'neovim/nvim-lspconfig',
+    dependencies = {
+        -- { "jubnzv/virtual-types.nvim" },
+        { 'ray-x/lsp_signature.nvim' }
+    },
     opts = {
       servers = {},
-      capabilities = {},
+      capabilities = {
+        -- use_virtual_types = true, -- Czzustom flag for auto attaching virtual types
+        signature_help = {
+          enable = true,
+          bind = true, -- This is mandatory, otherwise border config won't get registered.
+          handler_opts = { border = "rounded" },
+          hint_enable = false,
+        },
+      },
     },
     config = function(plug, opts)
       local lspconfig = require("lspconfig")
@@ -16,9 +30,20 @@ return {
           opts.capabilities,
           server_config.capabilities or {}
         )
+
+        local on_attach = function(client, bufnr)
+          if server_config.on_attach then server_config.on_attach(client, bufnr) end
+          if capabilities.signature_help.enable then
+            require("lsp_signature").on_attach(capabilities.signature_help, bufnr)
+          end
+          -- if capabilities.use_virtual_types then
+            -- require("virtual-types").on_attach(client, bufnr)
+          -- end
+        end
+
         if server_config.lspDefaultCapabilities == false then capabilities = server_config.capabilities end
 
-        local config = vim.tbl_deep_extend("force", {}, server_config, { capabilities = capabilities })
+        local config = vim.tbl_deep_extend("force", {}, server_config, { capabilities = capabilities, on_attach = on_attach })
         lspconfig[server].setup(config)
       end
 
@@ -33,6 +58,7 @@ return {
       -- end
       vim.keymap.set('n', 'K', vim.lsp.buf.hover)
       vim.keymap.set('n', '<C-g>e', vim.diagnostic.goto_next)
+      vim.keymap.set('i', '<C-?>', function() vim.lsp.buf.signature_help() end, { silent = true, noremap = true, desc = 'toggle signature' })
 
 
       -- show diagnostic on CursorHold
@@ -53,6 +79,21 @@ return {
         update_in_insert = true,
       })
     end
+  },
+  { 
+    'VidocqH/lsp-lens.nvim',
+    opts = {
+      enable = true,  
+      include_declaration = false,     
+      sections = {                      -- Enable / Disable specific request, formatter example looks 'Format Requests'
+        definition = false,
+        references = true,
+        implements = false,
+        git_authors = true,
+      },
+      target_symbol_kinds = { SymbolKind.Function, SymbolKind.Method, SymbolKind.Interface, SymbolKind.Module, SymbolKind.Class, SymbolKind.Struct, SymbolKind.Enum, SymbolKind.Interface },
+      wrapper_symbol_kinds = { SymbolKind.Class, SymbolKind.Struct, SymbolKind.Package, SymbolKind.Module, SymbolKind.Namespace }
+    }
   },
   {
     'kosayoda/nvim-lightbulb',

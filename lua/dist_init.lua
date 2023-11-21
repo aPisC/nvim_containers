@@ -28,6 +28,8 @@ return function(system_dist_config)
     lua = false,
     scala = false,
     typescript = false,
+    python = false,
+    tailwind = false,
 
     -- plugins on indexes
   }
@@ -62,6 +64,8 @@ return function(system_dist_config)
       {import="plugins.langs.lua", enabled = dist_config.lua},
       {import="plugins.langs.scala", enabled = dist_config.scala},
       {import="plugins.langs.typescript", enabled = dist_config.typescript},
+      {import="plugins.langs.python", enabled = dist_config.python},
+      {import="plugins.langs.tailwind", enabled = dist_config.tailwind},
     }
 
     -- Collect plugins from configs

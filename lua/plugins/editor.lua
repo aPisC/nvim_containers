@@ -104,8 +104,12 @@ return {
   {
     'akinsho/toggleterm.nvim',
     opts = {
-      start_in_insert = true,
       size = 10,
+      start_in_insert = false,
+      direction="horizontal",
+      winbar = {
+        enable = true,
+      }
     }
   },
   {

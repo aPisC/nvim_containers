@@ -5,15 +5,32 @@ return {
     -- LSP config
     'neovim/nvim-lspconfig',
     dependencies = {
-        -- { "jubnzv/virtual-types.nvim" },
-        { 'ray-x/lsp_signature.nvim' }
+      {
+        'mrjones2014/legendary.nvim',
+        opts = {
+          ["nvim-lspconfig"] = {
+            keymaps = {
+               {'<F12>',  {n=":Telescope lsp_definitions<CR>"}, description="LSP Show definitions" },
+               {'<F24>',  {n=":Telescope lsp_references<CR>"}, description="LSP Show references" },
+               {'gd',     {n=":Telescope lsp_definitions<CR>"}, description="", hide=true },
+               {'gr',     {n=":Telescope lsp_references<CR>"}, description="", hide=true },
+               {'gi',     {n=":Telescope lsp_implementations<CR>"}, description="LSP Show implementations" },
+               {'<F2>',   {n=vim.lsp.buf.rename}, description="LSP Rename symbol" },
+               {'<M-CR>', {n=vim.lsp.buf.code_action }, description="LSP Code actions" },
+               {'K',      {n=vim.lsp.buf.hover}, description="LSP Hover" },
+               {'<C-g>e', {n=vim.diagnostic.goto_next}, description="LSP Next diagnostic" },
+               {'<C-?>',  {i=vim.lsp.buf.signature_help}, description="LSP Signature help" },
+            }
+          }
+        }
+      },
     },
     opts = {
       servers = {},
       capabilities = {
         -- use_virtual_types = true, -- Czzustom flag for auto attaching virtual types
         signature_help = {
-          enable = true,
+          enable = false,
           bind = true, -- This is mandatory, otherwise border config won't get registered.
           handler_opts = { border = "rounded" },
           hint_enable = false,
@@ -22,11 +39,14 @@ return {
     },
     config = function(plug, opts)
       local lspconfig = require("lspconfig")
+      local has_cmp_nvim_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+
+
       for server, server_config in pairs(opts.servers) do
         local capabilities = vim.tbl_deep_extend( "force",
           {},
           vim.lsp.protocol.make_client_capabilities(),
-          require("cmp_nvim_lsp").default_capabilities(),
+          has_cmp_nvim_lsp and cmp_nvim_lsp.default_capabilities() or {},
           opts.capabilities,
           server_config.capabilities or {}
         )
@@ -47,20 +67,6 @@ return {
         lspconfig[server].setup(config)
       end
 
-      vim.keymap.set('n', '<F12>', function() vim.cmd("Telescope lsp_definitions") end)
-      vim.keymap.set('n', '<F24>', function() vim.cmd("Telescope lsp_references") end)
-      vim.keymap.set('n', 'gd', function() vim.cmd("Telescope lsp_definitions") end)
-      vim.keymap.set('n', 'gr', function() vim.cmd("Telescope lsp_references") end)
-      vim.keymap.set('n', 'gi', function() vim.cmd("Telescope lsp_implementations") end)
-      vim.keymap.set('n', '<F2>', vim.lsp.buf.rename)
-      -- if not vim.fn.mapcheck("<M-CR>", "n") then
-        vim.keymap.set('n', '<M-CR>', vim.lsp.buf.code_action )
-      -- end
-      vim.keymap.set('n', 'K', vim.lsp.buf.hover)
-      vim.keymap.set('n', '<C-g>e', vim.diagnostic.goto_next)
-      vim.keymap.set('i', '<C-?>', function() vim.lsp.buf.signature_help() end, { silent = true, noremap = true, desc = 'toggle signature' })
-
-
       -- show diagnostic on CursorHold
       local augrp = vim.api.nvim_create_augroup("LspCursorHold", {})
       vim.api.nvim_create_autocmd("CursorHold", {
@@ -80,21 +86,21 @@ return {
       })
     end
   },
-  { 
-    'VidocqH/lsp-lens.nvim',
-    opts = {
-      enable = true,  
-      include_declaration = false,     
-      sections = {                      -- Enable / Disable specific request, formatter example looks 'Format Requests'
-        definition = false,
-        references = true,
-        implements = false,
-        git_authors = true,
-      },
-      target_symbol_kinds = { SymbolKind.Function, SymbolKind.Method, SymbolKind.Interface, SymbolKind.Module, SymbolKind.Class, SymbolKind.Struct, SymbolKind.Enum, SymbolKind.Interface },
-      wrapper_symbol_kinds = { SymbolKind.Class, SymbolKind.Struct, SymbolKind.Package, SymbolKind.Module, SymbolKind.Namespace }
-    }
-  },
+  -- { 
+  --   'VidocqH/lsp-lens.nvim',
+  --   enabled = false,  
+  --   opts = {
+  --     include_declaration = false,     
+  --     sections = {                      -- Enable / Disable specific request, formatter example looks 'Format Requests'
+  --       definition = false,
+  --       references = true,
+  --       implements = false,
+  --       git_authors = true,
+  --     },
+  --     target_symbol_kinds = { SymbolKind.Function, SymbolKind.Method, SymbolKind.Interface, SymbolKind.Module, SymbolKind.Class, SymbolKind.Struct, SymbolKind.Enum, SymbolKind.Interface },
+  --     wrapper_symbol_kinds = { SymbolKind.Class, SymbolKind.Struct, SymbolKind.Package, SymbolKind.Module, SymbolKind.Namespace }
+  --   }
+  -- },
   {
     'kosayoda/nvim-lightbulb',
     enabled=false,
@@ -358,8 +364,8 @@ return {
     opts = function()
       local cmp = require("cmp")
       local copilot_suggestions_available, copilot_suggestions = pcall(require, "copilot.suggestion")
-      local luasnip = require("luasnip")
-      local lspkind = require("lspkind")
+      local has_luasnip, luasnip = pcall(require, "luasnip")
+      local has_lspkind, lspkind = pcall(require, "lspkind")
 
       return {
         experimental = { ghost_text = { hl_group = "CmpGhostText" } },
@@ -372,21 +378,21 @@ return {
         },
         snippet = {
           expand = function(args)
-            require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+            if has_luasnip then luasnip.lsp_expand(args.body) end
           end,
         },
         sources = cmp.config.sources(
           {
             { name = 'nvim_lsp_signature_help', priority = 200 },
             { name = 'nvim_lsp', priority = 100 },
-            { name = 'luasnip', priority=1 },
+            has_luasnip and { name = 'luasnip', priority=1 } or nil,
           },
           {
             { name = 'calc' },
             { name = 'buffer' },
           }
         ),
-        formatting = {
+        formatting = has_lspkind and {
           format = lspkind.cmp_format({
             mode = "symbol",
             maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
@@ -396,7 +402,7 @@ return {
               TypeParameter = "󰬛",
             }
           })
-        },
+        } or nil,
         sorting = {
           priority_weight = 2,
           comparators = {

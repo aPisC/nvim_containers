@@ -170,14 +170,17 @@ return {
         emmet_ls = " ",
         metals = " ",
         omnisharp = "󰌛 ",
+        tailwind = "󱏿 ",
+        lua = " ",
       }
 
       local function lsp_client()
+        local has_dap, dap = pcall(require, dap)
         local buf_clients = vim.lsp.buf_get_clients()
 
         local buf_client_names = {}
 
-        if (require"dap".session() ~= nil) then
+        if has_dap and dap.session() ~= nil then
           table.insert(buf_client_names, " ")
         end
 
@@ -220,7 +223,7 @@ return {
         return table.concat(status, "  ") .. " " .. spinners[frame + 1]
       end
 
-      local git_blame = require('gitblame')
+      local has_git_blame,  git_blame = pcall(require, 'gitblame')
 
       local config = {
         options = {
@@ -250,9 +253,9 @@ return {
           lualine_c = {
             -- 'filename',
             {
-              git_blame.get_current_blame_text,
+              has_git_blame and git_blame.get_current_blame_text or function() end,
               cond = function()
-                return vim.g.gitblame_enabled == 1 and git_blame.is_blame_text_available()
+                return has_git_blame and vim.g.gitblame_enabled == 1 and git_blame.is_blame_text_available()
               end
             },
             { lsp_progress },

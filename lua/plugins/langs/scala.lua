@@ -4,6 +4,7 @@ return {
   -- LSP
   {
     'scalameta/nvim-metals',
+    dependencies = { { 'nvim-lua/plenary.nvim' } },
     opts = {
       -- root_patterns=  {'.git'},
       settings = {
@@ -16,11 +17,15 @@ return {
       init_options = {statusBarProvider = "on"},
     },
     config = function(plug, opts)
+      local has_cmp_nvim_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+      local has_dap, dap = pcall(require, "dap")
+
+
       -- Create metals config
       local metals_capabilities = vim.tbl_deep_extend("force",
         {},
         vim.lsp.protocol.make_client_capabilities(),
-        require("cmp_nvim_lsp").default_capabilities(),
+        has_cmp_nvim_lsp and cmp_nvim_lsp.default_capabilities() or {},
         {
           workspace = {
             configuration = false
@@ -36,7 +41,9 @@ return {
         {
           capabilities = capabilities,
           on_attach = function(client, bufnr) 
-            require("metals").setup_dap() 
+            if has_dap then
+              require("metals").setup_dap() 
+            end
             if type(opts.on_attach) == "function" then
               opts.on_attach(client, bufnr)
             end
@@ -54,16 +61,18 @@ return {
       })
 
       -- dap config
-      require("dap").configurations.scala = {
-        {
-          type = "scala",
-          request = "launch",
-          name = "Run or Test Target",
-          metals = {
-            runType = "runOrTestFile",
-          },
+      if has_dap then
+        dap.configurations.scala = {
+          {
+            type = "scala",
+            request = "launch",
+            name = "Run or Test Target",
+            metals = {
+              runType = "runOrTestFile",
+            },
+          }
         }
-      }
+      end
     end,
   },
 

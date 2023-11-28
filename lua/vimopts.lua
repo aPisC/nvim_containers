@@ -28,4 +28,4 @@ vim.opt.fcs = {
 -- vim.opt.signcolumn = "auto:2-5"
 vim.opt.equalalways = false
 vim.opt.shell="/bin/bash"
-
+vim.noswapfile = true

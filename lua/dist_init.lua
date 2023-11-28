@@ -48,6 +48,7 @@ return function(system_dist_config)
 
 
     local config = {
+      {import="plugins.keymaps"},
       {import="plugins.editor"},
       {import="plugins.git"},
       {import="plugins.ui"},
@@ -55,6 +56,7 @@ return function(system_dist_config)
       {import="plugins.telescope"},
       {import="plugins.hydra"},
       {import="plugins.lsp"},
+
       {import="plugins.copilot", enabled = dist_config.copilot},
       {import="plugins.db", enabled = dist_config.db},
       {import="plugins.langs.csharp", enabled = dist_config.csharp},

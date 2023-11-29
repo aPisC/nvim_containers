@@ -14,7 +14,18 @@ return {
     }
   },
   {'tpope/vim-sensible'},
-  {'tpope/vim-commentary'},
+  {
+    'tpope/vim-commentary', 
+    opts = {
+      commentstring = { }
+    },
+    config = function(_, opts)
+      local augroup = vim.api.nvim_create_augroup("commentary-filetypes", { clear = true })
+      for filetype, cs in pairs(opts.commentstring) do
+        vim.api.nvim_create_autocmd({"Filetype"}, {pattern = {filetype}, callback=function() vim.bo.commentstring = cs end })
+      end
+    end
+  },
   {
     "kylechui/nvim-surround",
     event = "VeryLazy",
@@ -49,7 +60,11 @@ return {
   {
     'junegunn/fzf',
     dependencies = {{'junegunn/fzf.vim'}},
-    build = function() vim.fn['fzf#install']() end
+    build = function() vim.fn['fzf#install']() end,
+    event = "VeryLazy",
+    keys = {
+      {"<C-f>", "\"zy:Ag <C-r>z<CR>", mode="v"}
+    },
   },
   {
     'm4xshen/autoclose.nvim',
@@ -104,6 +119,9 @@ return {
   },
   {
     'akinsho/toggleterm.nvim',
+    dependencies = {
+      'tknightz/telescope-termfinder.nvim',
+    }, 
     opts = {
       size = 10,
       start_in_insert = false,
@@ -111,7 +129,16 @@ return {
       winbar = {
         enable = true,
       }
-    }
+    },
+    config = function(_, opts)
+      require("toggleterm").setup(opts)
+      local has_telescope, telescope = pcall(require, "telescope")
+      if has_telescope then
+        telescope.load_extension("termfinder")
+        vim.keymap.set("n", "<C-g>T", function() vim.cmd("Telescope termfinder find") end)
+      end
+    end
+
   },
   {
     "folke/flash.nvim",

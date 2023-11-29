@@ -1,3 +1,6 @@
+-- Search and replace
+vim.keymap.set({'v'}, '/', '\"zy/<C-r>z<CR>')
+vim.keymap.set({'v'}, '<C-h>', '\"zy:%s/<C-r>z/')
 
 vim.keymap.set({'n', 'i', 't'}, "<C-g>b", function() vim.cmd("Telescope toggletasks spawn") end)
 vim.keymap.set({'n', 'i', 't'}, "<C-g>B", function() vim.cmd("Telescope toggletasks select") end)

@@ -7,11 +7,19 @@ return {
       opts.filetype.typescriptreact =
         { require"formatter.filetypes.typescriptreact".prettierd }
 
-      opts.autoformat["ts"] = true
-      opts.autoformat["tsx"] = true
+      -- opts.autoformat["ts"] = true
+      -- opts.autoformat["tsx"] = true
 
       return opts
     end
+  },
+  {
+    'tpope/vim-commentary', 
+    opts = {
+      commentstring = {
+        typescriptreact='{/* %s */}'
+      }
+    }
   },
   {
     "pmizio/typescript-tools.nvim",

@@ -17,7 +17,7 @@ return {
   {
     'mhartington/formatter.nvim',
     opts = function(_, opts)
-      opts.autoformat["lua"] = true
+      -- opts.autoformat["lua"] = true
       opts.filetype["lua"] = {
         {
           exe = "stylua"

@@ -36,6 +36,11 @@ return {
         end,
         ["."] = false,
       },
+      server_opts_overrides = {
+        handlers = {
+          ["metals/findTextInDependencyJars"] = function() end,
+        },
+      },
     },
   },
   {

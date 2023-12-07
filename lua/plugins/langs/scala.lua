@@ -15,7 +15,7 @@ return {
         showImplicitArguments = true,
         showImplicitConversionsAndClasses = true,
         excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
-        serverVersion = "1.0.1",
+        serverVersion = "1.1.0",
         superMethodLensesEnabled = true,
       },
       init_options = {statusBarProvider = "on"},

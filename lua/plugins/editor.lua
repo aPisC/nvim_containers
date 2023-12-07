@@ -9,6 +9,7 @@ return {
   {
     'folke/trouble.nvim',
     opts = { },
+    event = "VeryLazy",
     keys = {
       {'<C-g>E', function() vim.cmd('TroubleToggle') end},
     }

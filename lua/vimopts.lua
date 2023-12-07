@@ -29,3 +29,6 @@ vim.opt.fcs = {
 vim.opt.equalalways = false
 vim.opt.shell="/bin/bash"
 vim.noswapfile = true
+
+vim.opt.splitkeep = "screen"
+vim.opt.laststatus = 3

@@ -16,6 +16,7 @@ local custom_overrides = {
   VertSplit = { bg = '#282c34', fg='#000000' },
   NeoTreeVertSplit = { bg = '#282c34', fg='#000000' },
   NeoTreeWinSeparator = { bg = '#282c34', fg='#000000' },
+  OverseerTaskBorder = { bg = 'transparent', fg='#888888' },
 }
 
 return {

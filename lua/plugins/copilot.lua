@@ -7,17 +7,11 @@ return {
       suggestion = {
         enabled = true,
         auto_trigger=true,
-        keymap = {
-          accept_line = false,
-          accept= "<M-CR>",
-        }
-      },
+        keymap = false,
+     },
       panel = {
         enabled = false,
-        layout = {
-          position = "right",
-          ratio = 0.5
-        },
+        auto_refresh = true,
       },
       filetypes = {
         yaml = false,
@@ -56,18 +50,11 @@ return {
     },
     priority=60,
     opts = function(plug, opts)
-      -- table.insert(opts.sources, {
-      --   name = "copilot",
-      --   group_index = 1,
-      --   priority = 1000,
-      -- })
-
-      table.insert(
-        opts.sorting.comparators,
-        1,
-        require("copilot_cmp.comparators").prioritize
-      )
-
+      table.insert(opts.sources, {
+        name = "copilot",
+        group_index = 1,
+        priority = 1000,
+      })
       return opts
     end,
   }

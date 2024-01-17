@@ -56,6 +56,7 @@ return function(system_dist_config)
       {import="plugins.telescope"},
       {import="plugins.hydra"},
       {import="plugins.lsp"},
+      {import="plugins.overseer"},
 
       {import="plugins.copilot", enabled = dist_config.copilot},
       {import="plugins.db", enabled = dist_config.db},
@@ -105,4 +106,6 @@ return function(system_dist_config)
     local has_dap, dap = pcall(require, "dap.ext.vscode")
     if has_dap then dap.load_launchjs(vscodeLaunchFile) end
   end
+
+  vim.api.nvim_create_user_command("Notes", function() vim.cmd":e .vscode/notes.md" end, {})
 end

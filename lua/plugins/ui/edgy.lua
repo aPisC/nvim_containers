@@ -80,6 +80,14 @@ return {
         --   open = "Neotree position=top buffers",
         -- },
         {
+          title = "Overseer",
+          ft="OverseerList",
+          pinned = true,
+          open = function()
+            require("overseer").open()
+          end,
+        },
+        {
           title = "Tests",
           ft = "neotest-summary",
           pinned = true,
@@ -87,13 +95,13 @@ return {
             require("neotest").summary.open()
           end,
         },
-        { 
-          ft = "qf", 
-          title = "Quickfix", 
-          pinned=true, 
-          open = "copen",
+        -- { 
+        --   ft = "qf", 
+        --   title = "Quickfix", 
+        --   pinned=true, 
+        --   open = "copen",
 
-        },
+        -- },
           
 
 

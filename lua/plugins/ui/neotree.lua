@@ -29,6 +29,7 @@ return {
             "dapui_breakpoints",
             "dapui_stacks",
             "dapui_watches",
+            "OverseerList"
           },
           buftype = { 'terminal', "quickfix" },
         },

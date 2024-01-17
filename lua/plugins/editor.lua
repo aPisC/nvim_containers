@@ -5,6 +5,7 @@ return {
   --     {"<C-s>", function() vim.cmd"w" end }
   --   },
   -- },
+  {'AndrewRadev/tagalong.vim'},
   {'mbbill/undotree'},
   {
     'folke/trouble.nvim',
@@ -101,7 +102,8 @@ return {
             "sql",
             "neo-tree",
             "sbt",
-
+            "OverseerForm",
+            "OverseerList",
           }, filetype)
         then return false end
 
@@ -242,9 +244,9 @@ return {
             open_smart = '<C-a>',
             open_all = '<M-a>',
             open_selected = nil,
-            kill_smart = '<C-q>',
+            kill_smart = '<C-Q>',
             kill_all = '<M-q>',
-            kill_selected = nil,
+            kill_selected = '<C-q>',
             respawn_smart = '<C-s>',
             respawn_all = '<M-s>',
             respawn_selected = nil,

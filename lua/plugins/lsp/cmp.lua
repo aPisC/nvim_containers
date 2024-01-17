@@ -1,3 +1,10 @@
+local has_words_before = function()
+  unpack = unpack or table.unpack
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
+
 return {
   {
     -- Completion
@@ -11,6 +18,7 @@ return {
       {'hrsh7th/cmp-path'},
       {'hrsh7th/cmp-cmdline'},
       {'onsails/lspkind.nvim'},
+      {"hrsh7th/cmp-emoji"},
     },
     opts = function()
       local cmp = require("cmp")
@@ -25,7 +33,7 @@ return {
           autocomplete = { require('cmp.types').cmp.TriggerEvent.TextChanged },
           keyword_length = 2,
           keyword_pattern = [[\%(-\?\d\+\%(\.\d\+\)\?\|\h\w*\%(-\w*\)*\)]],
-          -- completeopt = 'menu,preview,noinsert', a
+          -- completeopt = 'menu,preview,noinsert,noselect',
         },
         snippet = {
           expand = function(args)
@@ -43,10 +51,11 @@ return {
             --   return require('cmp.types').lsp.CompletionItemKind[entry:get_kind()] ~= 'Snippet'
             -- end
           },
+          { name = 'emoji' },
           has_luasnip and { name = 'luasnip', priority=150 } or nil,
-
         },
         {
+          { name = 'emoji' },
           { name = 'calc' },
           { name = 'buffer' },
         }
@@ -62,35 +71,54 @@ return {
             }
           })
         } or nil,
-        sorting = {
-          priority_weight = 2,
-          comparators = {
-            cmp.config.compare.offset,
-            -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
-            cmp.config.compare.exact,
-            cmp.config.compare.score,
-            cmp.config.compare.recently_used,
-            cmp.config.compare.locality,
-            cmp.config.compare.kind,
-            cmp.config.compare.sort_text,
-            cmp.config.compare.length,
-            cmp.config.compare.order,
-          },
-        },
+        -- sorting = {
+        --   priority_weight = 2,
+        --   comparators = {
+        --     cmp.config.compare.offset,
+        --     -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
+        --     cmp.config.compare.exact,
+        --     cmp.config.compare.score,
+        --     cmp.config.compare.recently_used,
+        --     cmp.config.compare.locality,
+        --     cmp.config.compare.kind,
+        --     cmp.config.compare.sort_text,
+        --     cmp.config.compare.length,
+        --     cmp.config.compare.order,
+        --   },
+        -- },
         mapping = cmp.mapping.preset.insert({
           ['<C-d>'] = cmp.mapping.scroll_docs(4),
           ['<C-u>'] = cmp.mapping.scroll_docs(-4),
-          ["<CR>"] = cmp.mapping.confirm({ select = false }),
+          ["<CR>"] = cmp.mapping(function(fallback)
+            if cmp.visible() and has_words_before() and cmp.get_selected_entry() ~=nil then
+              cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
+            else
+              fallback()
+            end
+          end),
           ["<Tab>"] = cmp.mapping(function(fallback)
-            if copilot_suggestions_available and copilot_suggestions.is_visible() then
-              copilot_suggestions.accept_word()
-            elseif luasnip.expand_or_jumpable() then
+            if false then
+            elseif cmp.visible() and cmp.get_selected_entry() ~= nil then
+              cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
+            elseif copilot_suggestions_available and copilot_suggestions.is_visible() then
+              copilot_suggestions.accept()
+            elseif cmp.visible() and has_words_before() then
+              cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
+            elseif luasnip.expand_or_locally_jumpable() then
               luasnip.expand_or_jump()
-            elseif cmp.visible() then
-              cmp.select_next_item()
-              -- elseif vim.fn["vsnip#available"]() == 1 and get_current_line():match("^[%s%a]*$") ~= nil then
-              -- elseif has_words_before() then
-              --   cmp.complete()
+            elseif has_words_before() then
+              cmp.complete()
+            else
+              fallback()
+            end
+          end, {'i', 's'}),
+          ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
+            elseif copilot_suggestions_available and copilot_suggestions.is_visible() then
+              copilot_suggestions.accept_line()
+            elseif luasnip.jumpable(-1) then
+              luasnip.jump(-1)
             else
               fallback()
             end
@@ -104,17 +132,6 @@ return {
               fallback()
             end
           end,
-          ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if copilot_suggestions_available and copilot_suggestions.is_visible() then
-              copilot_suggestions.accept_line()
-            elseif luasnip.jumpable(-1) then
-              luasnip.jump(-1)
-            elseif cmp.visible() then
-              cmp.select_prev_item()
-            else
-              fallback()
-            end
-          end, {'i', 's'}),
           -- ['<C-Space>'] = cmp.mapping.complete(),
           ['<C-Space>'] = function(fallback)
             cmp.complete()

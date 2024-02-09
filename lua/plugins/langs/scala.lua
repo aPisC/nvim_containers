@@ -11,7 +11,7 @@ return {
     opts = {
       -- root_patterns=  {'.git'},
       settings = {
-        testUserInterface = "Test Explorer",
+        -- testUserInterface = "Test Explorer",
         showImplicitArguments = true,
         showImplicitConversionsAndClasses = true,
         excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },

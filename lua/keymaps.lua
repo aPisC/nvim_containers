@@ -3,8 +3,8 @@ vim.keymap.set({'v'}, '/', '\"zy/<C-r>z<CR>')
 vim.keymap.set({'v'}, '<C-h>', '\"zy:%s/<C-r>z/')
 vim.keymap.set({'i'}, 'jj', '<esc>')
 
-vim.keymap.set({'n', 'i', 't'}, "<C-g>b", function() vim.cmd("OverseerRun") end)
-vim.keymap.set({'n', 'i', 't'}, "<C-g>B", function() vim.cmd("OverseerToggle") end)
+-- vim.keymap.set({'n', 'i', 't'}, "<C-g>B", function() vim.cmd("OverseerRun") end)
+vim.keymap.set({'n', 'i', 't'}, "<C-g>b", function() vim.cmd("OverseerToggle") end)
 vim.keymap.set({'n', 'i', 't'}, "<C-g>t", function() if vim.v.count > 0 then vim.cmd("ToggleTerm " .. vim.v.count) else vim.cmd("ToggleTerm") end end)
 
 vim.keymap.set({'n'}, '<A-left>', '<C-o>')

@@ -17,6 +17,10 @@ local custom_overrides = {
   NeoTreeVertSplit = { bg = '#282c34', fg='#000000' },
   NeoTreeWinSeparator = { bg = '#282c34', fg='#000000' },
   OverseerTaskBorder = { bg = 'transparent', fg='#888888' },
+  FlashLabel = { bg = '#003300', fg = '#8ebd6b' },
+  FlashMatch = { bg = '#112244', fg = 'cyan' },
+  FlashCursor = { fg = '#112244', bg = 'cyan' },
+  -- FlashBackdrop = { fg = '#a0a8b7' },
 }
 
 return {

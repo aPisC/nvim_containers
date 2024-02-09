@@ -147,7 +147,34 @@ return {
     "folke/flash.nvim",
     event = "VeryLazy",
     ---@type Flash.Config
-    opts = {},
+    opts = {
+      modes = {
+        char = {
+          enabled = true,
+          search = { wrap = true },
+          jump = { register = false },
+
+--           label = {
+--             style = "overlay",
+--             current = false,
+--             after = false,
+--             before = false,
+--             distance = false,
+--           },
+
+          highlight = {
+            backdrop = true,
+            matches = false,
+            priority = 5000,
+            groups = {
+              -- label = 'GreenHighlight', -- :hi for f/F
+              -- cursor = 'BlueHighlight', -- :hi for t/T
+              -- match = 'BlueHighlight', -- :hi for t/T
+            },
+          },
+        }
+      }
+    },
     -- stylua: ignore
     config = function(plug, opts)
       require("flash").setup(opts)
@@ -156,10 +183,10 @@ return {
       vim.api.nvim_create_user_command("Flashdisable", function() require("flash").disale() end, {})
     end,
     keys = {
-      { "S", mode = { "n", "o", "x" }, function() require("flash").jump() end, desc = "Flash" },
       -- { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
       -- { "S", mode = { "n", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-      -- { "<Tab>", mode = { "n", "o", "x" }, function() require("flash").jump() end, desc = "Flash" },
+      { "<Tab>", mode = { "n", "o", "x" }, function() require("flash").jump() end, desc = "Flash" },
+      -- { "<S-Tab>", mode = { "n", "o", "x" }, function() require("flash").jump() end, desc = "Flash" },
       { "<S-Tab>", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
       { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
       { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },

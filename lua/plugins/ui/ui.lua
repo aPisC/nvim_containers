@@ -62,6 +62,7 @@ return {
         omnisharp = "󰌛 ",
         tailwind = "󱏿 ",
         lua = " ",
+        jsonls = "",
       }
 
       local function lsp_client()

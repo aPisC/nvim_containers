@@ -58,7 +58,6 @@ local M = {
   {
     'mhartington/formatter.nvim',
     opts = function(plug, opts)
-      opts.autoformat["cs"] = true
       opts.filetype["cs"] = {
         { require"formatter.filetypes.cs".clangformat }
       }

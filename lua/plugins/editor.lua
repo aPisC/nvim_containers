@@ -5,6 +5,19 @@ return {
   --     {"<C-s>", function() vim.cmd"w" end }
   --   },
   -- },
+  --
+  -- {
+  --   'smoka7/multicursors.nvim',
+  --   event = "VeryLazy",
+  --   opts = {},
+  -- },
+  {
+    "mg979/vim-visual-multi",
+    event = "VeryLazy",
+    init = function()
+      vim.g["VM_set_statusline"] = '0'
+    end,
+  },
   {'AndrewRadev/tagalong.vim'},
   {'mbbill/undotree'},
   {

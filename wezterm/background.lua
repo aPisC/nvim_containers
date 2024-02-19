@@ -1,3 +1,19 @@
+local function resolve_path(path, working_dir)
+  if path:sub(1, 1) == '/' then
+    return path
+  end
+
+  if path:sub(1, 1) == '~' then
+    return wezterm.home_dir .. path:sub(2)
+  end
+
+  if working_dir then
+    return working_dir .. '/' .. path
+  end
+
+  return path
+end
+
 local images = {
   { "lofi.png", nil, nil},
   { "linux.png", nil, nil},
@@ -98,24 +114,9 @@ local function get_wd(pane)
   return wd_raw.file_path or ""
 end 
 
-local function resolve_path(path, working_dir)
-  if path:sub(1, 1) == '/' then
-    return path
-  end
 
-  if path:sub(1, 1) == '~' then
-    return wezterm.home_dir .. path:sub(2)
-  end
-
-  if working_dir then
-    return working_dir .. '/' .. path
-  end
-
-  return path
-end
 
 local function resolve_background(background, wd)
-  wezterm.log_info("Resolving background: " , background)
   if type(background) == "string" then
     return resolve_background(presets[background], wd)
   end

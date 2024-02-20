@@ -1,4 +1,7 @@
+local wezterm = require("wezterm")
+
 local function resolve_path(path, working_dir)
+
   if path:sub(1, 1) == '/' then
     return path
   end
@@ -39,10 +42,9 @@ local images = {
 local presets = {
   default = "random",
   plain = { type = "color", color = "#121417" },
-  transparent = { type = "color", color = "Black", opacity = 0.8 },
   random = function(background)
     -- { type = "random", [select = <idx>] }
-    local idx = background.select or math.random(1, #images)
+    local idx = tonumber(background.select) or math.random(1, #images)
     return { 
       type = "image",
       path = "/home/bendeguz/Pictures/background/" .. images[idx][1],
@@ -55,7 +57,7 @@ local presets = {
     return {
       type = "color",
       color = "#000000",
-      opacity = background.opacity or 0.8,
+      opacity = tonumber(background.opacity) or 0.8,
     }
   end,
   color = function(background)
@@ -65,11 +67,11 @@ local presets = {
         source = { Color = background.color },
         width= '100%',
         height = '100%',
-        opacity = background.opacity or 1,
+        opacity = tonumber(background.opacity) or 1,
       },
     }
   end,
-  image = function(background)
+  image = function(background, wd)
     -- {
     --   type = "image",
     --   path = "<path>",
@@ -90,7 +92,7 @@ local presets = {
         repeat_x = 'NoRepeat',
         horizontal_align = background.horizontal_align or "Center",
         vertical_align = background.vertical_align or "Middle",
-        opacity = background.opacity ~= nil and background.opacity or .5,
+        opacity = tonumber(background.opacity) or .5,
         hsb = background.hsb or { brightness = .4, hue = 1.0, saturation = .9 },
       },
       {
@@ -103,7 +105,6 @@ local presets = {
   end,
 }
 
-local wezterm = require("wezterm")
 local pane_local_conf = {}
 
 local function get_wd(pane)
@@ -122,12 +123,12 @@ local function resolve_background(background, wd)
   end
 
   if type(background) == "function" then
-    return resolve_background(background({}), wd)
+    return resolve_background(background({}, wd), wd)
   end
 
   if type(background) == "table" and type(background.type) == "string" then
     if type(presets[background.type]) == "function" then
-      return resolve_background(presets[background.type](background), wd)
+      return resolve_background(presets[background.type](background, wd), wd)
     end
 
     return resolve_background(presets[background.type], wd)
@@ -147,7 +148,8 @@ local function load_pane_conf(pane)
   local conf = pane_local_conf[conf_id]
 
   if conf then return conf end
-  
+
+  wezterm.log_info("load config: ", conf_id)
   if bg_var then
     local parseSuccess, parsedBg = pcall(wezterm.json_parse, bg_var)
     if parseSuccess and type(parsedBg) == "table" then

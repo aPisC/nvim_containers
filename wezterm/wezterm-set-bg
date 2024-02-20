@@ -1,3 +1,20 @@
 #!/bin/sh
 
-printf "\033Ptmux;\033\033]1337;SetUserVar=bg=%s\007\033\\" `echo -n "$1" | base64`
+if [ "$#" -eq 0 ]; then
+  config=default
+elif [ "$#" -eq 1 ]; then
+  config=$1
+else
+  config="{\"type\": \"$1\""
+  shift 1
+
+  for arg in "$@"; do
+    key=$(echo $arg | cut -d= -f1)
+    value=$(echo $arg | cut -d= -f2)
+    config="$config, \"$key\": \"$value\""
+  done
+
+  config="$config}"
+fi
+
+printf "\033Ptmux;\033\033]1337;SetUserVar=bg=%s\007\033\\" `echo -n "$config" | base64 -w 0`

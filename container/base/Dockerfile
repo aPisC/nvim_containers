@@ -15,7 +15,7 @@ RUN apt install -y xclip
 RUN apt install -y silversearcher-ag
 
 # Install NeoVim
-RUN wget -O /tmp/nvim.tar.gz https://github.com/neovim/neovim/releases/download/v0.9.1/nvim-linux64.tar.gz
+RUN wget -O /tmp/nvim.tar.gz https://github.com/neovim/neovim/releases/download/v0.9.4/nvim-linux64.tar.gz
 
 # RUN mkdir -p /usr/share/nvim
 RUN tar -C /usr --strip-components=1 -xzvf /tmp/nvim.tar.gz nvim-linux64

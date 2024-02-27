@@ -12,11 +12,16 @@ return {
       "sindrets/diffview.nvim",
       "ibhagwan/fzf-lua",
     },
-    cmd = { "Git", "Neogit" },
+    cmd = { 
+      "Git", 
+      "Neogit",
+      "GitAdd"
+    },
     config = function(plug, opts)
       require("neogit").setup(opts)
 
       vim.api.nvim_create_user_command('Git', function() require"neogit".open() end, {nargs=0, force= true})
+      vim.api.nvim_create_user_command('GitAdd', ':silent exec "!git add %"', {nargs=0, force= true})
     end,
     keys = {
       {'<C-g><C-g>', function() require("neogit").open() end}

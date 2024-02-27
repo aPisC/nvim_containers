@@ -98,8 +98,8 @@ return {
           end),
           ["<Tab>"] = cmp.mapping(function(fallback)
             if false then
-            elseif cmp.visible() and cmp.get_selected_entry() ~= nil then
-              cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
+            -- elseif cmp.visible() and cmp.get_selected_entry() ~= nil then
+            --   cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
             elseif copilot_suggestions_available and copilot_suggestions.is_visible() then
               copilot_suggestions.accept()
             elseif cmp.visible() and has_words_before() then

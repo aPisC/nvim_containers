@@ -4,7 +4,7 @@ vim.keymap.set({'v'}, '<C-h>', '\"zy:%s/<C-r>z/')
 vim.keymap.set({'i'}, 'jj', '<esc>')
 
 -- vim.keymap.set({'n', 'i', 't'}, "<C-g>B", function() vim.cmd("OverseerRun") end)
-vim.keymap.set({'n', 'i', 't'}, "<C-g>b", function() vim.cmd("OverseerToggle") end)
+vim.keymap.set({'n', 'i', 't'}, "<C-g>b", function() if vim.bo.filetype == "OverseerList" then vim.cmd("OverseerToggle") else vim.cmd("OverseerOpen") end end)
 vim.keymap.set({'n', 'i', 't'}, "<C-g>t", function() if vim.v.count > 0 then vim.cmd("ToggleTerm " .. vim.v.count) else vim.cmd("ToggleTerm") end end)
 
 vim.keymap.set({'n'}, '<A-left>', '<C-o>')
@@ -12,7 +12,7 @@ vim.keymap.set({'n'}, '<A-right>', '<C-i>')
 vim.keymap.set({'n'}, '<C-t>', ':tabnew<CR>')
 
 
-vim.keymap.set('n', '<C-b>', function() vim.cmd"Neotree action=focus toggle" end )
+vim.keymap.set('n', '<C-b>', function() if vim.bo.filetype == "neo-tree" then vim.cmd"Neotree action=focus toggle" else vim.cmd"Neotree focus" end end )
 vim.keymap.set({'n', 'i'     }, '<C-s>', function()
   local tries = 0
   while tries < 10 and vim.api.nvim_get_mode().mode == "i" do

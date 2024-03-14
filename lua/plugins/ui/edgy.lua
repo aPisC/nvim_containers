@@ -95,6 +95,10 @@ return {
             require("neotest").summary.open()
           end,
         },
+        {
+          title = "DB",
+          ft = "dbui",
+        }
         -- { 
         --   ft = "qf", 
         --   title = "Quickfix", 

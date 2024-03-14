@@ -116,7 +116,11 @@ return {
       opts.filetype.scala = {
         function() return {
           ['exe']= 'scalafmt',
-          ['args']= { '-c', '/home/bendeguz/workspace/hiya/dliub/.scalafmt.conf',  '--stdin' },
+          ['args']= { 
+            -- '-c', 
+            -- '/home/bendeguz/workspace/hiya/dliub/.scalafmt.conf',  
+            '--stdin' 
+          },
           ['stdin']= 1,
         } end,
       }

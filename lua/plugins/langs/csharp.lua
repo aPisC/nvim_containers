@@ -10,7 +10,7 @@ local M = {
   {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     opts = function(plug, opts)
-      table.insert(opts.ensure_installed, "clang-format")
+      opts.ensure_installed["clang-format"] = true
       return opts
     end,
   },

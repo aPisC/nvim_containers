@@ -2,8 +2,8 @@ return {
   {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     opts = function(_, opts)
-      table.insert(opts.ensure_installed, "stylua")
-      table.insert(opts.ensure_installed, "lua_ls")
+      opts.ensure_installed["stylua"] = true
+      opts.ensure_installed["lua_ls"] = true
       return opts
     end,
   },

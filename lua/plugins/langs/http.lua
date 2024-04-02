@@ -10,7 +10,7 @@ return {
   -- {
   --   'WhoIsSethDaniel/mason-tool-installer.nvim',
   --   opts = function(plug, opts)
-  --     table.insert(opts.ensure_installed, "htmlbeautifier")
+  --     opts.ensure_installed["htmlbeautifier"] = true
   --     return opts
   --   end
   -- },

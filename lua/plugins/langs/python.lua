@@ -3,9 +3,9 @@ return {
   {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     opts = function(_, opts)
-      table.insert(opts.ensure_installed, "pylsp")
-      table.insert(opts.ensure_installed, "black")
-      table.insert(opts.ensure_installed, "isort")
+      opts.ensure_installed["pylsp"] = true
+      opts.ensure_installed["black"] = true
+      opts.ensure_installed["isort"] = true
       return opts
     end,
   },

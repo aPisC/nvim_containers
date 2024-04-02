@@ -2,7 +2,7 @@ return {
   {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     opts = function(_, opts)
-      table.insert(opts.ensure_installed, "json-lsp")
+      opts.ensure_installed["json-lsp"] = true
       return opts
     end,
   },

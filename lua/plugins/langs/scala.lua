@@ -11,13 +11,14 @@ return {
     opts = {
       -- root_patterns=  {'.git'},
       settings = {
-        -- testUserInterface = "Test Explorer",
+        testUserInterface = "code lenses",
         showImplicitArguments = true,
         showImplicitConversionsAndClasses = true,
-        excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
-        -- serverVersion = "1.1.0",
-        serverVersion = "1.2.2",
         superMethodLensesEnabled = true,
+        showInferredType=true,
+        enableSemanticHighlighting = true,
+        excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
+        serverVersion = "1.2.2",
       },
       init_options = {statusBarProvider = "on"},
     },

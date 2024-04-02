@@ -20,7 +20,7 @@ return {
         {
           ft = "toggleterm",
           title = "Terminal",
-          size = { height = 10, width=2 },
+          size = { height = 10,  },
           filter = function(buf, win)
             -- exclude floating windows
             return vim.api.nvim_win_get_config(win).relative == ""
@@ -40,7 +40,6 @@ return {
           end,
         },
         { ft = "dap-repl", title= "DAP" }
-        -- { ft = "spectre_panel", size = { height = 0.4 } },
       },
       right = {
         { ft = "dapui_scopes", title = "Dap Scopes" },
@@ -48,37 +47,13 @@ return {
         { ft = "dapui_breakpoints", title = "Dap Breakpoints" },
       },
       left = {
-        -- Neo-tree filesystem always takes half the screen height
         {
           title = "NeoTree",
           ft = "neo-tree",
           size = { height = 0.5 },
           pinned = true,
           open = "Neotree position=left filesystem",
-          -- filter = function(buf)
-          --   return vim.tbl_contains({
-          --     "filesystem"
-          --   }, vim.b[buf].neo_tree_source)
-          -- end,
         },
-        -- {
-        --   title = "Git",
-        --   ft = "neo-tree",
-        --   filter = function(buf)
-        --     return vim.b[buf].neo_tree_source == "git_status"
-        --   end,
-        --   pinned = true,
-        --   open = "Neotree position=right git_status",
-        -- },
-        -- {
-        --   title = "Buffers",
-        --   ft = "neo-tree",
-        --   filter = function(buf)
-        --     return vim.b[buf].neo_tree_source == "buffers"
-        --   end,
-        --   pinned = true,
-        --   open = "Neotree position=top buffers",
-        -- },
         {
           title = "Overseer",
           ft="OverseerList",
@@ -99,23 +74,6 @@ return {
           title = "DB",
           ft = "dbui",
         }
-        -- { 
-        --   ft = "qf", 
-        --   title = "Quickfix", 
-        --   pinned=true, 
-        --   open = "copen",
-
-        -- },
-          
-
-
-        -- {
-        --   ft = "Outline",
-        --   pinned = true,
-        --   open = "SymbolsOutlineOpen",
-        -- },
-        -- any other neo-tree windows
-        -- "neo-tree",
       },
       keys = {
         ["q"] = function(win) win:close() end,

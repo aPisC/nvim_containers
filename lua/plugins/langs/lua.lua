@@ -10,7 +10,7 @@ return {
   {
     'nvim-treesitter/nvim-treesitter',
     opts = function(_, opts)
-      table.insert(opts.ensure_installed, "lua")
+      opts.ensure_installed.lua = true
       return opts
     end,
   },

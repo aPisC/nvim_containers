@@ -4,7 +4,7 @@ return {
     'nvim-treesitter/nvim-treesitter',
     opts = {
       ensure_installed = { },
-      sync_install = true,
+      sync_install = false,
       auto_install = true,
       highlight = {
         enable = true,
@@ -13,7 +13,13 @@ return {
       },
     },
     config = function(plug, opts)
-      require("nvim-treesitter.configs").setup(opts)
+      local ensure_installed = { }
+      for lang, enabled in pairs(opts.ensure_installed) do
+        if enabled then table.insert(ensure_installed, lang) end
+      end
+
+      local config = vim.tbl_extend("force", opts, { ensure_installed = ensure_installed })
+      require("nvim-treesitter.configs").setup(config)
     end
   },
 }

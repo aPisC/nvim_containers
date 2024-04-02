@@ -9,7 +9,7 @@ return {
   {
     'nvim-treesitter/nvim-treesitter',
     opts = function(_, opts)
-      table.insert(opts.ensure_installed, "json")
+      opts.ensure_installed.json = true
       return opts
     end,
   },

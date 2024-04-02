@@ -12,7 +12,7 @@ return {
   {
     'nvim-treesitter/nvim-treesitter',
     opts = function(_, opts)
-      table.insert(opts.ensure_installed, "python")
+      opts.ensure_installed.python = true
       return opts
     end,
   },

@@ -51,7 +51,7 @@ local M = {
   {
     'nvim-treesitter/nvim-treesitter',
     opts = function(plug, opts)
-      table.insert(opts.ensure_installed, "c_sharp")
+      opts.ensure_installed.c_sharp = true
       return opts
     end,
   },

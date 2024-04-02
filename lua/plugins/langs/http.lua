@@ -2,8 +2,8 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(plug, opts)
-      table.insert(opts.ensure_installed, "json")
-      table.insert(opts.ensure_installed, "http")
+      opts.ensure_installed.http = true
+      opts.ensure_installed.json = true
       return opts
     end
   },

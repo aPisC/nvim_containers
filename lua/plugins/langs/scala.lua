@@ -104,7 +104,7 @@ return {
   {
     'nvim-treesitter/nvim-treesitter',
     opts = function(plug, opts)
-      table.insert(opts.ensure_installed, 'scala')
+      opts.ensure_installed.scala = true
       return opts
     end
   },

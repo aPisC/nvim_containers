@@ -24,11 +24,30 @@ return {
           }
         }
       },
+      'nvim-neotest/nvim-nio',
+      'mhartington/formatter.nvim',
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-neotest/neotest',
+      'antoinemadec/FixCursorHold.nvim',
+      'nvim-lua/plenary.nvim',
+      'williamboman/mason.nvim',
+      'WhoIsSethDaniel/mason-tool-installer.nvim',
+      "jay-babu/mason-nvim-dap.nvim",
+      'williamboman/mason-lspconfig.nvim',
+      'mfussenegger/nvim-dap',
     },
     opts = {
+      mason_install =  {},
+      treesitter_install = {},
+      formatters = {
+        ["*"] = function() return { require("formatter.filetypes.any").remove_trailing_whitespace } end
+      },
+      test_adapters = {},
+      debuggers = {},
       servers = {},
+
       capabilities = {
-        -- use_virtual_types = true, -- Czzustom flag for auto attaching virtual types
+        -- use_virtual_types = true, -- Custom flag for auto attaching virtual types
         signature_help = {
           enable = false,
           bind = true, -- This is mandatory, otherwise border config won't get registered.
@@ -38,12 +57,92 @@ return {
       },
     },
     config = function(plug, opts)
-      local lspconfig = require("lspconfig")
-      local has_cmp_nvim_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+      -- Setup treesitter
+      require("nvim-treesitter.configs").setup({
+        ensure_installed = vim.tbl_filter(
+          function(lang) return opts.treesitter_install[lang] end,
+          vim.tbl_keys(opts.treesitter_install)
+        ),
+        sync_install = false,
+        auto_install = true,
+        highlight = {
+          enable = true,
+          disable = { "lua", "help" },
+          additional_vim_regex_highlighting = true,
+        },
+      })
 
+      -- Setup mason
+      require("mason").setup({})
+      require("mason-tool-installer").setup({
+        ensure_installed = vim.tbl_filter(
+          function(package) return opts.mason_install[package] end,
+          vim.tbl_keys(opts.mason_install)
+        ),
+        auto_update = false,
+        run_on_start = true,
+        start_delay = 3000,
+      })
+      require("mason-nvim-dap").setup({
+        ensure_installed = {},
+        handlers = opts.debuggers,
+      })
+      require("mason-lspconfig").setup({
+        ensure_installed = {},
+        automatic_installion = true,
+      })
+
+      -- Setup formatters
+      require("formatter").setup({
+        logging = false,
+        log_level = vim.log.levels.WARN,
+        filetype = vim.tbl_map(
+          function(formatter)
+            if type(formatter) == "function" then
+              return formatter()
+            else 
+              return formatter
+            end
+          end,
+          opts.formatters
+        )
+      }) 
+
+      -- Setup test adapters
+      require("neotest").setup({
+        adapters = vim.tbl_values(vim.tbl_map(
+          function(adapter)
+            if type(adapter) == "function" then
+              return adapter()
+            else
+              return adapter
+            end
+          end,
+          opts.test_adapters
+        )),
+        icons = {
+          running_animated = { "◜", "◜", "◝", "◝", "◞", "◞", "◟", "◟" },
+        },
+        summary = {
+          mappings = {
+            short = "o",
+            output = "O",
+            stop = "s",
+          }
+        },
+      })
+      vim.api.nvim_create_user_command('TestStop', function() require("neotest").run.stop() end, {})
+      vim.api.nvim_create_user_command('TestFile', function() require("neotest").run.run(vim.fn.expand("%")) end, {})
+      vim.api.nvim_create_user_command('TestNearest', function() require("neotest").run.run() end, {})
+      vim.api.nvim_create_user_command('TestLast', function() require("neotest").run.run() end, {})
+      vim.api.nvim_create_user_command('TestSummary', function() require("neotest").summary.toggle() end, {})
+
+      -- setup LSP servers
+      local has_cmp_nvim_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+      local lspconfig = require("lspconfig")
 
       for server, server_config in pairs(opts.servers) do
-        local capabilities = vim.tbl_deep_extend( "force",
+        local capabilities = vim.tbl_deep_extend("force",
           {},
           vim.lsp.protocol.make_client_capabilities(),
           has_cmp_nvim_lsp and cmp_nvim_lsp.default_capabilities() or {},

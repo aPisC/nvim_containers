@@ -1,19 +1,16 @@
 return {
   {
-    "nvim-treesitter/nvim-treesitter",
-    opts = function(plug, opts)
-      opts.ensure_installed.http = true
-      opts.ensure_installed.json = true
-      return opts
-    end
+    'neovim/nvim-lspconfig',
+    opts = {
+      treesitter_install = {
+        ["http"] = true,
+        ["json"] = true,
+      },
+      maston_install = {
+        -- ["htmlbeautifier"] = true,
+      },
+    },
   },
-  -- {
-  --   'WhoIsSethDaniel/mason-tool-installer.nvim',
-  --   opts = function(plug, opts)
-  --     opts.ensure_installed["htmlbeautifier"] = true
-  --     return opts
-  --   end
-  -- },
   {
     'aPisC/rest.nvim',
     dependencies = {

@@ -1,17 +1,12 @@
 return {
   {
-    'mhartington/formatter.nvim',
-    opts = function(plug, opts)
-      opts.filetype.typescript =
-        { require"formatter.filetypes.typescriptreact".prettierd }
-      opts.filetype.typescriptreact =
-        { require"formatter.filetypes.typescriptreact".prettierd }
-
-      -- opts.autoformat["ts"] = true
-      -- opts.autoformat["tsx"] = true
-
-      return opts
-    end
+    'neovim/nvim-lspconfig',
+    opts = {
+      formatters = {
+        ["typescript"] = function() return { require"formatter.filetypes.typescriptreact".prettierd } end,
+        ["typescriptreact"] = function() return { require"formatter.filetypes.typescriptreact".prettierd } end,
+      },
+    },
   },
   {
     'tpope/vim-commentary', 

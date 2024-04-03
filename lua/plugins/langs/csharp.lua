@@ -1,83 +1,70 @@
 local M = {
-  {'Issafalcon/neotest-dotnet' },
   {
-    'nvim-neotest/neotest',
-    opts = function(plug, opts)
-      table.insert(opts.adapters, require"neotest-dotnet")
-      return opts
-    end,
-  },
-  {
-    'WhoIsSethDaniel/mason-tool-installer.nvim',
-    opts = function(plug, opts)
-      opts.ensure_installed["clang-format"] = true
-      return opts
-    end,
-  },
-
-  {
-    'williamboman/mason-lspconfig.nvim',
-    opts = function(plug, opts)
-      table.insert(opts.ensure_installed, "omnisharp")
-      return opts
-    end,
-  },
-  {
-
     'neovim/nvim-lspconfig',
-    dependencies = { {'Hoffs/omnisharp-extended-lsp.nvim'} },
-    opts = function(plug, opts)
-      opts.servers.omnisharp = {
-        cmd = { "omnisharp" },
-        handlers = {
-          ["textDocument/definition"] = require('omnisharp_extended').handler,
-        },
-        on_attach = function(client, bufnr)
-          local tokenModifiers = client.server_capabilities.semanticTokensProvider.legend.tokenModifiers
-          for i, v in ipairs(tokenModifiers) do
-            tmp = string.gsub(v, ' ', '_')
-            tokenModifiers[i] = string.gsub(tmp, '-_', '')
-          end
-          local tokenTypes = client.server_capabilities.semanticTokensProvider.legend.tokenTypes
-          for i, v in ipairs(tokenTypes) do
-            tmp = string.gsub(v, ' ', '_')
-            tokenTypes[i] = string.gsub(tmp, '-_', '')
-          end
+    dependencies = { 
+      {'Hoffs/omnisharp-extended-lsp.nvim'},
+      {'Issafalcon/neotest-dotnet' },
+    },
+    opts = {
+      mason_install = {
+        ["clang-format"] = true,
+        ["omnisharp"] = true,
+        ["netcoredbg"] = true,
+      },
+      treesitter_install = {
+        ["c_sharp"] = true,
+      },
+      formatters = {
+        ["cs"] = function() return { require"formatter.filetypes.cs".clangformat } end,
+      },
+      test_adapters = {
+        ["dotnet"] = function() return require"neotest-dotnet" end,
+      },
+      debuggers = {
+        ["coreclr"] = function(config)
+          require("mason-nvim-dap").default_setup(config)
+          require("mason-nvim-dap").default_setup({
+            name="netcoredbg",
+            adapters=config.adapters
+          })
         end
-      }
-      return opts
-    end,
+      },
+      servers = {
+        omnisharp = function() return {
+          cmd = { "omnisharp" },
+          handlers = {
+            ["textDocument/definition"] = require('omnisharp_extended').handler,
+          },
+          on_attach = function(client, bufnr)
+            local tokenModifiers = client.server_capabilities.semanticTokensProvider.legend.tokenModifiers
+            for i, v in ipairs(tokenModifiers) do
+              tmp = string.gsub(v, ' ', '_')
+              tokenModifiers[i] = string.gsub(tmp, '-_', '')
+            end
+            local tokenTypes = client.server_capabilities.semanticTokensProvider.legend.tokenTypes
+            for i, v in ipairs(tokenTypes) do
+              tmp = string.gsub(v, ' ', '_')
+              tokenTypes[i] = string.gsub(tmp, '-_', '')
+            end
+          end
+        } end,
+      },
+    },
   },
-  {
-    'nvim-treesitter/nvim-treesitter',
-    opts = function(plug, opts)
-      opts.ensure_installed.c_sharp = true
-      return opts
-    end,
-  },
-  {
-    'mhartington/formatter.nvim',
-    opts = function(plug, opts)
-      opts.filetype["cs"] = {
-        { require"formatter.filetypes.cs".clangformat }
-      }
-      return opts
-    end,
-  },
-  {
-    "jay-babu/mason-nvim-dap.nvim",
-    opts = function(plug, opts)
-      table.insert(opts.ensure_installed, "coreclr")
-      opts.handlers["coreclr"] = function(config)
-        require("mason-nvim-dap").default_setup(config)
-        require("mason-nvim-dap").default_setup({
-          name="netcoredbg",
-          adapters=config.adapters
-        })
-      end
-      return opts
-    end,
-  },
+  -- {
+  --   "jay-babu/mason-nvim-dap.nvim",
+  --   opts = function(plug, opts)
+  --     table.insert(opts.ensure_installed, "coreclr")
+  --     opts.handlers["coreclr"] = function(config)
+  --       require("mason-nvim-dap").default_setup(config)
+  --       require("mason-nvim-dap").default_setup({
+  --         name="netcoredbg",
+  --         adapters=config.adapters
+  --       })
+  --     end
+  --     return opts
+  --   end,
+  -- },
 }
 
 -- Other configs

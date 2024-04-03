@@ -1,12 +1,15 @@
 return {
   {
-    'mhartington/formatter.nvim',
-    opts = function(plug, opts)
-      opts.filetype.javascript =
-        { require"formatter.filetypes.javascriptreact".prettierd }
-      opts.filetype.javascriptreact =
-        { require"formatter.filetypes.javascriptreact".prettierd }
-      return opts
-    end
-  },
+    'neovim/nvim-lspconfig',
+    dependencies = {},
+    opts = {
+      treesitter_install = {
+        javascript = true
+      },
+      formatters = {
+        javascript = function() return { require"formatter.filetypes.javascriptreact".prettierd } end,
+        javascriptreact = function() return { require"formatter.filetypes.javascriptreact".prettierd } end,
+      },
+    }
+  }
 }

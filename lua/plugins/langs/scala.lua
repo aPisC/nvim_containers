@@ -87,46 +87,26 @@ return {
     end,
   },
 
-  -- Neotest
   {
-    'nvim-neotest/neotest',
-    dependencies = { { 'aPisC/neotest-scala'} },
-    opts = function(plug, opts)
-      table.insert(opts.adapters,
-        require("neotest-scala")({
+    'neovim/nvim-lspconfig',
+    dependencies = {
+      'aPisC/neotest-scala'
+    },
+    opts = {
+      treesitter_install = {
+        scala = true
+      },
+      formatters = {
+        scala = function() return { 
+          function() return { ['exe']= 'scalafmt', ['args']= { '--stdin' }, ['stdin']= 1 } end
+        } end,
+      },
+      test_adapters = {
+        ["scala"] = function() return require("neotest-scala")({
           runner = "sbt",
           framework = "scalatest"
-        })
-      )
-      return opts
-    end
+        }) end,
+      },
+    }
   },
-
-  -- Treesitter
-  {
-    'nvim-treesitter/nvim-treesitter',
-    opts = function(plug, opts)
-      opts.ensure_installed.scala = true
-      return opts
-    end
-  },
-
-  -- Formatter
-  {
-    'mhartington/formatter.nvim',
-    opts = function(plug, opts)
-      opts.filetype.scala = {
-        function() return {
-          ['exe']= 'scalafmt',
-          ['args']= { 
-            -- '-c', 
-            -- '/home/bendeguz/workspace/hiya/dliub/.scalafmt.conf',  
-            '--stdin' 
-          },
-          ['stdin']= 1,
-        } end,
-      }
-      return opts
-    end
-  }
 }

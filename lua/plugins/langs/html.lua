@@ -1,11 +1,14 @@
 return {
   {
-    'mhartington/formatter.nvim',
-    opts = function(plug, opts)
-      opts.filetype.html =
-        { require"formatter.filetypes.html".prettierd }
-      return opts
-    end
-  },
+    'neovim/nvim-lspconfig',
+    dependencies = {},
+    opts = {
+      treesitter_install = {
+        html = true
+      },
+      formatters = {
+        ["html"] = function() return { require"formatter.filetypes.html".prettierd } end,
+      },
+    }
+  }
 }
-

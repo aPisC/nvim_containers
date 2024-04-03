@@ -20,14 +20,41 @@ local M = {
       test_adapters = {
         ["dotnet"] = function() return require"neotest-dotnet" end,
       },
-      debuggers = {
-        ["coreclr"] = function(config)
-          require("mason-nvim-dap").default_setup(config)
-          require("mason-nvim-dap").default_setup({
-            name="netcoredbg",
-            adapters=config.adapters
-          })
-        end
+      dap_adapters = {
+        netcoredbg =  {
+          type = 'executable',
+          command = "netcoredbg",
+          args = { '--interpreter=vscode' },
+        },
+      },
+      dap_configurations = {
+        cs = {
+          {
+            type = 'coreclr',
+            name = 'NetCoreDbg: Launch',
+            request = 'launch',
+            cwd = '${fileDirname}',
+            program = function ()
+              return coroutine.create(function(dap_run_co)
+                local items = vim.fn.globpath(vim.fn.getcwd(), '**/bin/Debug/**/*.dll', 0, 1)
+                local opts = {
+                  format_item = function(path)
+                    return vim.fn.fnamemodify(path, ':t')
+                  end,
+                }
+                local function cont(choice)
+                  if choice == nil then
+                    return nil
+                  else
+                    coroutine.resume(dap_run_co, choice)
+                  end
+                end
+
+                vim.ui.select(items, opts, cont)
+              end)
+            end,
+          },
+        }
       },
       servers = {
         omnisharp = function() return {
@@ -51,20 +78,6 @@ local M = {
       },
     },
   },
-  -- {
-  --   "jay-babu/mason-nvim-dap.nvim",
-  --   opts = function(plug, opts)
-  --     table.insert(opts.ensure_installed, "coreclr")
-  --     opts.handlers["coreclr"] = function(config)
-  --       require("mason-nvim-dap").default_setup(config)
-  --       require("mason-nvim-dap").default_setup({
-  --         name="netcoredbg",
-  --         adapters=config.adapters
-  --       })
-  --     end
-  --     return opts
-  --   end,
-  -- },
 }
 
 -- Other configs

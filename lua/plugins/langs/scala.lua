@@ -1,7 +1,40 @@
 local metals_au_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
 
 return {
-  -- LSP
+  {
+    'neovim/nvim-lspconfig',
+    dependencies = {
+      'aPisC/neotest-scala'
+    },
+    opts = {
+      treesitter_install = {
+        scala = true
+      },
+      formatters = {
+        scala = function() return { 
+          function() return { ['exe']= 'scalafmt', ['args']= { '--stdin' }, ['stdin']= 1 } end
+        } end,
+      },
+      test_adapters = {
+        ["scala"] = function() return require("neotest-scala")({
+          runner = "sbt",
+          framework = "scalatest"
+        }) end,
+      },
+      dap_configurations = {
+        scala = {
+          {
+            type = 'scala',
+            request = 'launch',
+            name = 'Run or Test Target',
+            metals = {
+              runType = "runOrTestFile",
+            },
+          },
+        },
+      },
+    }
+  },
   {
     'scalameta/nvim-metals',
     dependencies = { 
@@ -70,43 +103,7 @@ return {
       vim.api.nvim_create_user_command("MetalsAttachFile", function()
         require("metals").initialize_or_attach(metals_config)
       end, {})
-
-      -- dap config
-      if has_dap then
-        dap.configurations.scala = {
-          {
-            type = "scala",
-            request = "launch",
-            name = "Run or Test Target",
-            metals = {
-              runType = "runOrTestFile",
-            },
-          }
-        }
-      end
     end,
   },
 
-  {
-    'neovim/nvim-lspconfig',
-    dependencies = {
-      'aPisC/neotest-scala'
-    },
-    opts = {
-      treesitter_install = {
-        scala = true
-      },
-      formatters = {
-        scala = function() return { 
-          function() return { ['exe']= 'scalafmt', ['args']= { '--stdin' }, ['stdin']= 1 } end
-        } end,
-      },
-      test_adapters = {
-        ["scala"] = function() return require("neotest-scala")({
-          runner = "sbt",
-          framework = "scalatest"
-        }) end,
-      },
-    }
-  },
 }

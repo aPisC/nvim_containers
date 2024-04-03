@@ -74,7 +74,7 @@ return {
         require("dapui").open()
       end
       dap.listeners.after['event_terminated']['dap-ui'] = function(session, body)
-        if not body.restart then
+        if not body or not body.restart then
           require("dapui").close()
         end
       end

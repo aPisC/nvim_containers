@@ -32,7 +32,7 @@ return {
       'nvim-lua/plenary.nvim',
       'williamboman/mason.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
-      "jay-babu/mason-nvim-dap.nvim",
+      -- "jay-babu/mason-nvim-dap.nvim",
       'williamboman/mason-lspconfig.nvim',
       'mfussenegger/nvim-dap',
     },
@@ -43,7 +43,8 @@ return {
         ["*"] = function() return { require("formatter.filetypes.any").remove_trailing_whitespace } end
       },
       test_adapters = {},
-      debuggers = {},
+      dap_adapters = {},
+      dap_configurations = {},
       servers = {},
 
       capabilities = {
@@ -83,10 +84,10 @@ return {
         run_on_start = true,
         start_delay = 3000,
       })
-      require("mason-nvim-dap").setup({
-        ensure_installed = {},
-        handlers = opts.debuggers,
-      })
+      -- require("mason-nvim-dap").setup({
+      --   ensure_installed = {},
+      --   handlers = opts.debuggers,
+      -- })
       require("mason-lspconfig").setup({
         ensure_installed = {},
         automatic_installion = true,
@@ -136,6 +137,14 @@ return {
       vim.api.nvim_create_user_command('TestNearest', function() require("neotest").run.run() end, {})
       vim.api.nvim_create_user_command('TestLast', function() require("neotest").run.run() end, {})
       vim.api.nvim_create_user_command('TestSummary', function() require("neotest").summary.toggle() end, {})
+
+      -- setup Dap
+      for adapter_name, adapter in pairs(opts.dap_adapters) do
+        require("dap").adapters[adapter_name] = adapter
+      end
+      for configuration_name, configuration in pairs(opts.dap_configurations) do
+        require("dap").configurations[configuration_name] = configuration
+      end
 
       -- setup LSP servers
       local has_cmp_nvim_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")

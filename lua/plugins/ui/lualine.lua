@@ -122,7 +122,7 @@ return {
             {
               has_git_blame and git_blame.get_current_blame_text or function() end,
               cond = function()
-                return has_git_blame and vim.g.gitblame_enabled == 1 and git_blame.is_blame_text_available()
+                return has_git_blame and git_blame.is_blame_text_available()
               end
             },
             { lsp_progress },

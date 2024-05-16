@@ -32,6 +32,7 @@ return function(system_dist_config)
     typescript = false,
     python = false,
     tailwind = false,
+    openapi = false,
 
     -- plugins on indexes
   }
@@ -59,6 +60,7 @@ return function(system_dist_config)
       {import="plugins.hydra"},
       {import="plugins.lsp"},
       {import="plugins.overseer"},
+      {import="plugins.experimental"},
 
       {import="plugins.copilot", enabled = dist_config.copilot},
       {import="plugins.db", enabled = dist_config.db},
@@ -73,6 +75,7 @@ return function(system_dist_config)
       {import="plugins.langs.typescript", enabled = dist_config.typescript},
       {import="plugins.langs.python", enabled = dist_config.python},
       {import="plugins.langs.tailwind", enabled = dist_config.tailwind},
+      {import="plugins.langs.openapi", enabled = dist_config.openapi},
     }
 
     -- Collect plugins from configs

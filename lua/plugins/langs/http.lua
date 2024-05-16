@@ -30,7 +30,7 @@ return {
       })
       vim.api.nvim_buf_create_user_command(0, "RestRun", function(args) require("rest-nvim").run() end, {})
       vim.api.nvim_buf_create_user_command(0, "RestPreview", function(args) vim.inspect(require("rest-nvim").run(true)) end, {})
-      vim.api.nvim_buf_create_user_command(0, "RestLast", function(args) require("rest-nvim").last() end, {})
+      vim.api.nvim_create_user_command("RestLast", function(args) require("rest-nvim").last() end, {})
       vim.api.nvim_create_user_command("Rest", function() vim.cmd":e .vscode/requests.http" end, {})
     end,
     opts = {

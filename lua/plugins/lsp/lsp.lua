@@ -32,6 +32,7 @@ return {
       'nvim-lua/plenary.nvim',
       'williamboman/mason.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
+      'mfussenegger/nvim-lint',
       -- "jay-babu/mason-nvim-dap.nvim",
       'williamboman/mason-lspconfig.nvim',
       'mfussenegger/nvim-dap',
@@ -46,6 +47,7 @@ return {
       dap_adapters = {},
       dap_configurations = {},
       servers = {},
+      linters = {},
 
       capabilities = {
         -- use_virtual_types = true, -- Custom flag for auto attaching virtual types
@@ -175,15 +177,23 @@ return {
         lspconfig[server].setup(config)
       end
 
-      -- show diagnostic on CursorHold
-      local augrp = vim.api.nvim_create_augroup("LspCursorHold", {})
-      vim.api.nvim_create_autocmd("CursorHold", {
-        pattern = { "*" },
+      -- Setup linters
+      require('lint').linters_by_ft = opts.linters
+      vim.api.nvim_create_autocmd({ "BufWritePost" }, {
         callback = function()
-          vim.diagnostic.open_float()
+          require("lint").try_lint()
         end,
-        group = augrp,
       })
+
+      -- -- show diagnostic on CursorHold
+      -- local augrp = vim.api.nvim_create_augroup("LspCursorHold", {})
+      -- vim.api.nvim_create_autocmd("CursorHold", {
+      --   pattern = { "*" },
+      --   callback = function()
+      --     vim.diagnostic.open_float()
+      --   end,
+      --   group = augrp,
+      -- })
     end,
     init = function()
       vim.diagnostic.config({

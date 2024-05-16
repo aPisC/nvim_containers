@@ -51,7 +51,7 @@ return {
         showInferredType=true,
         enableSemanticHighlighting = true,
         excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
-        serverVersion = "1.2.2",
+        serverVersion = "1.3.0",
       },
       init_options = {statusBarProvider = "on"},
     },

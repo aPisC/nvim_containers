@@ -62,7 +62,7 @@ return {
         if vim.startswith(filetype, "dapui_") then return "filetype" end
         if vim.startswith(filetype, "dap-") then return "filetype" end
         if vim.startswith(filetype, "toggleterm") then return "filetype" end
-        if vim.startswith(filetype, "httpResult") then return "filetype" end
+        -- if vim.startswith(filetype, "httpResult") then return "filetype" end
         if vim.startswith(filetype, "blame") then return "filetype" end
         if vim.startswith(filetype, "dbout") then return "filetype" end
         if vim.startswith(filetype, "dbui") then return "filetype" end

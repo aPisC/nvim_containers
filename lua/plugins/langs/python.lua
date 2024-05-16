@@ -10,6 +10,7 @@ return {
         ["black"] = true,
         ["isort"] = true,
         ["debugpy"] = true,
+        ["flake8"] = true,
       },
       treesitter_install = {
         python = true,
@@ -19,6 +20,9 @@ return {
           require"formatter.filetypes.python".isort,
           require"formatter.filetypes.python".black 
         } end,
+      },
+      linters = {
+        ["python"] = { "flake8" },
       },
       dap_adapters = {
         python = {

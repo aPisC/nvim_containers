@@ -15,7 +15,7 @@ return {
     },
     opts = function() return {
       defaults = {
-        path_display = { "smart" },
+        path_display = { "filename_first" },
       },
       extensions = {
         ["ui-select"] = {

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+aws-sso-util login &> /dev/null
+  
+export AWS_ACCESS_KEY_ID=$(aws-sso-util credential-process --profile $AWS_PROFILE | jq -r .AccessKeyId)
+export AWS_SECRET_ACCESS_KEY=$(aws-sso-util credential-process --profile $AWS_PROFILE | jq -r .SecretAccessKey)
+export AWS_SESSION_TOKEN=$(aws-sso-util credential-process --profile $AWS_PROFILE | jq -r .SessionToken)
+
+COMMAND=$1
+shift
+$COMMAND "$@"

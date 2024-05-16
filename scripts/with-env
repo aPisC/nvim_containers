@@ -1,0 +1,7 @@
+#!/bin/bash
+
+ENVFILE=$1
+shift
+
+# filter out lines starting with #
+env $(cat $ENVFILE | grep -v ^# | xargs) "$@"

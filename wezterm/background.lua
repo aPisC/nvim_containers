@@ -1,23 +1,14 @@
 local wezterm = require("wezterm")
+local Utils = require("utils")
+local pane_config_cache = {}
 
-local function resolve_path(path, working_dir)
+-- background priority:
+-- 1. manual set background
+-- 2. program background
+-- 3. local background
+-- 4. default background
 
-  if path:sub(1, 1) == '/' then
-    return path
-  end
-
-  if path:sub(1, 1) == '~' then
-    return wezterm.home_dir .. path:sub(2)
-  end
-
-  if working_dir then
-    return working_dir .. '/' .. path
-  end
-
-  return path
-end
-
-local images = {
+local random_image_pool = {
   { "lofi.png", nil, nil},
   { "linux.png", nil, nil},
   { "088e24.jpg", "Left", "Middle" },
@@ -39,17 +30,21 @@ local images = {
   { "eecea5.jpeg", nil, "Top" },
 }
 
+local program_backgrounds = {
+  k9s = {type = "image", path = "/home/bendeguz/Pictures/background/program/serverpark_anime_girl.png"},
+}
+
 local presets = {
   default = "random",
   plain = { type = "color", color = "#121417" },
   random = function(background)
     -- { type = "random", [select = <idx>] }
-    local idx = tonumber(background.select) or math.random(1, #images)
+    local idx = tonumber(background.select) or math.random(1, #random_image_pool)
     return { 
       type = "image",
-      path = "/home/bendeguz/Pictures/background/" .. images[idx][1],
-      horizontal_align = images[idx][2] or "Center",
-      vertical_align = images[idx][3] or "Middle",
+      path = "/home/bendeguz/Pictures/background/" .. random_image_pool[idx][1],
+      horizontal_align = random_image_pool[idx][2] or "Center",
+      vertical_align = random_image_pool[idx][3] or "Middle",
     }
   end,
   transparent = function(background)
@@ -87,7 +82,7 @@ local presets = {
         height = '100%',
       },
       {
-        source = { File = resolve_path(background.path, wd) },
+        source = { File = Utils.resolve_path(background.path, wd) },
         width = "Cover",
         repeat_x = 'NoRepeat',
         horizontal_align = background.horizontal_align or "Center",
@@ -105,126 +100,110 @@ local presets = {
   end,
 }
 
-local pane_local_conf = {}
-
-local function get_wd(pane)
-  local wd_raw = pane:get_current_working_dir()
-  if not wd_raw then
-    return ""
-  end
-  return wd_raw.file_path or ""
-end 
-
-
-
 local function resolve_background(background, wd)
-  if type(background) == "string" then
-    return resolve_background(presets[background], wd)
-  end
-
-  if type(background) == "function" then
-    return resolve_background(background({}, wd), wd)
-  end
-
+  if type(background) == "string" then return resolve_background(presets[background], wd) end
+  if type(background) == "function" then return resolve_background(background({}, wd), wd) end
   if type(background) == "table" and type(background.type) == "string" then
     if type(presets[background.type]) == "function" then
       return resolve_background(presets[background.type](background, wd), wd)
     end
-
     return resolve_background(presets[background.type], wd)
   end
-
-  if type(background) == "table" then
-    return background
-  end
-
+  if type(background) == "table" then return background end
   return nil
 end
 
-local function load_pane_conf(pane)
-  local wd = get_wd(pane)
-  local bg_var = pane:get_user_vars().bg
-  local conf_id = wd .. "$" .. ((bg_var and bg_var ~= "") and bg_var or "default")
-  local conf = pane_local_conf[conf_id]
-
-  if conf then return conf end
-
+local function load_pane_conf(pane, selector, conf_id)
+  if pane_config_cache[conf_id] then return pane_config_cache[conf_id] end
   wezterm.log_info("load config: ", conf_id)
-  if bg_var then
-    local parseSuccess, parsedBg = pcall(wezterm.json_parse, bg_var)
+
+  -- Use defined background from the user
+  if selector.bg_var then
+    local parseSuccess, parsedBg = pcall(wezterm.json_parse, selector.bg_var)
     if parseSuccess and type(parsedBg) == "table" then
       conf = {
         bg_id = conf_id,
-        background = resolve_background(parsedBg, wd)
+        background = resolve_background(parsedBg, selector.dir)
       }
-      pane_local_conf[conf_id] = conf
+      pane_config_cache[conf_id] = conf
       return conf
     end
 
     conf = {
       bg_id = conf_id,
-      background = resolve_background(bg_var, wd)
+      background = resolve_background(selector.bg_var, selector.dir)
     }
-    pane_local_conf[conf_id] = conf
+    pane_config_cache[conf_id] = conf
     return conf
   end
 
+  -- Use program background settings
+  if program_backgrounds[selector.program] then
+    conf = {
+      bg_id = conf_id,
+      background = resolve_background(program_backgrounds[selector.program])
+    }
+    pane_config_cache[conf_id] = conf
+    return conf
+  end
+
+  -- Use local background settings
   local has_local_conf, local_conf = pcall(function()
     local file = io.open(wd .. '/.vscode/.wezterm-local', 'r')
     local conf = wezterm.json_parse(file:read('*all')) or {}
     file:close()
     return conf
   end)
-
   if has_local_conf then
     conf = {
       bg_id = conf_id,
       background = resolve_background(local_conf.background, wd)
     }
-    pane_local_conf[conf_id] = conf
+    pane_config_cache[conf_id] = conf
     return conf
   end
 
+  -- Use default background settings
   conf = {
     bg_id = conf_id,
     background = resolve_background("default", wd)
   }
-  pane_local_conf[conf_id] = conf
+  pane_config_cache[conf_id] = conf
   return conf
 end
 
 
-local function ensure_pane_conf(pane)
+local function get_pane_config(pane)
   local pane_id = pane:pane_id()
-  local wd = get_wd(pane)
-  local bg_var = pane:get_user_vars().bg
-  local conf_id = wd .. "$" .. ((bg_var and bg_var ~= "") and bg_var or "default")
+  local pane_user_vars = pane:get_user_vars()
 
-  local conf = pane_local_conf[pane_id]
+  local selector = {
+    dir = Utils.pane_working_dir(pane),
+    bg_var = (pane_user_vars.bg and pane_user_vars.bg ~= "") and pane_user_vars.bg or nil,
+    program = pane:get_title()
+  }
+  local conf_id = selector.dir .. "$" .. (selector.bg_var or "default") .. "$" .. selector.program
 
+  local conf = pane_config_cache[pane_id]
   if not conf or conf.bg_id ~= conf_id then
-    conf = load_pane_conf(pane)
-    pane_local_conf[pane_id] = conf
+    conf = load_pane_conf(pane, selector, conf_id)
+    pane_config_cache[pane_id] = conf
   end
 
   return conf
 end
 
-local function update_pane(window, pane)
-  local conf = ensure_pane_conf(pane)
-  window:set_config_overrides(conf)
-end
 
 return function(config)
-  pane_local_conf = {}
+  pane_config_cache = {}
 
   wezterm.on("user-var-changed", function(win, pane, name, value)
     if name == 'WEZTERM_PROG' or name == "bg" then
-      update_pane(win, pane)
+      win:set_config_overrides(get_pane_config(pane))
     end
   end)
 
   wezterm.on("update-status", function(win, pane)
-    update_pane(win, pane)
+      win:set_config_overrides(get_pane_config(pane))
   end)
 end

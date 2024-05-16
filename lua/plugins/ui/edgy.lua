@@ -7,7 +7,7 @@ return {
       -- fix_win_height = false,
       options = {
         left = { size = 40 },
-        right = { size = 60 },
+        right = { size = 50 },
         bottom = { size = 10 },
         top = { size = 10 },
       },
@@ -39,7 +39,8 @@ return {
             return vim.bo[buf].buftype == "help"
           end,
         },
-        { ft = "dap-repl", title= "DAP" }
+        { ft = "dap-repl", title= "DAP" },
+        { ft = "httpResult", title = "HTTP"},
       },
       right = {
         { ft = "dapui_scopes", title = "Dap Scopes" },

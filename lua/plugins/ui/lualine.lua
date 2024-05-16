@@ -1,3 +1,29 @@
+local function lsp_progress(_, is_active)
+  if not is_active then
+    return
+  end
+  local messages = vim.lsp.util.get_progress_messages()
+  if #messages == 0 then
+    return ""
+  end
+  local status = {}
+  for _, msg in pairs(messages) do
+    if msg.name ~= "null-ls" then
+      local title = ""
+      if msg.title then
+        title = msg.title
+      end
+      table.insert(status, (msg.percentage or 0) .. "%% " .. title)
+    end
+  end
+  if #status == 0 then return "" end
+
+  local spinners = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+  local ms = vim.loop.hrtime() / 1000000
+  local frame = math.floor(ms / 120) % #spinners
+  return table.concat(status, "  ") .. " " .. spinners[frame + 1]
+end
+
 return {
   {
     'nvim-lualine/lualine.nvim',
@@ -50,31 +76,6 @@ return {
         return table.concat(buf_client_names, " ")
       end
 
-      local function lsp_progress(_, is_active)
-        if not is_active then
-          return
-        end
-        local messages = vim.lsp.util.get_progress_messages()
-        if #messages == 0 then
-          return ""
-        end
-        local status = {}
-        for _, msg in pairs(messages) do
-          if msg.name ~= "null-ls" then
-            local title = ""
-            if msg.title then
-              title = msg.title
-            end
-            table.insert(status, (msg.percentage or 0) .. "%% " .. title)
-          end
-        end
-        if #status == 0 then return "" end
-
-        local spinners = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
-        local ms = vim.loop.hrtime() / 1000000
-        local frame = math.floor(ms / 120) % #spinners
-        return table.concat(status, "  ") .. " " .. spinners[frame + 1]
-      end
 
       local function VMInfoSegment()
         local success, infos = pcall(vim.call, "VMInfos")

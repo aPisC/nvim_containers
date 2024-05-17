@@ -2,7 +2,8 @@ local function lsp_progress(_, is_active)
   if not is_active then
     return
   end
-  local messages = vim.lsp.util.get_progress_messages()
+  -- local messages = vim.lsp.util.get_progress_messages()
+  local messages = (vim.lsp.status or vim.lsp.util.get_progress_messages)()
   if #messages == 0 then
     return ""
   end
@@ -115,7 +116,7 @@ return {
           },
           lualine_b = {
             'branch',
-            -- 'diff',
+            'diff',
             'diagnostics'
           },
           lualine_c = {

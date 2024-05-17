@@ -12,6 +12,7 @@ return {
       "sindrets/diffview.nvim",
       "ibhagwan/fzf-lua",
     },
+    event = "VeryLazy",
     cmd = { 
       "Git", 
       "Neogit",

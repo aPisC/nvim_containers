@@ -83,7 +83,7 @@ return {
   },
   {
     'm4xshen/autoclose.nvim',
-    enabled = false,
+    enabled = true,
     opts = {
       options = {
         disable_when_touch = true,
@@ -123,6 +123,7 @@ return {
         -- Disable on specific file names
         local disables_file_patterns = {
           "Dependencies.scala$",
+          "/tmp/.*",
         }
         local filename = vim.api.nvim_buf_get_name(0)
         for _, pattern in ipairs(disables_file_patterns) do

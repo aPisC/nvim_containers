@@ -10,6 +10,11 @@ return {
       })
     end,
   },
+  {
+    'anuvyklack/pretty-fold.nvim',
+     enabled = false,
+     opts = {},
+  },
   -- { 'echasnovski/mini.animate', version = false, },
   -- {   "karb94/neoscroll.nvim",  },
   -- {

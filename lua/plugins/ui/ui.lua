@@ -19,10 +19,6 @@ return {
     end
   },
   {
-    'anuvyklack/pretty-fold.nvim',
-     opts = {},
-  },
-  {
     'norcalli/nvim-colorizer.lua',
     opts = {"*"},
     init=function()

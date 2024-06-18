@@ -39,10 +39,9 @@ return {
     'scalameta/nvim-metals',
     dependencies = { 
       { 'nvim-lua/plenary.nvim' },
-      { 'jubnzv/virtual-types.nvim' },
     },
     opts = {
-      -- root_patterns=  {'.git'},
+      root_patterns=  {'.git'},
       settings = {
         testUserInterface = "code lenses",
         showImplicitArguments = true,
@@ -86,7 +85,6 @@ return {
             if type(opts.on_attach) == "function" then
               opts.on_attach(client, bufnr)
             end
-            require'virtualtypes'.on_attach(client, bufnr)
           end,
         }
       )

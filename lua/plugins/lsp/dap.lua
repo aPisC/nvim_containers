@@ -34,6 +34,7 @@ return {
     },
     keys = {
       {'<F5>', function() require("dap").continue() end, mode={'n', 'i'}},
+      {'<F6>', function() require("dap").run_last() end, mode={'n', 'i'}},
       {'<F17>', function() require("dap").terminate() end, mode={'n', 'i'}},
       {'<F9>', function() require("dap").toggle_breakpoint() end, mode={'n', 'i'}},
       {

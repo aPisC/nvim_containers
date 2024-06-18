@@ -176,11 +176,12 @@ end
 local function get_pane_config(pane)
   local pane_id = pane:pane_id()
   local pane_user_vars = pane:get_user_vars()
+  local program_raw = pane:get_title()
 
   local selector = {
     dir = Utils.pane_working_dir(pane),
     bg_var = (pane_user_vars.bg and pane_user_vars.bg ~= "") and pane_user_vars.bg or nil,
-    program = pane:get_title()
+    program = program_backgrounds[program_raw] and program_raw or "",
   }
   local conf_id = selector.dir .. "$" .. (selector.bg_var or "default") .. "$" .. selector.program
 

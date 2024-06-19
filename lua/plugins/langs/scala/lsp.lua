@@ -1,5 +1,6 @@
 local metals_au_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
 
+
 return {
   {
     'neovim/nvim-lspconfig',
@@ -11,7 +12,7 @@ return {
         scala = true
       },
       formatters = {
-        scala = function() return { 
+        scala = function() return {
           function() return { ['exe']= 'scalafmt', ['args']= { '--stdin' }, ['stdin']= 1 } end
         } end,
       },
@@ -37,7 +38,7 @@ return {
   },
   {
     'scalameta/nvim-metals',
-    dependencies = { 
+    dependencies = {
       { 'nvim-lua/plenary.nvim' },
     },
     opts = {
@@ -73,14 +74,14 @@ return {
       )
 
       local metals_config = vim.tbl_deep_extend(
-        "force", 
+        "force",
         require("metals").bare_config(),
-        opts, 
+        opts,
         {
           capabilities = capabilities,
-          on_attach = function(client, bufnr) 
+          on_attach = function(client, bufnr)
             if has_dap then
-              require("metals").setup_dap() 
+              require("metals").setup_dap()
             end
             if type(opts.on_attach) == "function" then
               opts.on_attach(client, bufnr)
@@ -103,5 +104,4 @@ return {
       end, {})
     end,
   },
-
 }

@@ -27,6 +27,14 @@ return {
           end,
         },
         {
+          title="Overseer",
+          ft="",
+          size = { height = 10,  },
+          filter = function(buf, win)
+            return vim.b[buf] and vim.b[buf].overseer_edgy == true
+          end,
+        },
+        {
           ft = "Trouble",
           title = "Trouble",
           open = "Trouble",

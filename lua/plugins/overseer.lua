@@ -13,6 +13,7 @@ function transform_json_component(component)
   else return nil end
 end
 
+
 return {
   {
     'aPisC/overseer.nvim',
@@ -23,11 +24,13 @@ return {
       }
     },
     opts = {
+      custom_templates = {},
       templates = {"builtin"},
       task_list = {
         bindings = {
           ["o"] = "<CMD>OverseerRun<CR>",
-          ["i"] = "<CMD>OverseerQuickAction edit<CR>",
+          ["i"] = "<CMD>OverseerQuickAction open<CR>",
+          ["e"] = "<CMD>OverseerQuickAction edit<CR>",
           ["r"] = "<CMD>OverseerQuickAction restart<CR>",
           ["w"] = "<CMD>OverseerQuickAction watch<CR>",
           ["x"] = "<CMD>OverseerQuickAction dispose<CR>",
@@ -36,6 +39,42 @@ return {
           ["dd"] = "<CMD>OverseerQuickAction dispose<CR>",
         },
       },
+      actions = {
+        ["open"] = {
+          desc = "open terminal",
+          condition = function(task)
+            local bufnr = task:get_bufnr()
+            return bufnr and vim.api.nvim_buf_is_valid(bufnr)
+          end,
+          run = function(task)
+            local util = require("overseer.util")
+
+            for _, win in ipairs(vim.api.nvim_list_wins()) do
+              local win_bufnr = vim.api.nvim_win_get_buf(win)
+              if vim.b[win_bufnr].overseer_edgy then
+                vim.api.nvim_win_set_buf(win, task:get_bufnr())
+                vim.api.nvim_set_current_win(win)
+                util.scroll_to_end(0)
+                return
+              end
+            end
+
+            vim.cmd([[vsplit]])
+            util.set_term_window_opts()
+            vim.b[task:get_bufnr()].overseer_edgy = true
+            vim.api.nvim_win_set_buf(0, task:get_bufnr())
+            util.scroll_to_end(0)
+          end,
+        }
+
+      }
+      -- log = {
+      --   {
+      --     type = "file",
+      --     filename = "overseer.log",
+      --     level = vim.log.levels.TRACE, -- or TRACE for max verbosity
+      --   },
+      -- },
     },
     event = "VeryLazy",
     config = function(_, opts)
@@ -86,6 +125,10 @@ return {
           return get_overseer_tasks_file(vim.fn.getcwd()) or ""
         end,
       })
+
+      for _, template in pairs(opts.custom_templates or {}) do
+        overseer.register_template(template)
+      end
     end,
   }
 }

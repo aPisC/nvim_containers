@@ -56,7 +56,6 @@ return function(system_dist_config)
       {import="plugins.git"},
       {import="plugins.ui"},
       {import="plugins.theme"},
-      {import="plugins.telescope"},
       {import="plugins.hydra"},
       {import="plugins.lsp"},
       {import="plugins.overseer"},

@@ -15,6 +15,13 @@ return {
      enabled = false,
      opts = {},
   },
+  {
+      "folke/todo-comments.nvim",
+      dependencies = { 
+        "nvim-lua/plenary.nvim",
+      },
+      opts = {}
+  }
   -- { 'echasnovski/mini.animate', version = false, },
   -- {   "karb94/neoscroll.nvim",  },
   -- {

@@ -42,9 +42,4 @@ return {
       display_virtual_text = false,
     }
   },
-  {
-    'lewis6991/gitsigns.nvim',
-    config = true,
-    event = "VeryLazy",
-  },
 }

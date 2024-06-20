@@ -1,6 +1,9 @@
 return {
   {
     'luukvbaal/statuscol.nvim',
+    dependencies = {
+      { 'lewis6991/gitsigns.nvim', config = true},
+    },
     init = function()
       vim.fn.sign_define('DapBreakpoint', { text='', texthl='DapBreakpoint', linehl='', numhl='' })
       vim.fn.sign_define('DapBreakpointRejected', { text='', texthl='DapRejected', linehl='', numhl= '' })
@@ -24,28 +27,25 @@ return {
         bt_ignore = { "terminal" },
         segments = {
           {
-            sign = { name = { "GitSigns" }, maxwidth = 1, colwidth=1, auto = false, wrap=true },
+            sign = { name = { "Gitsigns" }, text = {".*"}, maxwidth = 1, colwidth = 1, auto = false, wrap = true },
             click = "v:lua.ScSa"
           },
           {
-            sign = { name = { "Diagnostic" }, fillchar=" ", maxwidth = 1, colwidth=1, auto = false, wrap=false },
+            sign = { name = { "todo" }, text = {".*"}, maxwidth = 1, colwidth = 1, auto = true, wrap = true },
             click = "v:lua.ScSa"
           },
-          -- {
-          --   sign = { name = { "LightBulb" }, fillchar=" ", maxwidth = 1, auto = false, wrap=false },
-          --   click = "v:lua.ScSa"
-          -- },
           {
-            sign = { name = { ".*" }, maxwidth = 1, colwidth = 1, auto = false, wrap = false },
+            sign = { name = { ".*" }, text = {".*"}, maxwidth = 2, colwidth = 1, auto = true, wrap = true },
             click = "v:lua.ScSa"
           },
+          { text = { " " }, },
           {
             text = { builtin.lnumfunc, "" },
             condition = { true, builtin.not_empty },
             click = "v:lua.ScLa",
           },
           {
-            sign = { name = { "Dap" }, fillchar=" ", maxwidth = 1, auto = true },
+            sign = { name = { "Dap" } }, fillchar=" ", maxwidth = 1, auto = true,
             click = "v:lua.ScSa"
           },
           {

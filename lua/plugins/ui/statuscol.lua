@@ -1,8 +1,13 @@
 return { 
+  -- {
+  --   'lewis6991/gitsigns.nvim',
+  --   opts = {},
+  --   enable=false
+  --   -- event = "VeryLazy",
+  -- },
   {
     'luukvbaal/statuscol.nvim',
     dependencies = {
-      { 'lewis6991/gitsigns.nvim', config = true},
     },
     init = function()
       vim.fn.sign_define('DapBreakpoint', { text='', texthl='DapBreakpoint', linehl='', numhl='' })
@@ -57,7 +62,10 @@ return {
             sign = { name = { "Dap" }, maxwidth = 1, colwidth = 1, auto = false, wrap = false, fillchar=' ' },
             click = "v:lua.ScLa"
           },
-          { text = { builtin.foldfunc, " " }, click = "v:lua.ScFa" },
+          {
+            sign = { name = { ".*" }, maxwidth = 2, colwidth = 1, auto = true, wrap = true },
+            click = "v:lua.ScSa"
+          },
         },
         clickmod = "c",
         clickhandlers = {

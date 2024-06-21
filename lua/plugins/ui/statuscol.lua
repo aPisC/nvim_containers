@@ -1,4 +1,4 @@
-return {
+return { 
   {
     'luukvbaal/statuscol.nvim',
     dependencies = {
@@ -16,52 +16,48 @@ return {
       vim.fn.sign_define('DiagnosticSignWarn', { text='', texthl='DiagnosticSignWarn', linehl='', numhl= '' })
       vim.fn.sign_define('DiagnosticSignInfo', { text='󰙎', texthl='DiagnosticSignInfo', linehl='', numhl= '' })
       vim.fn.sign_define('DiagnosticSignHint', { text='󰙎', texthl='DiagnosticSignHint', linehl='', numhl= '' })
+
+      vim.opt.foldcolumn = "1"
+      vim.opt.foldmethod = "expr"
+      vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+      vim.opt.fcs = {
+        fold = "#",
+        foldopen  = "",
+        foldclose = "",
+      }
     end,
+    enabled = true,
     opts = function()
       local builtin = require("statuscol.builtin")
       return {
         setopt = true,
         thousands = false,
         relculright = true,
-        ft_ignore = { "neo-tree" },
+        ft_ignore = { "neo-tree", "NeogitStatus" },
         bt_ignore = { "terminal" },
         segments = {
-          {
-            sign = { name = { "Gitsigns" }, text = {".*"}, maxwidth = 1, colwidth = 1, auto = false, wrap = true },
+          { 
+            sign = { namespace = {"diagnostic"}, maxwidth = 1, colwidth = 1, auto = true, wrap = false, fillchar=' ' },
+            click = "v:lua.ScSa"
+          },
+          { 
+            sign = { name = { ".*" }, namespace = {".*"}, maxwidth = 2, colwidth = 1, auto = true, wrap = false, fillchar=' ' },
             click = "v:lua.ScSa"
           },
           {
-            sign = { name = { "todo" }, text = {".*"}, maxwidth = 1, colwidth = 1, auto = true, wrap = true },
+            sign = { namespace = {"gitsigns_signs"}, maxwidth = 1, colwidth = 2, auto = true, wrap = true },
             click = "v:lua.ScSa"
           },
-          {
-            sign = { name = { ".*" }, text = {".*"}, maxwidth = 2, colwidth = 1, auto = true, wrap = true },
-            click = "v:lua.ScSa"
-          },
-          { text = { " " }, },
           {
             text = { builtin.lnumfunc, "" },
             condition = { true, builtin.not_empty },
             click = "v:lua.ScLa",
           },
           {
-            sign = { name = { "Dap" } }, fillchar=" ", maxwidth = 1, auto = true,
-            click = "v:lua.ScSa"
+            sign = { name = { "Dap" }, maxwidth = 1, colwidth = 1, auto = false, wrap = false, fillchar=' ' },
+            click = "v:lua.ScLa"
           },
-          {
-            text = { '%{foldlevel(v:lnum) > foldlevel(v:lnum - 1) ? (foldclosed(v:lnum) == -1 ? "" : "") : " " }', " " },       -- table of strings or functions returning a string
-            click = "v:lua.ScFa",  -- %@ click function label, applies to each text element
-            -- hl = "FoldColumn",     -- %# highlight group label, applies to each text element
-            condition = { true },  -- table of booleans or functions returning a boolean
-            sign = {               -- table of fields that configure a sign segment
-              maxwidth = 1,        -- maximum number of signs that will be displayed in this segment
-              colwidth = 2,        -- number of display cells per sign in this segment
-              auto = false,        -- when true, the segment will not be drawn if no signs matching the pattern are currently placed in the buffer.
-              wrap = false,        -- when true, signs in this segment will also be drawn on the virtual or wrapped part of a line (when v:virtnum != 0).
-              fillchar = " ",      -- character used to fill a segment with less signs than maxwidth
-              fillcharhl = nil,    -- highlight group used for fillchar (SignColumn/CursorLineSign if omitted)
-            }
-          },
+          { text = { builtin.foldfunc, " " }, click = "v:lua.ScFa" },
         },
         clickmod = "c",
         clickhandlers = {

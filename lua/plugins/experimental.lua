@@ -5,8 +5,16 @@ return {
     config = function()
       require("lsp_lines").setup()
       vim.diagnostic.config({
+        underline=true,
+        severity_sort=true,
+        float = true,
+        update_in_insert = true,
         virtual_text = false,
         virtual_lines = {highlight_whole_line = false, only_current_line= true},
+          severity_sort = true,
+          float = {
+            source = "always",  -- Or "if_many"
+          },
       })
     end,
   },

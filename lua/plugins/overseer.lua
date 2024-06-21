@@ -35,7 +35,7 @@ return {
         direction = "left",
 				bindings = {
 					["o"] = "<CMD>OverseerRun<CR>",
-					["i"] = "<CMD>OverseerQuickAction open<CR>",
+					["i"] = "<CMD>OverseerQuickAction open docked<CR>",
 					["e"] = "<CMD>OverseerQuickAction edit<CR>",
 					["r"] = "<CMD>OverseerQuickAction restart<CR>",
 					["w"] = "<CMD>OverseerQuickAction watch<CR>",

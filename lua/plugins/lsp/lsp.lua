@@ -196,12 +196,12 @@ return {
       -- })
     end,
     init = function()
-      vim.diagnostic.config({
-        underline=true,
-        severity_sort=true,
-        float = true,
-        update_in_insert = true,
-      })
+      -- vim.diagnostic.config({
+      --   underline=true,
+      --   severity_sort=true,
+      --   float = true,
+      --   update_in_insert = true,
+      -- })
     end
   },
 }

@@ -24,6 +24,9 @@ local custom_overrides = {
   FlashMatch = { bg = '#112244', fg = 'cyan' },
   FlashCursor = { fg = '#112244', bg = 'cyan' },
   -- FlashBackdrop = { fg = '#a0a8b7' },
+  WinBar = { bg = 'transparent', fg = '#eaeaea' },
+  WinBarNC = { bg = 'transparent', fg = '#eaeaea' }, 
+  FoldColumn = { fg="#5c6370" },
 }
 
 

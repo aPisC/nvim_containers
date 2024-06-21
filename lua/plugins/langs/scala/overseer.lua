@@ -91,23 +91,38 @@ return {
                 params = {
                   envFile = {
                     type = "string",
-                    default = "",
+                    default = vim.fn.filereadable(".vscode/.env") == 1 and ".vscode/.env" or "",
                     description = "Path to the env file",
+                    validate = function(value)
+                      return value == "" or vim.fn.filereadable(value) == 1
+                    end
+                  },
+                  javaConfigFile = {
+                    type = "string",
+                    default = vim.fn.filereadable(".vscode/localdev.conf") == 1 and ".vscode/localdev.conf" or "",
+                    description = "Path to the java config file",
                     validate = function(value)
                       return value == "" or vim.fn.filereadable(value) == 1
                     end
                   }
                 },
                 condition = {},
-                builder = function(params) return {
-                  cmd = {"sbt", "project "  .. project ..";run" },
-                  args = { },
-                  cwd = vim.fn.getcwd(),
-                  env = params.envFile == "" and {} or read_env_file(params.envFile),
-                  name = "Run " .. project,
-                  components = {"default"},
-                  metadata = {},
-                } end,
+                builder = function(params) 
+                  args = {
+                    "project "  .. project,
+                    params.javaConfigFile and ('set javaOptions += "-Dconfig.file=' .. vim.fn.getcwd() .. '/' .. params.javaConfigFile ..  '"' ) or nil,
+                    "run"
+                  }
+                  return {
+                    cmd = "sbt",
+                    args = vim.tbl_filter(function(v) return v ~= nil end, args),
+                    cwd = vim.fn.getcwd(),
+                    env = params.envFile == "" and {} or read_env_file(params.envFile),
+                    name = "Run " .. project,
+                    components = {"default"},
+                    metadata = {},
+                  } 
+                end,
               })
             end
 

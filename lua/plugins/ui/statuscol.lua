@@ -25,11 +25,8 @@ return {
       vim.opt.foldcolumn = "1"
       vim.opt.foldmethod = "expr"
       vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-      vim.opt.fcs = {
-        fold = "#",
-        foldopen  = "",
-        foldclose = "",
-      }
+      vim.opt.foldlevel = 20
+      vim.opt.fcs = vim.opt.fcs._value .. (vim.opt.fcs._value == "" and "" or ",") .. "fold:#,foldopen:,foldclose:"
     end,
     enabled = true,
     opts = function()
@@ -62,10 +59,7 @@ return {
             sign = { name = { "Dap" }, maxwidth = 1, colwidth = 1, auto = false, wrap = false, fillchar=' ' },
             click = "v:lua.ScLa"
           },
-          {
-            sign = { name = { ".*" }, maxwidth = 2, colwidth = 1, auto = true, wrap = true },
-            click = "v:lua.ScSa"
-          },
+          { text = { builtin.foldfunc, " " }, click = "v:lua.ScFa" },
         },
         clickmod = "c",
         clickhandlers = {

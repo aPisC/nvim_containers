@@ -1,10 +1,14 @@
 
-local function get_build_sbt_path()
-  local path = vim.fs.find("build.sbt", {
-    upward = true,
-    type = "file",
-    path = vim.fn.getcwd(),
-  })[1]
+local function get_sln_path() 
+  local path = vim.fs.find(
+    function(name) return name:match(".*%.sln") end,
+    {
+      upward = true,
+      type = "file",
+      path = vim.fn.getcwd(),
+      stop = vim.fn.getcwd(),
+    }
+  )[1]
   return path
 end
 
@@ -33,50 +37,41 @@ return {
       custom_templates = {
         scala = {
           name="scala tasks",
-          generator = function(_, cb)
+          generator = function(search, cb)
+            local slnFile = get_sln_path()
+
             local ret = {
               {
-                name = "sbt compile all",
-                tags = {"scala", "sbt"},
+                name = "dotnet build sln",
+                tags = {"dotnet"},
                 params = {},
                 condition = {},
                 builder = function() return {
-                  cmd = {"sbt", "compile" },
-                  args = {},
+                  cmd = {"dotnet", "compile" },
+                  args = {"build", slnFile},
                   cwd = vim.fn.getcwd(),
                   env = {},
-                  name = "Sbt Compile",
+                  name = "Dotnet build solution",
                   components = {"default"},
                   metadata = {},
                 } end,
               },
-              {
-                name = "sbt",
-                tags = {"scala", "sbt"},
-                params = {},
-                condition = {},
-                builder = function(opts) return {
-                  cmd = {"sbt" },
-                  args = {},
-                  cwd = vim.fn.getcwd(),
-                  env = {},
-                  name = "Sbt",
-                  components = {"default"},
-                  metadata = {},
-                } end,
-              }
             }
 
             local run_projects = {}
             local test_projects = {}
-            local jid = vim.fn.jobstart({"bloop", "projects"}, {
+            local jid = vim.fn.jobstart({"dotnet", "sln", "list"}, {
               stdout_buffered = true,
               on_stdout = function(_, data, _)
+                local separator_found = false
                 for _, line in ipairs(data) do
-                  if line == "" then  
-                  elseif line:match("^default-.*") then
-                  elseif line:match(".*test") then table.insert(test_projects, line)
-                  else table.insert(run_projects, line) end
+                  if not separator_found then
+                    if line:match("^-*$") then separator_found = true end
+                  else
+                    if line == "" then
+                    elseif line:match(".*test") then table.insert(test_projects, line)
+                    else table.insert(run_projects, line) end
+                  end
                 end
               end,
             })
@@ -86,8 +81,8 @@ return {
 
             for _, project in ipairs(run_projects) do
               table.insert(ret, {
-                name = "sbt run " .. project,
-                tags = {"scala", "sbt"},
+                name = "dotnet run" .. project,
+                tags = {"dotnet"},
                 params = {
                   envFile = {
                     type = "string",
@@ -97,44 +92,35 @@ return {
                       return value == "" or vim.fn.filereadable(value) == 1
                     end
                   },
-                  javaConfigFile = {
-                    type = "string",
-                    default = vim.fn.filereadable(".vscode/localdev.conf") == 1 and ".vscode/localdev.conf" or "",
-                    description = "Path to the java config file",
-                    validate = function(value)
-                      return value == "" or vim.fn.filereadable(value) == 1
-                    end
-                  }
                 },
                 condition = {},
-                builder = function(params)
-                  local args = {
+                builder = function(params) 
+                  args = {
                     "project "  .. project,
-                    params.javaConfigFile and ('set javaOptions += "-Dconfig.file=' .. vim.fn.getcwd() .. '/' .. params.javaConfigFile ..  '"' ) or nil,
                     "run"
                   }
                   return {
-                    cmd = "sbt",
-                    args = vim.tbl_filter(function(v) return v ~= nil end, args),
+                    cmd = "dotnet",
+                    args = {"build", "-p", project},
                     cwd = vim.fn.getcwd(),
                     env = params.envFile == "" and {} or read_env_file(params.envFile),
                     name = "Run " .. project,
                     components = {"default"},
                     metadata = {},
-                  }
+                  } 
                 end,
               })
             end
 
             for _, project in ipairs(test_projects) do
               table.insert(ret, {
-                name = "sbt test " .. project,
-                tags = {"scala", "sbt"},
+                name = "dotnet test " .. project,
+                tags = {"dotnet"},
                 params = {},
                 condition = {},
                 builder = function() return {
-                  cmd = {"sbt", "project "  .. project ..";test" },
-                  args = {},
+                  cmd = "dotnet",
+                  args = {"test", "-p", project},
                   cwd = vim.fn.getcwd(),
                   env = {},
                   name = "Test " .. project,
@@ -147,11 +133,11 @@ return {
           end,
           condition = {
             callback = function()
-              return get_build_sbt_path() ~= nil
+              return get_sln_path() ~= nil
             end,
           },
           cache_key = function()
-            return get_build_sbt_path()
+            return get_sln_path()
           end
         }
       }

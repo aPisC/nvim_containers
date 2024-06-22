@@ -27,6 +27,7 @@ local custom_overrides = {
   WinBar = { bg = 'transparent', fg = '#eaeaea' },
   WinBarNC = { bg = 'transparent', fg = '#eaeaea' }, 
   FoldColumn = { fg="#5c6370" },
+  Folded = { fg="#5c6370" },
 }
 
 

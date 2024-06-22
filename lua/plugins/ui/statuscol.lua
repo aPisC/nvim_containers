@@ -26,7 +26,17 @@ return {
       vim.opt.foldmethod = "expr"
       vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
       vim.opt.foldlevel = 20
-      vim.opt.fcs = vim.opt.fcs._value .. (vim.opt.fcs._value == "" and "" or ",") .. "fold:#,foldopen:,foldclose:"
+      vim.opt.foldtext = "v:lua.foldtext()"
+      _G.foldtext = function()
+        return string.format(
+          "%s (%s %i lines) %s",
+          vim.fn.getline(vim.v.foldstart),
+          vim.v.folddashes,
+          vim.v.foldend - vim.v.foldstart + 1,
+          vim.fn.getline(vim.v.foldend):gsub("^%s*", "")
+        )
+      end
+      vim.opt.fcs = vim.opt.fcs._value .. (vim.opt.fcs._value == "" and "" or ",") .. "fold: ,foldopen:,foldclose:"
     end,
     enabled = true,
     opts = function()

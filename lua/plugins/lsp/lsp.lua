@@ -59,7 +59,7 @@ return {
         },
       },
     },
-    config = function(plug, opts)
+    config = function(_, opts)
       -- Setup treesitter
       require("nvim-treesitter.configs").setup({
         ensure_installed = vim.tbl_filter(
@@ -103,13 +103,13 @@ return {
           function(formatter)
             if type(formatter) == "function" then
               return formatter()
-            else 
+            else
               return formatter
             end
           end,
           opts.formatters
         )
-      }) 
+      })
 
       -- Setup test adapters
       require("neotest").setup({
@@ -153,6 +153,7 @@ return {
       local lspconfig = require("lspconfig")
 
       for server, server_config in pairs(opts.servers) do
+        if type(server_config) == "function" then server_config = server_config() end
         local capabilities = vim.tbl_deep_extend("force",
           {},
           vim.lsp.protocol.make_client_capabilities(),

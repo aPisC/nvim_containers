@@ -2,7 +2,7 @@ return {
   {
     -- DAP
     'mfussenegger/nvim-dap',
-    event = "VeryLazy", 
+    event = "VeryLazy",
     dependencies = {
       {
         -- DAP UI
@@ -62,27 +62,33 @@ return {
       {'<C-g>r', function() require("dap").repl.toggle({height=10}) end}
     },
     commands = {
-      {'DapUi', function() require("dapui").toggle() end},
       {'DapRun', function() require('dap').run() end},
       {'DapRunLast', function() require('dap').run_last() end},
       {'DapRepl', function() require('dap').repl.toggle({height=10}) end},
+      {'DapUi', function() require("dapui").toggle() end},
+      {'DapStacks', function() require('dapui').float_element("stacks", {enter=true}) end},
+      {'DapWatch', function() require('dapui').float_element("watches", {enter=true}) end},
+      {'DapLocals', function() require('dapui').float_element("scopes", {enter=true}) end},
+      {'DapBreakpoints', function() require('dapui').float_element("breakpoints", {enter=true}) end},
+      {'DapEval', function() require('dapui').eval() end},
     },
-    config = function()
-      local dap = require("dap")
-      -- configure dap events
-      dap.listeners.before['event_stopped']['dapui_event_handling'] = function(session, body)
-        vim.cmd(":Neotree action=close")
-        require("dapui").open()
+    config = function(plug)
+      local dap, dapui = require("dap"), require("dapui")
+      dap.listeners.before.attach.dapui_config = function()
+        dapui.open()
       end
-      dap.listeners.after['event_terminated']['dap-ui'] = function(session, body)
-        if not body or not body.restart then
-          require("dapui").close()
-        end
+      dap.listeners.before.launch.dapui_config = function()
+        dapui.open()
       end
-      dap.listeners.after['terminated']['dap-ui'] = function(session, body)
-        if not body.restart then
-          require("dapui").close()
-        end
+      dap.listeners.before.event_terminated.dapui_config = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited.dapui_config = function()
+        dapui.close()
+      end
+
+      for _, c in ipairs(plug.commands) do
+        vim.api.nvim_create_user_command(c[1], c[2], c[3] or { nargs = 0, force = true })
       end
     end
   },

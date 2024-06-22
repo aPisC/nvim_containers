@@ -101,7 +101,7 @@ return {
                   }
                   return {
                     cmd = "dotnet",
-                    args = {"build", "-p", project},
+                    args = {"build", project},
                     cwd = vim.fn.getcwd(),
                     env = params.envFile == "" and {} or read_env_file(params.envFile),
                     name = "Run " .. project,
@@ -120,7 +120,7 @@ return {
                 condition = {},
                 builder = function() return {
                   cmd = "dotnet",
-                  args = {"test", "-p", project},
+                  args = {"test", project},
                   cwd = vim.fn.getcwd(),
                   env = {},
                   name = "Test " .. project,

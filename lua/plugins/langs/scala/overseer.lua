@@ -75,7 +75,7 @@ return {
                 for _, line in ipairs(data) do
                   if line == "" then  
                   elseif line:match("^default-.*") then
-                  elseif line:match(".*test") then table.insert(test_projects, line)
+                  elseif line:match(".*Tests?.csproj") then table.insert(test_projects, line)
                   else table.insert(run_projects, line) end
                 end
               end,

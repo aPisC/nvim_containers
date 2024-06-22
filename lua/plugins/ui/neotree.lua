@@ -46,6 +46,7 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-tree/nvim-web-devicons",
       "MunifTanjim/nui.nvim",
+      's1n7ax/nvim-window-picker',
     },
     opts = {
         sources = {
@@ -56,6 +57,14 @@ return {
         },
         open_files_do_not_replace_types = { "terminal", "trouble", "qf" },
         default_component_configs = {
+          diagnostics = {
+            symbols = {
+               hint = "󰙎",
+               info = "󰙎",
+               warn = "",
+               error = "",
+            }
+          },
           git_status = {
             symbols = {
               added     = "",

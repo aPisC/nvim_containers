@@ -45,7 +45,7 @@ return {
         setopt = true,
         thousands = false,
         relculright = true,
-        ft_ignore = { "neo-tree", "NeogitStatus" },
+        ft_ignore = { "neo-tree", "NeogitStatus", "sider-bar" },
         bt_ignore = { "terminal" },
         segments = {
           { 

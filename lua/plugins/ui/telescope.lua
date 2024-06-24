@@ -29,6 +29,7 @@ return {
 				end,
 				mode = "i",
 			},
+      { "<F1>", telescope_open_action("help_tags")}
 
 		},
 		opts = function()

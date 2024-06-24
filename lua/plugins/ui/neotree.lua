@@ -31,6 +31,7 @@ return {
             "dapui_watches",
             "OverseerList",
             "httpResult",
+            "sider-bar",
           },
           buftype = { 'terminal', "quickfix" },
         },

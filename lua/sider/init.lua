@@ -27,12 +27,14 @@ local function register_autocmds()
 	vim.api.nvim_create_autocmd({ "BufWinEnter", "FileType" }, {
 		group = Const.augroup,
 		callback = function(ev)
-			if not Sider_sidebars then
-				return
-			end
+			if not Sider_sidebars then return end
+      local window = vim.fn.bufwinid(ev.buf)
+      if vim.w[window]["sider-win"] then return end
+
+      print("mounting buf ".. vim.inspect(ev))
 
 			local sidebar = Sider_sidebars.left
-			local mounted = sidebar:try_mount_buf(ev.buf)
+			local mounted = sidebar:try_mount_buf()
 
 			if mounted then
 				sidebar:open()

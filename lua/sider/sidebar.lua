@@ -47,9 +47,9 @@ function Sidebar.new(props)
 
 	local instance = setmetatable({
 		segments = {},
-		buf_opts = vim.tbl_extend("force", {}, Const.sider_buf_opts, props.buf_opts or {}),
-		win_opts = vim.tbl_extend("force", {}, Const.sider_win_opts, props.win_opts or {}),
-		win_config = vim.tbl_extend("force", {}, Const.sider_win_config, props.win_config or {}),
+		buf_opts = vim.tbl_extend("force", {}, Const.sider_bar_buf_opts, props.buf_opts or {}),
+		win_opts = vim.tbl_extend("force", {}, Const.sider_bar_win_opts, props.win_opts or {}),
+		win_config = vim.tbl_extend("force", {}, Const.sider_bar_win_config, props.win_config or {}),
     lines_segment_map = {},
 		buf = nil,
 		win = nil,
@@ -66,7 +66,7 @@ function Sidebar.__prototype:try_mount_buf(buf)
 	local win = vim.fn.bufwinid(buf)
 	for _, segment in ipairs(self.segments) do
 		if segment.condition(buf, win) then
-			segment:mount(buf, win)
+			segment:mount(win)
 			return true
 		end
 	end
@@ -109,7 +109,6 @@ function Sidebar.__prototype.render(self)
 	if not vim.api.nvim_win_is_valid(self.win) then return end
 
 
-  local has_open_segment = false
 	local lines = {}
   local lines_segment = {}
 
@@ -122,11 +121,6 @@ function Sidebar.__prototype.render(self)
       table.insert(lines_segment, segment)
 		end
 	end
-
-  if not has_open_segment then
-    self:close()
-    return
-  end
 
 	local sum_height_factor = vim.fn.reduce(
 		vim.tbl_map(
@@ -195,6 +189,15 @@ function Sidebar.__prototype:close()
     vim.api.nvim_win_close(self.win, true)
     self.win = nil
   end
+end
+
+function Sidebar.__prototype:close_if_empty()
+  for _, segment in ipairs(self.segments) do
+    if segment:is_open() then
+      return
+    end
+  end
+  self:close()
 end
 
 function Sidebar.__prototype:get_segment_neighbour(segment, step)

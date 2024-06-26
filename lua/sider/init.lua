@@ -59,6 +59,7 @@ function Sider.setup()
 
 	Sider_sidebars.left:add_segment({
 		title = "Neo Tree",
+    open="Neotree",
 		condition = function(buf, win)
 			if vim.bo[buf].filetype == "neo-tree" then
 				return true
@@ -68,6 +69,7 @@ function Sider.setup()
 
 	Sider_sidebars.left:add_segment({
 		title = "Overseer",
+    open="OverseerOpen",
 		condition = function(buf, win)
 			if vim.bo[buf].filetype == "OverseerList" then
 				return true

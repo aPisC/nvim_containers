@@ -15,19 +15,24 @@ function Sidebar.__prototype:create_buffer()
 		group = Const.augroup,
 		buffer = self.buf,
 		callback = function()
-			self:hide()
+			self:close()
 		end,
 	})
 
 	vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
 		group = Const.augroup,
 		buffer = self.buf,
-		callback = function(event)
-			print(vim.inspect(event))
-			print(vim.inspect(vim.v.event))
+		callback = function()
 			self:render()
 		end,
 	})
+
+  vim.keymap.set({"n"}, "<cr>", function ()
+    local line = unpack(vim.api.nvim_win_get_cursor(0))
+    if self.lines_segment_map[line] then
+      self.lines_segment_map[line]:focus()
+    end
+  end, {buffer = self.buf})
 end
 
 function Sidebar.__prototype:create_window()
@@ -45,6 +50,7 @@ function Sidebar.new(props)
 		buf_opts = vim.tbl_extend("force", {}, Const.sider_buf_opts, props.buf_opts or {}),
 		win_opts = vim.tbl_extend("force", {}, Const.sider_win_opts, props.win_opts or {}),
 		win_config = vim.tbl_extend("force", {}, Const.sider_win_config, props.win_config or {}),
+    lines_segment_map = {},
 		buf = nil,
 		win = nil,
 	}, {
@@ -64,7 +70,7 @@ function Sidebar.__prototype:try_mount_buf(buf)
 			return true
 		end
 	end
-  return false
+	return false
 end
 
 function Sidebar.__prototype:get_segment_for_buf(buf)
@@ -97,71 +103,106 @@ function Sidebar.__prototype:update()
 end
 
 function Sidebar.__prototype.render(self)
-	if not self.buf then
-		return
-	end
-	if not self.win then
-		return
-	end
-	if not vim.api.nvim_buf_is_valid(self.buf) then
-		return
-	end
-	if not vim.api.nvim_win_is_valid(self.win) then
-		return
-	end
+	if not self.buf then return end
+	if not self.win then return end
+	if not vim.api.nvim_buf_is_valid(self.buf) then return end
+	if not vim.api.nvim_win_is_valid(self.win) then return end
 
-	-- vim.notify("render")
 
+  local has_open_segment = false
 	local lines = {}
+  local lines_segment = {}
 
+	local segment_width = vim.api.nvim_win_get_width(self.win)
 	for _, segment in ipairs(self.segments) do
-		local title = vim.is_callable(segment.title) and segment.title(segment.buf, segment.win) or segment.title
-		local segment_height = 20
-		local segment_width = vim.api.nvim_win_get_width(self.win)
-
-		table.insert(lines, title)
-		segment:open({
-			win = self.win,
-			width = segment_width,
-			height = segment_height,
-			top = #lines - 1,
-			left = 0,
-		})
-
-		for _ = 1, segment_height, 1 do
-			table.insert(lines, " |")
+    has_open_segment = has_open_segment or segment:is_open()
+		local segment_lines = segment:render({ width = segment_width })
+		for _, line in ipairs(segment_lines) do
+			table.insert(lines, line)
+      table.insert(lines_segment, segment)
 		end
 	end
 
-  -- for _, segment in ipairs(self.segments) do
-		-- local segment_width = vim.api.nvim_win_get_width(self.win)
+  if not has_open_segment then
+    self:close()
+    return
+  end
 
-  --   local segment_lines = segment:render({
-  --     width = segment_width,
-  --     top = #lines
-  --   })
+	local sum_height_factor = vim.fn.reduce(
+		vim.tbl_map(
+			function(line)
+				return line.height_factor or 1
+			end,
+			vim.tbl_filter(function(line)
+				return type(line) == "table"
+			end, lines)
+		),
+		function(a, b)
+			return a + b
+		end,
+		0
+	)
 
-		-- for _, line in ipairs(segment_lines) do
-			-- table.insert(lines, line)
-		-- end
-	-- end
+	local text_line_count = vim.tbl_count(vim.tbl_filter(function(line)
+		return type(line) == "string"
+	end, lines))
+
+	local height_available = vim.api.nvim_win_get_height(self.win) - text_line_count
+
+	local lines_final = {}
+  local lines_segment_final = {}
+
+	for index, line in ipairs(lines) do
+		if type(line) == "table" then
+			local height = math.ceil(height_available * line.height_factor / sum_height_factor)
+			line.callback({
+				win = self.win,
+				width = segment_width,
+				height = height,
+				top = #lines_final - 1,
+			})
+			for _ = 1, height, 1 do
+				table.insert(lines_final, "")
+        table.insert(lines_segment_final, lines_segment[index])
+			end
+
+			height_available = height_available - height
+			sum_height_factor = sum_height_factor - line.height_factor
+		else
+			table.insert(lines_final, line)
+      table.insert(lines_segment_final, lines_segment[index])
+		end
+	end
 
 	vim.bo[self.buf].modifiable = true
-	vim.api.nvim_buf_set_lines(self.buf, 0, -1, false, lines)
+	vim.api.nvim_buf_set_lines(self.buf, 0, -1, false, lines_final)
+  self.lines_segment_map = lines_segment_final
 	vim.bo[self.buf].modifiable = false
 end
 
 function Sidebar.__prototype:add_segment(segment)
-  local instance = Segment.new(segment)
+	local instance = Segment.new(vim.tbl_extend("force", {
+		parent = self,
+	}, segment))
 	table.insert(self.segments, instance)
 end
 
-
-function Sidebar.__prototype:hide()
-	vim.notify("hide")
+function Sidebar.__prototype:close()
 	for _, segment in ipairs(self.segments) do
 		segment:clear()
 	end
+  if self.win then
+    vim.api.nvim_win_close(self.win, true)
+    self.win = nil
+  end
+end
+
+function Sidebar.__prototype:get_segment_neighbour(segment, step)
+  for i, s2 in ipairs(self.segments) do
+    if s2 == segment then
+      return self.segments[i + step]
+    end
+  end
 end
 
 return Sidebar

@@ -69,7 +69,7 @@ return {
                     if line:match("^-*$") then separator_found = true end
                   else
                     if line == "" then
-                    elseif line:match(".*test") then table.insert(test_projects, line)
+                    elseif line:match(".*Tests?.csproj") then table.insert(test_projects, line)
                     else table.insert(run_projects, line) end
                   end
                 end

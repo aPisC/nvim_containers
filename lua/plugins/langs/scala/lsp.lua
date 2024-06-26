@@ -44,10 +44,10 @@ return {
     opts = {
       root_patterns=  {'.git'},
       settings = {
-        testUserInterface = "code lenses",
+        -- testUserInterface = "code lenses",
         showImplicitArguments = true,
         showImplicitConversionsAndClasses = true,
-        superMethodLensesEnabled = true,
+        -- superMethodLensesEnabled = true,
         showInferredType=true,
         enableSemanticHighlighting = true,
         excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },

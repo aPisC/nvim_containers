@@ -1,4 +1,11 @@
 return {
+  {
+    dir = "~/.config/nvim/lua/sider",
+    opts = {},
+    config = function(_, opts)
+      require("sider").setup(opts)
+    end,
+  },
 	{
 		"folke/edgy.nvim",
 		event = "VeryLazy",

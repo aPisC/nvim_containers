@@ -3,6 +3,7 @@ return {
 		dir = "~/.config/nvim/lua/sider",
 		opts = {
 			left = {
+        close_if_empty = true,
 				segments = {
 					{
 						title = "NeoTree",
@@ -14,7 +15,7 @@ return {
 					{
 						title = "Overseer",
 						ft = "OverseerList",
-						pinned = false,
+						pinned = true,
 						open = function()
 							require("overseer").open()
 						end,
@@ -33,6 +34,32 @@ return {
 					},
 				},
 			},
+      right = {
+        close_if_empty = true,
+        segments = {
+				{
+					ft = "dapui_scopes",
+					title = "Dap Scopes",
+					filter = function(buf, win)
+						return vim.api.nvim_win_get_config(win).relative == ""
+					end,
+				},
+				{
+					ft = "dapui_watches",
+					title = "Dap watches",
+					filter = function(buf, win)
+						return vim.api.nvim_win_get_config(win).relative == ""
+					end,
+				},
+				{
+					ft = "dapui_breakpoints",
+					title = "Dap Breakpoints",
+					filter = function(buf, win)
+						return vim.api.nvim_win_get_config(win).relative == ""
+					end,
+				},
+        },
+      }
 		},
 		config = function(_, opts)
 			require("sider").setup(opts)

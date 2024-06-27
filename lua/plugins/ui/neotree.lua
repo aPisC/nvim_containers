@@ -32,6 +32,7 @@ return {
             "OverseerList",
             "httpResult",
             "sider-bar",
+            "help",
           },
           buftype = { 'terminal', "quickfix" },
         },

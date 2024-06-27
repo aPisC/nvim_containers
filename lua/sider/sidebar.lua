@@ -8,9 +8,11 @@ local Sidebar = {
 function Sidebar.new(props)
 	props = vim.tbl_extend("force", {
 		position = "left", -- "left" | "right"
+    close_if_empty = true,
 	}, props or {})
 
 	local instance = setmetatable({
+    props = props,
 		segments = {},
 		lines_segment_map = {},
 		win = nil,
@@ -51,11 +53,15 @@ function Sidebar.__prototype:create_buffer()
 		return segment and segment:focus()
 	end, { buffer = buf })
 
-	vim.keymap.set({ "n" }, "<LeftMouse>", function()
-		local line = unpack(vim.api.nvim_win_get_cursor(0))
-		local segment = self.lines_segment_map[line]
-		return segment and segment:focus()
+	vim.keymap.set({ "n" }, "q", function()
+    self:close()
 	end, { buffer = buf })
+
+	-- vim.keymap.set({ "n" }, "<LeftMouse>", function()
+	-- 	local line = unpack(vim.api.nvim_win_get_cursor(0))
+	-- 	local segment = self.lines_segment_map[line]
+	-- 	return segment and segment:focus()
+	-- end, { buffer = buf })
 
 	return buf
 end
@@ -68,7 +74,7 @@ function Sidebar.__prototype:create_window()
 	local buffer = self:create_buffer()
 	local win = vim.api.nvim_open_win(buffer, true, {
 		win = -1,
-		split = "left",
+		split = self.props.position,
 		width = 40,
 		vertical = true,
 		focusable = false,
@@ -216,6 +222,10 @@ function Sidebar.__prototype:close()
 end
 
 function Sidebar.__prototype:close_if_empty()
+  if not self.props.close_if_empty then
+    return
+  end
+
 	for _, segment in ipairs(self.segments) do
 		if segment:is_open() then
 			return

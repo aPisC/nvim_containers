@@ -29,3 +29,10 @@ vim.noswapfile = true
 
 vim.opt.splitkeep = "screen"
 vim.opt.laststatus = 3
+
+vim.api.nvim_create_autocmd({ "BufEnter"}, {
+  callback = function(ev)
+    vim.wo.winhighlight = vim.wo.winhighlight
+  end,
+})
+

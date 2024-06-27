@@ -6,6 +6,7 @@ Const.sider_segment_buf_opts = {
 }
 
 Const.sider_segment_win_opts = {
+  winhighlight="Normal:NeoTreeNormal,NormalNC:NeoTreeNormalNC,SignColumn:NeoTreeSignColumn,CursorLine:NeoTreeCursorLine,FloatBorder:NeoTreeFloatBorder,StatusLine:NeoTreeStatusLine,StatusLineNC:NeoTreeStatusLineNC,VertSplit:NeoTreeVertSplit,EndOfBuffer:NeoTreeEndOfBuffer,WinSeparator:NeoTreeWinSeparator"
 }
 
 Const.namespace = vim.api.nvim_create_namespace("sider")

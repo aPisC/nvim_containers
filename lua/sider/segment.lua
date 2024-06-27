@@ -12,13 +12,14 @@ function Segment.new(segment)
 		ft = segment.ft,
 		filter = segment.filter,
 		height_factor = segment.height_factor or 1,
+		pinned = segment.pinned,
 		open = segment.open,
 		parent = segment.parent,
 	}, { __index = Segment.__prototype })
 
-  assert(instance.ft or instance.filter, "Invalid segment filter")
+	assert(instance.ft or instance.filter, "Invalid segment filter")
 
-  return instance
+	return instance
 end
 
 function Segment.__prototype:create_placeholder_buf()
@@ -118,8 +119,12 @@ function Segment.__prototype:is_open()
 	return self.win and vim.api.nvim_win_is_valid(self.win)
 end
 
+function Segment.__prototype:is_visible()
+	return self.pinned or self.win
+end
+
 function Segment.__prototype:render(props)
-	if self.win and self.win < 0 then
+	if self.win and self.win < 0 then -- Segment should be reopened
 		if not self.buf or not vim.api.nvim_buf_is_valid(self.buf) then
 			self.buf = nil
 			self.win = nil
@@ -127,14 +132,15 @@ function Segment.__prototype:render(props)
 				self:open()
 			end
 		end
-	elseif self.win and not vim.api.nvim_win_is_valid(self.win) then
+	elseif self.win and not vim.api.nvim_win_is_valid(self.win) then -- segment window got invalid
 		self.win = nil
-		if self.open then
-			self:open()
-		end
 	end
 
 	local lines = {}
+
+	if not self.win and not self.pinned then
+		return lines
+	end
 
 	local title = vim.is_callable(self.title) and self.title(self.buf, self.win) or self.title
 

@@ -129,8 +129,10 @@ function Sidebar.__prototype.render(self)
 			table.insert(lines, line)
 			table.insert(lines_segment, segment)
 		end
-		table.insert(lines, "")
-		table.insert(lines_segment, false)
+		if #segment_lines > 0 then
+			table.insert(lines, "")
+			table.insert(lines_segment, false)
+		end
 	end
 
 	local sum_height_factor = vim.fn.reduce(
@@ -223,9 +225,9 @@ function Sidebar.__prototype:close_if_empty()
 	self:close()
 end
 
-function Sidebar.__prototype:get_segment_neighbour(segment, step, allow_overflow)
-	allow_overflow = allow_overflow == nil or allow_overflow
+function Sidebar.__prototype:get_segment_neighbour(segment, step)
 	local index = nil
+	local direction = step > 0 and 1 or -1
 	for i, s2 in ipairs(self.segments) do
 		if not index and s2 == segment then
 			index = i
@@ -234,13 +236,20 @@ function Sidebar.__prototype:get_segment_neighbour(segment, step, allow_overflow
 
 	if not index then
 		return nil
-	elseif allow_overflow and index + step > #self.segments then
-		return self.segments[1]
-	elseif allow_overflow and index + step < 1 then
-		return self.segments[#self.segments]
-	else
-		return self.segments[index + step]
 	end
+
+	while step ~= 0 do
+		local s = self.segments[index + direction]
+		if not s then
+			return nil
+		end
+		if s:is_visible() then
+			step = step - direction
+		end
+		index = index + direction
+	end
+
+  return self.segments[index]
 end
 
 return Sidebar

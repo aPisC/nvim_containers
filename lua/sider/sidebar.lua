@@ -6,12 +6,13 @@ local Sidebar = {
 }
 
 function Sidebar.new(props)
-	props = props or {}
+	props = vim.tbl_extend("force", {
+		position = "left", -- "left" | "right"
+	}, props or {})
 
 	local instance = setmetatable({
 		segments = {},
 		lines_segment_map = {},
-		buf = nil,
 		win = nil,
 	}, {
 		__index = function(_, key)
@@ -46,13 +47,13 @@ function Sidebar.__prototype:create_buffer()
 
 	vim.keymap.set({ "n" }, "<cr>", function()
 		local line = unpack(vim.api.nvim_win_get_cursor(0))
-    local segment = self.lines_segment_map[line]
+		local segment = self.lines_segment_map[line]
 		return segment and segment:focus()
 	end, { buffer = buf })
 
-  vim.keymap.set({ "n" }, "<LeftMouse>", function()
+	vim.keymap.set({ "n" }, "<LeftMouse>", function()
 		local line = unpack(vim.api.nvim_win_get_cursor(0))
-    local segment = self.lines_segment_map[line]
+		local segment = self.lines_segment_map[line]
 		return segment and segment:focus()
 	end, { buffer = buf })
 
@@ -88,7 +89,11 @@ end
 
 function Sidebar.__prototype:try_mount_buf(buf, win)
 	for _, segment in ipairs(self.segments) do
-		if segment.condition(buf, win) then
+		local ft_matches = not segment.ft
+			or string.match(vim.bo[buf].filetype, segment.ft)
+			or vim.bo[buf].filetype == segment.ft
+		local filter_matches = (not segment.filter) or segment.filter(buf, win)
+		if (segment.ft or segment.filter) and ft_matches and filter_matches then
 			segment:mount(buf, win)
 			return true
 		end

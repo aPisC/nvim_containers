@@ -46,7 +46,8 @@ local function register_autocmds()
 					sidebar:render()
 				end
 			end
-			local result, error = pcall(try_mount)
+			-- local result, error = pcall(try_mount)
+      try_mount()
 		end,
 	})
 end
@@ -57,7 +58,9 @@ local function register_commands()
 	end, {})
 end
 
-function Sider.setup()
+function Sider.setup(opts)
+	opts = opts or {}
+
 	if Sider_sidebars then
 		Sider.clear()
 	end
@@ -66,25 +69,28 @@ function Sider.setup()
 		left = Sidebar.new(),
 	}
 
-	Sider_sidebars.left:add_segment({
-		title = "Neo Tree",
-		open = "Neotree",
-		condition = function(buf, win)
-			if vim.bo[buf].filetype == "neo-tree" then
-				return true
-			end
-		end,
-	})
+	for _, segment in ipairs(vim.tbl_get(opts, "left", "segments") or {}) do
+		Sider_sidebars.left:add_segment(segment)
+	end
 
-	Sider_sidebars.left:add_segment({
-		title = "Overseer",
-		open = "OverseerOpen",
-		condition = function(buf, win)
-			if vim.bo[buf].filetype == "OverseerList" then
-				return true
-			end
-		end,
-	})
+	-- Sider_sidebars.left:add_segment({
+		-- title = "Neo Tree",
+		-- open = "Neotree",
+		-- filter = function(buf, win)
+		-- 	if vim.bo[buf].filetype == "neo-tree" then
+		-- 		return true
+		-- 	end
+		-- end,
+	-- })
+	-- Sider_sidebars.left:add_segment({
+		-- title = "Overseer",
+		-- open = "OverseerOpen",
+		-- filter = function(buf, win)
+		-- 	if vim.bo[buf].filetype == "OverseerList" then
+		-- 		return true
+		-- 	end
+		-- end,
+	-- })
 
 	register_autocmds()
 	register_commands()

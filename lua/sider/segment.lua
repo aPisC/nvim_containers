@@ -5,15 +5,20 @@ local Segment = {
 }
 
 function Segment.new(segment)
-	return setmetatable({
+	local instance = setmetatable({
 		win = nil,
 		buf = nil,
 		title = segment.title,
-		condition = segment.condition,
+		ft = segment.ft,
+		filter = segment.filter,
 		height_factor = segment.height_factor or 1,
 		open = segment.open,
 		parent = segment.parent,
 	}, { __index = Segment.__prototype })
+
+  assert(instance.ft or instance.filter, "Invalid segment filter")
+
+  return instance
 end
 
 function Segment.__prototype:create_placeholder_buf()
@@ -46,7 +51,7 @@ function Segment.__prototype.configure_window(self, pos)
 		if self.win == -2 then
 			vim.api.nvim_set_current_win(win)
 		end
-    self.buf = nil
+		self.buf = nil
 		self.win = win
 	end
 end
@@ -152,8 +157,6 @@ function Segment.__prototype:render(props)
 
 	return lines
 end
-
-
 
 function Segment.__prototype:focus()
 	if self.win and vim.api.nvim_win_is_valid(self.win) then

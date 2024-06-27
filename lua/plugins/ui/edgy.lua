@@ -1,15 +1,47 @@
 return {
-  {
-    dir = "~/.config/nvim/lua/sider",
-    opts = {},
-    config = function(_, opts)
-      require("sider").setup(opts)
-    end,
-  },
+	{
+		dir = "~/.config/nvim/lua/sider",
+		opts = {
+			left = {
+				segments = {
+					{
+						title = "NeoTree",
+						ft = "neo-tree",
+						height_factor = 2,
+						pinned = true,
+						open = "Neotree position=left filesystem",
+					},
+					{
+						title = "Overseer",
+						ft = "OverseerList",
+						pinned = false,
+						open = function()
+							require("overseer").open()
+						end,
+					},
+					{
+						title = "Tests",
+						ft = "neotest-summary",
+						pinned = true,
+						open = function()
+							require("neotest").summary.open()
+						end,
+					},
+					{
+						title = "DB",
+						ft = "dbui",
+					},
+				},
+			},
+		},
+		config = function(_, opts)
+			require("sider").setup(opts)
+		end,
+	},
 	{
 		"folke/edgy.nvim",
 		event = "VeryLazy",
-    enabled = false,
+		enabled = false,
 		opts = {
 			animate = { enabled = false },
 			-- fix_win_height = false,
@@ -65,18 +97,27 @@ return {
 				{ ft = "httpResult", title = "HTTP" },
 			},
 			right = {
-				{ ft = "dapui_scopes", title = "Dap Scopes",
+				{
+					ft = "dapui_scopes",
+					title = "Dap Scopes",
 					filter = function(buf, win)
 						return vim.api.nvim_win_get_config(win).relative == ""
-					end, },
-				{ ft = "dapui_watches", title = "Dap watches",
+					end,
+				},
+				{
+					ft = "dapui_watches",
+					title = "Dap watches",
 					filter = function(buf, win)
 						return vim.api.nvim_win_get_config(win).relative == ""
-					end, },
-				{ ft = "dapui_breakpoints", title = "Dap Breakpoints",
+					end,
+				},
+				{
+					ft = "dapui_breakpoints",
+					title = "Dap Breakpoints",
 					filter = function(buf, win)
 						return vim.api.nvim_win_get_config(win).relative == ""
-					end, },
+					end,
+				},
 			},
 			left = {
 				{

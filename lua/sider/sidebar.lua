@@ -81,7 +81,6 @@ function Sidebar.__prototype:create_window()
 	vim.wo[win].winfixwidth = true
 	vim.wo[win].winfixheight = true
 	vim.wo[win].winfixbuf = true
-	vim.wo[win].winhighlight = "Normal:NormalFloat"
 
 	self.win = win
 	return win

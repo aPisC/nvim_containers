@@ -47,6 +47,7 @@ function Segment.__prototype.configure_window(self, pos)
 
 	if self.win and vim.api.nvim_win_is_valid(self.win) then
 		vim.api.nvim_win_set_config(self.win, win_config)
+    vim.wo[self.win].winhighlight = vim.wo[self.win].winhighlight
 	else
 		local win = vim.api.nvim_open_win(self.buf, false, win_config)
 		if self.win == -2 then

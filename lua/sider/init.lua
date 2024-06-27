@@ -27,19 +27,26 @@ local function register_autocmds()
 	vim.api.nvim_create_autocmd({ "BufWinEnter", "FileType" }, {
 		group = Const.augroup,
 		callback = function(ev)
-			if not Sider_sidebars then return end
-      local window = vim.fn.bufwinid(ev.buf)
-      if vim.w[window]["sider-win"] then return end
+			if not Sider_sidebars then
+				return
+			end
 
-      print("mounting buf ".. vim.inspect(ev))
+			local window = vim.fn.bufwinid(ev.buf)
+			if vim.w[window]["sider-win"] then
+				return
+			end
 
 			local sidebar = Sider_sidebars.left
-			local mounted = sidebar:try_mount_buf()
 
-			if mounted then
-				sidebar:open()
-        sidebar:render()
+			local function try_mount()
+				local mounted = sidebar:try_mount_buf(ev.buf, window)
+
+				if mounted then
+					sidebar:open()
+					sidebar:render()
+				end
 			end
+			local result, error = pcall(try_mount)
 		end,
 	})
 end
@@ -61,7 +68,7 @@ function Sider.setup()
 
 	Sider_sidebars.left:add_segment({
 		title = "Neo Tree",
-    open="Neotree",
+		open = "Neotree",
 		condition = function(buf, win)
 			if vim.bo[buf].filetype == "neo-tree" then
 				return true
@@ -71,7 +78,7 @@ function Sider.setup()
 
 	Sider_sidebars.left:add_segment({
 		title = "Overseer",
-    open="OverseerOpen",
+		open = "OverseerOpen",
 		condition = function(buf, win)
 			if vim.bo[buf].filetype == "OverseerList" then
 				return true
@@ -88,7 +95,7 @@ function Sider.clear()
 		return
 	end
 
-	Sider_sidebars.left:destroy()
+	Sider_sidebars.left:unrender()
 	Sider_sidebars = nil
 end
 

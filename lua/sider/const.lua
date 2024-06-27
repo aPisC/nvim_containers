@@ -1,28 +1,6 @@
 local Const = {}
 
-Const.sider_bar_buf_opts = {
-	modifiable = false,
-	filetype = "sider-bar",
-}
 
-Const.sider_bar_win_opts = {
-	statuscolumn = "",
-	number = false,
-	rnu = false,
-	foldcolumn = "0",
-	winfixwidth = true,
-	winfixheight = true,
-	winfixbuf = true,
-  winhighlight = "Normal:NormalFloat",
-}
-
-Const.sider_bar_win_config = {
-	win = -1,
-	split = "left",
-	width = 40,
-	vertical = true,
-	focusable = false,
-}
 
 Const.sider_segment_buf_opts = {
 }

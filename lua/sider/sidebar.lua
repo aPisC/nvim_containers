@@ -7,9 +7,10 @@ local Sidebar = {
 
 function Sidebar.new(props)
 	props = vim.tbl_extend("force", {
-		position = "left", -- "left" | "right"
+		position = "left", -- "left" | "right" | "bottom"
     close_if_empty = true,
 	}, props or {})
+  props.vertical = props.position == "left" or props.position == "right"
 
 	local instance = setmetatable({
     props = props,
@@ -72,21 +73,26 @@ function Sidebar.__prototype:create_window()
 	end
 
 	local buffer = self:create_buffer()
-	local win = vim.api.nvim_open_win(buffer, true, {
+  local win_config = {
 		win = -1,
-		split = self.props.position,
-		width = 40,
-		vertical = true,
+		split = (self.props.position == "bottom" and "below") or self.props.position,
+		width = self.props.vertical and 40 or nil,
+    height = self.props.vertical and nil or 10,
+		vertical = self.props.verical,
 		focusable = false,
-	})
+	}
+	local win = vim.api.nvim_open_win(buffer, false, win_config)
+  if self.props.vertical then
+    vim.api.nvim_win_set_width(win, win_config.width)
+  end
 
 	vim.wo[win].statuscolumn = ""
 	vim.wo[win].number = false
 	vim.wo[win].rnu = false
 	vim.wo[win].foldcolumn = "0"
-	vim.wo[win].winfixwidth = true
-	vim.wo[win].winfixheight = true
-	vim.wo[win].winfixbuf = true
+	vim.wo[win].winfixwidth = self.props.vertical
+	vim.wo[win].winfixheight = not self.props.vertical
+	-- vim.wo[win].winfixbuf = true
 
 	self.win = win
 	return win
@@ -118,32 +124,36 @@ function Sidebar.__prototype:update()
 	self:render()
 end
 
-function Sidebar.__prototype.render(self)
+function Sidebar.__prototype:render()
+
 	if not self.win or not vim.api.nvim_win_is_valid(self.win) then
 		return
 	end
 
 	local buf = vim.api.nvim_win_get_buf(self.win)
+	local sidebar_width = vim.api.nvim_win_get_width(self.win)
+  local sidebar_height = vim.api.nvim_win_get_height(self.win)
+  local left_offset = (not self.props.vertical and 5) or 0
 	local lines = {}
 	local lines_segment = {}
 
-	local segment_width = vim.api.nvim_win_get_width(self.win)
 	for _, segment in ipairs(self.segments) do
-		local segment_lines = segment:render({ width = segment_width })
+		local segment_lines = segment:render({ width = sidebar_width })
 		for _, line in ipairs(segment_lines) do
 			table.insert(lines, line)
 			table.insert(lines_segment, segment)
+      if (not self.props.vertical) and #line + 2 > left_offset then left_offset = #line + 2 end
 		end
-		if #segment_lines > 0 then
+		if #segment_lines > 0 and self.props.vertical then
 			table.insert(lines, "")
 			table.insert(lines_segment, false)
 		end
 	end
 
-	local sum_height_factor = vim.fn.reduce(
+	local sum_size_factor = vim.fn.reduce(
 		vim.tbl_map(
 			function(line)
-				return line.height_factor or 1
+				return line.size_factor or 1
 			end,
 			vim.tbl_filter(function(line)
 				return type(line) == "table"
@@ -160,35 +170,64 @@ function Sidebar.__prototype.render(self)
 	end, lines))
 
 	local height_available = vim.api.nvim_win_get_height(self.win) - text_line_count
+  local width_available = vim.api.nvim_win_get_width(self.win) - left_offset
 
 	local lines_final = {}
 	local lines_segment_final = {}
+  local horizontal_separators = {}
 
 	for index, line in ipairs(lines) do
 		if type(line) == "table" then
-			local height = math.ceil(height_available * line.height_factor / sum_height_factor)
-			local segment_lines = line.callback({
+			local height = (self.props.vertical and math.ceil(height_available * line.size_factor / sum_size_factor)) or sidebar_height
+      local width = (not self.props.vertical and math.ceil(width_available * line.size_factor / sum_size_factor)) or sidebar_width
+      local segment_config = {
 				win = self.win,
-				width = segment_width,
+				width = (not self.props.vertical) and (width-1) or width,
 				height = height,
-				top = #lines_final - 1,
-			}) or {}
+				top = (self.props.vertical and (#lines_final)) or 0,
+        left = left_offset,
+			}
+			local segment_lines = line.callback(segment_config) or {}
 
-			for li = 1, height, 1 do
-				table.insert(lines_final, segment_lines[li] or "")
-				table.insert(lines_segment_final, lines_segment[index])
-			end
+      if not self.props.vertical then 
+        table.insert(horizontal_separators, left_offset)
+      end
+      if self.props.vertical then
+        for li = 1, height, 1 do
+          table.insert(lines_final, segment_lines[li] or "")
+          table.insert(lines_segment_final, lines_segment[index])
+        end
+      end
 
-			height_available = height_available - height
-			sum_height_factor = sum_height_factor - line.height_factor
+			height_available = height_available - (self.props.vertical and height or 0)
+			width_available = width_available - (not self.props.vertical and width or 0)
+      left_offset = left_offset + (not self.props.vertical and width or 0)
+			sum_size_factor = sum_size_factor - line.size_factor
 		else
 			table.insert(lines_final, line)
 			table.insert(lines_segment_final, lines_segment[index])
 		end
 	end
 
+  if not self.props.vertical then
+    local empty = string.rep(" ", sidebar_width)
+    for i = #lines_final + 1, sidebar_height, 1 do
+      table.insert(lines_final, "")
+    end
+    for i, line in ipairs(lines_final) do
+      for _, separator in ipairs(horizontal_separators) do
+        lines_final[i] = string.sub(lines_final[i] .. empty , 1, separator - 1) .. "|"
+      end
+    end
+  end
+
 	vim.bo[buf].modifiable = true
 	vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines_final)
+  if self.props.vertical then
+    vim.api.nvim_win_set_width(self.win, sidebar_width)
+  else
+    vim.api.nvim_win_set_height(self.win, sidebar_height)
+  end
 	self.lines_segment_map = lines_segment_final
 	vim.bo[buf].modifiable = false
 end

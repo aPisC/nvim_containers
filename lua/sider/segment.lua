@@ -11,7 +11,7 @@ function Segment.new(segment)
 		title = segment.title,
 		ft = segment.ft,
 		filter = segment.filter,
-		height_factor = segment.height_factor or 1,
+		size_factor = segment.size_factor or 1,
 		pinned = segment.pinned,
 		open = segment.open,
 		parent = segment.parent,
@@ -40,11 +40,12 @@ function Segment.__prototype.configure_window(self, pos)
 		win = pos.win,
 		width = pos.width,
 		height = pos.height,
-		bufpos = { pos.top, pos.left },
+		-- bufpos = { pos.top -1, pos.left },
+    row = pos.top,
+    col = pos.left,
 		focusable = true,
 		zindex = 2,
 	}
-
 	if self.win and vim.api.nvim_win_is_valid(self.win) then
 		vim.api.nvim_win_set_config(self.win, win_config)
     vim.wo[self.win].winhighlight = vim.wo[self.win].winhighlight
@@ -155,10 +156,10 @@ function Segment.__prototype:render(props)
 					width = window_props.width,
 					height = window_props.height,
 					top = window_props.top,
-					left = 0,
+					left = window_props.left or 0,
 				})
 			end,
-			height_factor = self.height_factor,
+			size_factor = self.size_factor,
 		})
 	end
 

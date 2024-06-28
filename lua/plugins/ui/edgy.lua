@@ -8,7 +8,7 @@ return {
 					{
 						title = "NeoTree",
 						ft = "neo-tree",
-						height_factor = 2,
+						size_factor = 2,
 						pinned = true,
 						open = "Neotree position=left filesystem",
 					},
@@ -37,28 +37,69 @@ return {
       right = {
         close_if_empty = true,
         segments = {
-				{
-					ft = "dapui_scopes",
-					title = "Dap Scopes",
-					filter = function(buf, win)
-						return vim.api.nvim_win_get_config(win).relative == ""
-					end,
-				},
-				{
-					ft = "dapui_watches",
-					title = "Dap watches",
-					filter = function(buf, win)
-						return vim.api.nvim_win_get_config(win).relative == ""
-					end,
-				},
-				{
-					ft = "dapui_breakpoints",
-					title = "Dap Breakpoints",
-					filter = function(buf, win)
-						return vim.api.nvim_win_get_config(win).relative == ""
-					end,
-				},
+          {
+            ft = "dapui_scopes",
+            title = "Dap Scopes",
+            filter = function(buf, win)
+              return vim.api.nvim_win_get_config(win).relative == ""
+            end,
+          },
+          {
+            ft = "dapui_watches",
+            title = "Dap watches",
+            filter = function(buf, win)
+              return vim.api.nvim_win_get_config(win).relative == ""
+            end,
+          },
+          {
+            ft = "dapui_breakpoints",
+            title = "Dap Breakpoints",
+            filter = function(buf, win)
+              return vim.api.nvim_win_get_config(win).relative == ""
+            end,
+          },
         },
+      },
+      bottom = {
+        segments = {
+          {
+            ft = "toggleterm",
+            title = "Terminal",
+            -- filter = function(buf, win)
+            --   -- exclude floating windows
+            --   return vim.api.nvim_win_get_config(win).relative == ""
+            -- end,
+          },
+          {
+            title = "Overseer",
+            ft = "",
+            size = { height = 10 },
+            filter = function(buf, win)
+              return vim.b[buf] and vim.b[buf].overseer_edgy == true
+            end,
+          },
+          {
+            ft = "Trouble",
+            title = "Trouble",
+            open = "Trouble",
+          },
+          {
+            ft = "help",
+            size = { height = 20 },
+            title = "Help",
+            filter = function(buf)
+              return vim.bo[buf].buftype == "help"
+            end,
+          },
+          {
+            ft = "dap-repl",
+            title = "DAP",
+            filter = function(buf, win)
+              return vim.api.nvim_win_get_config(win).relative == ""
+            end,
+          },
+          { ft = "httpResult", title = "HTTP" },
+        }
       }
 		},
 		config = function(_, opts)

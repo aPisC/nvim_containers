@@ -3,7 +3,7 @@ local Sidebar = require("sider.sidebar")
 
 local Sider_sidebars = nil
 
-local sidebar_keys = {"left", "right"}
+local sidebar_keys = {"left", "right", "bottom"}
 local Sider = {}
 
 local function register_autocmds()
@@ -46,7 +46,7 @@ local function register_autocmds()
         local mounted = sidebar:try_mount_buf(ev.buf, window)
         if mounted then
           sidebar:open()
-          sidebar:render()
+          vim.defer_fn(Sider.update, 0)
           return
         end
       end
@@ -76,14 +76,16 @@ function Sider.setup(opts)
       position = "right",
       close_if_empty = vim.tbl_get(opts, "right", "close_if_empty")
     }),
+    bottom = Sidebar.new({
+      position = "bottom",
+      close_if_empty = vim.tbl_get(opts, "bottom", "close_if_empty")
+    }),
 	}
 
-	for _, segment in ipairs(vim.tbl_get(opts, "left", "segments") or {}) do
-		Sider_sidebars.left:add_segment(segment)
-	end
-
-  for _, segment in ipairs(vim.tbl_get(opts, "right", "segments") or {}) do
-    Sider_sidebars.right:add_segment(segment)
+  for _, sidebar_key in ipairs(sidebar_keys) do
+    for _, segment in ipairs(vim.tbl_get(opts, sidebar_key, "segments") or {}) do
+      Sider_sidebars[sidebar_key]:add_segment(segment)
+    end
   end
 
 	register_autocmds()
@@ -106,6 +108,8 @@ function Sider.open(direction)
   
   if direction == "right" then
     Sider_sidebars.right:open()
+  elseif direction == "bottom" then
+    Sider_sidebars.bottom:open()
   else
     Sider_sidebars.left:open()
   end

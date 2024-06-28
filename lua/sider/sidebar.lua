@@ -216,7 +216,7 @@ function Sidebar.__prototype:render()
     end
     for i, line in ipairs(lines_final) do
       for _, separator in ipairs(horizontal_separators) do
-        lines_final[i] = string.sub(lines_final[i] .. empty , 1, separator - 1) .. "|"
+        lines_final[i] = string.sub(lines_final[i] .. empty , 1, separator - 1) .. "│"
       end
     end
   end

@@ -3,8 +3,13 @@ local Sidebar = require("sider.sidebar")
 
 local Sider_sidebars = nil
 
-local sidebar_keys = {"left", "right", "bottom"}
-local Sider = {}
+local Sider = setmetatable({}, {
+  __index = function(_, key)
+    return ({
+      sidebars = Sider_sidebars,
+    })[key]
+  end,
+})
 
 local function register_autocmds()
 	if not Sider_sidebars then
@@ -19,8 +24,7 @@ local function register_autocmds()
 			end
 
 			local window_ids = vim.v.event.windows or {}
-      for _, sidebar_key in ipairs(sidebar_keys) do
-        local sidebar = Sider_sidebars[sidebar_key]
+      for _, sidebar in pairs(Sider_sidebars) do
         if vim.tbl_contains(window_ids, sidebar.win) then
           sidebar:update()
         end
@@ -41,8 +45,7 @@ local function register_autocmds()
 			end
 
 
-      for _, sidebar_key in ipairs(sidebar_keys) do
-        local sidebar = Sider_sidebars[sidebar_key]
+      for sidebar_key, sidebar in pairs(Sider_sidebars) do
         local mounted = sidebar:try_mount_buf(ev.buf, window)
         if mounted then
           sidebar:open()
@@ -67,24 +70,15 @@ function Sider.setup(opts)
 		Sider.clear()
 	end
 
-	Sider_sidebars = {
-		left = Sidebar.new({
-      position = "left",
-      close_if_empty = vim.tbl_get(opts, "left", "close_if_empty")
-    }),
-		right = Sidebar.new({
-      position = "right",
-      close_if_empty = vim.tbl_get(opts, "right", "close_if_empty")
-    }),
-    bottom = Sidebar.new({
-      position = "bottom",
-      close_if_empty = vim.tbl_get(opts, "bottom", "close_if_empty")
-    }),
-	}
+	Sider_sidebars = {}
 
-  for _, sidebar_key in ipairs(sidebar_keys) do
-    for _, segment in ipairs(vim.tbl_get(opts, sidebar_key, "segments") or {}) do
-      Sider_sidebars[sidebar_key]:add_segment(segment)
+  for sb_key, sb_config in pairs(opts) do
+    Sider_sidebars[sb_key] = Sidebar.new({
+      position = sb_config.position or sb_key,
+      close_if_empty = vim.tbl_get(sb_config, "close_if_empty", true),
+    })
+    for _, segment in ipairs(vim.tbl_get(sb_config, "segments") or {}) do
+      Sider_sidebars[sb_key]:add_segment(segment)
     end
   end
 
@@ -97,21 +91,14 @@ function Sider.clear()
 		return
 	end
 
-	Sider_sidebars.left:unrender()
-	Sider_sidebars = nil
+  for _, sidebar in pairs(Sider_sidebars) do
+    sidebar:unrender()
+  end
 end
 
 function Sider.open(direction)
-	if not Sider_sidebars then
-		return
-	end
-  
-  if direction == "right" then
-    Sider_sidebars.right:open()
-  elseif direction == "bottom" then
-    Sider_sidebars.bottom:open()
-  else
-    Sider_sidebars.left:open()
+  if Sider_sidebars and Sider_sidebars[direction] then
+    Sider_sidebars[direction]:open()
   end
 end
 
@@ -120,8 +107,7 @@ function Sider.update()
 		return
 	end
 
-  for _, sidebar_key in ipairs(sidebar_keys) do
-    local sidebar = Sider_sidebars[sidebar_key]
+  for _, sidebar in pairs(Sider_sidebars) do
     sidebar:update()
   end
 end

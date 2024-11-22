@@ -15,6 +15,8 @@ function Segment.new(segment)
 		pinned = segment.pinned,
 		open = segment.open,
 		parent = segment.parent,
+    multi = segment.multi,  -- Creates new segment on mounting
+    volatile = segment.volatile,  -- removes itself on unmount
 	}, { __index = Segment.__prototype })
 
 	assert(instance.ft or instance.filter, "Invalid segment filter")
@@ -72,6 +74,22 @@ function Segment.__prototype:mount(buf, win)
 	-- 	-- vim.api.nvim_win_close(self.win, true)
 	-- end
 
+  if self.multi then
+    local newSegment =  Segment.new({
+      title = self.title,
+      ft = self.ft,
+      filter = self.filter,
+      size_factor = self.size_factor,
+      pinned = self.pinned,
+      open = self.open,
+      parent = self.parent,
+      multi = false,
+      volatile = true,
+    })
+    newSegment:mount(buf, win)
+    return newSegment
+  end
+
 	-- vim.bo[buf].key = value
 	vim.w[win]["sider-win"] = true
 
@@ -113,6 +131,9 @@ function Segment.__prototype:close()
 		vim.api.nvim_win_close(self.win, true)
 	end
 	self.win = nil
+  if self.volatile then
+    self.parent:remove_segment(self)
+  end
 	self.parent:render()
 	self.parent:close_if_empty()
 end

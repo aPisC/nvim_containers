@@ -99,13 +99,14 @@ function Sidebar.__prototype:create_window()
 end
 
 function Sidebar.__prototype:try_mount_buf(buf, win)
-	for _, segment in ipairs(self.segments) do
+	for index, segment in ipairs(self.segments) do
 		local ft_matches = not segment.ft
 			or string.match(vim.bo[buf].filetype, segment.ft)
 			or vim.bo[buf].filetype == segment.ft
 		local filter_matches = (not segment.filter) or segment.filter(buf, win)
 		if (segment.ft or segment.filter) and ft_matches and filter_matches then
-			segment:mount(buf, win)
+			local newSegment = segment:mount(buf, win)
+      if newSegment then table.insert(self.segments, index+1, newSegment) end
 			return true
 		end
 	end
@@ -298,6 +299,15 @@ function Sidebar.__prototype:get_segment_neighbour(segment, step)
 	end
 
   return self.segments[index]
+end
+
+function Sidebar.__prototype:remove_segment(segment)
+  for i, s in ipairs(self.segments) do
+    if s == segment then
+      table.remove(self.segments, i)
+      return
+    end
+  end
 end
 
 return Sidebar

@@ -1,3 +1,3 @@
 local Sider = require("sider")
 
-Sider.setup()
+-- Sider.setup()

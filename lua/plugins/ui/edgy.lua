@@ -2,7 +2,8 @@ return {
 	{
 		dir = "~/.config/nvim/lua/sider",
 		opts = {
-			left = {
+			__left = {
+        position = "left",
         close_if_empty = true,
 				segments = {
 					{
@@ -12,6 +13,11 @@ return {
 						pinned = true,
 						open = "Neotree position=left filesystem",
 					},
+          {
+            title = "Metals Tree View",
+            ft = "tvp",
+            size_factor = 2,
+          },
 					{
 						title = "Overseer",
 						ft = "OverseerList",
@@ -60,11 +66,36 @@ return {
           },
         },
       },
+      symbols = {
+        position = "right",
+        segments = {
+          -- {
+          --   ft = "trouble",
+          --   title = "Document Symbols",
+          --   pinned = true,
+          --   filter = function(buf, win)
+          --     local trouble = vim.w[win].trouble
+          --     -- print(win, vim.inspect(trouble))
+          --     return trouble and trouble.mode == "symbols"
+          --   end,
+          -- },
+          -- {
+          --   ft = "trouble_",
+          --   title = "Trouble",
+          --   pinned = true,
+          --   filter = function(buf, win)
+          --     local trouble = vim.w[win].trouble
+          --     return trouble and trouble.mode ~= "symbols"
+          --   end,
+          -- },
+        },
+      },
       bottom = {
         segments = {
           {
             ft = "toggleterm",
             title = "Terminal",
+            multi = true,
             -- filter = function(buf, win)
             --   -- exclude floating windows
             --   return vim.api.nvim_win_get_config(win).relative == ""
@@ -79,10 +110,16 @@ return {
             end,
           },
           {
-            ft = "Trouble",
-            title = "Trouble",
-            open = "Trouble",
+            title = "Quickfix",
+            ft = "qf",
+            size = { height = 10 },
+            multi=true,
           },
+          -- {
+          --   ft = "Trouble",
+          --   title = "Trouble",
+          --   open = "Trouble",
+          -- },
           {
             ft = "help",
             size = { height = 20 },
@@ -103,6 +140,8 @@ return {
       }
 		},
 		config = function(_, opts)
+			vim.opt.laststatus = 3
+			vim.opt.splitkeep = "screen"
 			require("sider").setup(opts)
 		end,
 	},

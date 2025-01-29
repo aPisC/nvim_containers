@@ -115,7 +115,7 @@ end
 
 local function load_pane_conf(pane, selector, conf_id)
   if pane_config_cache[conf_id] then return pane_config_cache[conf_id] end
-  wezterm.log_info("load config: ", conf_id)
+  wezterm.log_info("load config: ", conf_id, selector)
 
   -- Use defined background from the user
   if selector.bg_var then
@@ -149,7 +149,8 @@ local function load_pane_conf(pane, selector, conf_id)
 
   -- Use local background settings
   local has_local_conf, local_conf = pcall(function()
-    local file = io.open(wd .. '/.vscode/.wezterm-local', 'r')
+    local filename = selector.dir .. '/.vscode/.wezterm-local'
+    local file = io.open(filename, 'r')
     local conf = wezterm.json_parse(file:read('*all')) or {}
     file:close()
     return conf
@@ -157,7 +158,7 @@ local function load_pane_conf(pane, selector, conf_id)
   if has_local_conf then
     conf = {
       bg_id = conf_id,
-      background = resolve_background(local_conf.background, wd)
+      background = resolve_background(local_conf.background, selector.dir)
     }
     pane_config_cache[conf_id] = conf
     return conf

@@ -28,6 +28,9 @@ local custom_overrides = {
   WinBarNC = { bg = 'transparent', fg = '#eaeaea' }, 
   FoldColumn = { fg="#5c6370" },
   Folded = { fg="#5c6370" },
+  NotifyINFOTitle =  { fg="#51afef" },
+  NotifyINFOIcon =  { fg="#51afef" },
+  NotifyINFOBorder =  { fg="#51afef" },
 }
 
 

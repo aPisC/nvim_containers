@@ -23,6 +23,7 @@ local function read_env_file(path)
     end
   end
 
+  vim.notify(vim.inspect(env))
   return env
 end
 
@@ -75,6 +76,7 @@ return {
                 for _, line in ipairs(data) do
                   if line == "" then  
                   elseif line:match("^default-.*") then
+                  elseif line:match(" ") then
                   elseif line:match(".*-test$") then
                     local project = line:gsub("-test$", "")
                     table.insert(test_projects, project)
@@ -110,16 +112,19 @@ return {
                 },
                 condition = {},
                 builder = function(params)
-                  local args = {
+                  local args = vim.tbl_filter(function(v) return v ~= nil end, {
+                    params.envFile ~= "" and "with-env" or nil,
+                    params.envFile ~= "" and params.envFile or nil,
+                    "sbt",
                     "project "  .. project,
                     params.javaConfigFile ~= "" and ('set javaOptions += "-Dconfig.file=' .. vim.fn.getcwd() .. '/' .. params.javaConfigFile ..  '"' ) or nil,
                     "run"
-                  }
+                  })
                   return {
-                    cmd = "sbt",
-                    args = vim.tbl_filter(function(v) return v ~= nil end, args),
+                    cmd = table.remove(args, 1),
+                    args = args,
                     cwd = vim.fn.getcwd(),
-                    env = params.envFile == "" and {} or read_env_file(params.envFile),
+                    -- env = params.envFile == "" and {} or read_env_file(params.envFile),
                     name = "Run " .. project,
                     components = {"default"},
                     metadata = {},

@@ -5,11 +5,16 @@ vim.keymap.set({'i'}, 'jj', '<esc>')
 
 -- vim.keymap.set({'n', 'i', 't'}, "<C-g>B", function() vim.cmd("OverseerRun") end)
 vim.keymap.set({'n', 'i', 't'}, "<C-g>b", function() if vim.bo.filetype == "OverseerList" then vim.cmd("OverseerToggle") else vim.cmd("OverseerOpen") end end)
+vim.keymap.set({'n', 'i', 't'}, "<F6>", function() 
+  vim.cmd("OverseerOpen")
+  vim.cmd("OverseerRun")
+end)
 vim.keymap.set({'n', 'i', 't'}, "<C-g>t", function() if vim.v.count > 0 then vim.cmd("ToggleTerm " .. vim.v.count) else vim.cmd("ToggleTerm") end end)
 
 vim.keymap.set({'n'}, '<A-left>', '<C-o>')
 vim.keymap.set({'n'}, '<A-right>', '<C-i>')
 vim.keymap.set({'n'}, '<C-t>', ':tabnew<CR>')
+vim.keymap.set({'n'}, '<BS>', '<C-^>')
 
 
 vim.keymap.set('n', '<C-b>', function() if vim.bo.filetype == "neo-tree" then vim.cmd"Neotree action=focus toggle" else vim.cmd"Neotree focus" end end )

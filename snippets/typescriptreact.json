@@ -1,0 +1,24 @@
+{
+	"snip1": {
+		"prefix": "sbs",
+		"body": [
+      "  import type { Meta, StoryObj } from '@storybook/react'",
+      "",
+      "  const meta = {",
+      "    title: '${1:title}',",
+      "    component: ${2:component},",
+      "    args: {",
+      "      ${3:args}",
+      "    },",
+      "  } satisfies Meta<typeof ${2:component}>",
+      "",
+      "  export default meta",
+      "",
+      "  type Story = StoryObj<typeof meta>",
+      "",
+      "  export const ${2:component}Story = {",
+      "    name: \"${2:component}\",",
+      "  } satisfies Story"
+		]
+	}
+}

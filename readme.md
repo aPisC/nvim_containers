@@ -10,7 +10,7 @@
 
 Create nvim startup lua configuration to load all files from this repository
 
-```lua
+```
 
 local dir = "path/to/config"
 for file in io.popen('find "'..dir..'" -maxdepth 1 -type f | sort | grep -v init.lua$ | grep .lua$'):lines() do

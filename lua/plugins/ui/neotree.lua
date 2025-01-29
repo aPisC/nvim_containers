@@ -113,9 +113,15 @@ return {
             always_show = {
               ".vscode",
             },
+            always_show_by_pattern = { -- uses glob style patterns
+              ".stories.tsx"
+            },
             hide_by_pattern =  {
               ".bsp",
               ".git",
+            },
+            never_show_by_pattern = { -- uses glob style patterns
+              "node_modules",
             }
           },
           window = {

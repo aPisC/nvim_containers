@@ -1,23 +1,26 @@
 return {
     {
       'mrjones2014/legendary.nvim',
+      dependencies = { },
       opts = { },
       config = function(_, opts) 
-        local legendary = require("legendary")
-        local keymaps = {}
+        local config = {
+          extensions = {
+            lazy_nvim = true,
+          },
+          keymaps = {}
+        }
 
-        for module_name, module in pairs(opts) do
-          for _, keymap in ipairs(module.keymaps or {}) do
-            keymap = vim.tbl_deep_extend("force", {  }, keymap)
-            table.insert(keymaps, keymap)
-          end
+        for module_name, module_opts in pairs(opts) do
+          table.insert(config.keymaps, {
+            itemgroup = module_opts.itemgroup or module_name,
+            icon = module_opts.icon,
+            description = module_opts.description,
+            keymaps = module_opts.keymaps,
+          })
         end
 
-
-        local config = {
-          keymaps = keymaps,
-        }
-        legendary.setup(config)
+        require("legendary").setup(config)
       end
     },
 }

@@ -1,9 +1,10 @@
 return {
   {
     'anuvyklack/hydra.nvim',
+    enable = false,
     keys = {
-      "gb",
-      "<C-w>",
+      -- "gb",
+      -- "<C-w>",
     },
     opts = {
       barbar = {

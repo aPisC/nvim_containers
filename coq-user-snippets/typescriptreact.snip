@@ -1,0 +1,39 @@
+# extends react-es7
+extends typescript_react
+
+snippet typescriptReactFunctionalComponent
+abbr export default function ${TM_FILENAME_BASE}() { ... }
+alias tsrfc
+  import React from 'react'
+
+  type Props = {}
+
+  export default function ${TM_FILENAME_BASE}({}: Props) {
+    return (
+      <div>${1:${TM_FILENAME_BASE}}</div>
+    )
+  }
+
+
+snippet storybookStortiesFile
+abbr Storybook Stories template
+alias sbs
+  import type { Meta, StoryObj } from '@storybook/react'
+  import ${TM_FILENAME_BASE/(.*)\\.stories/$1/} from './${TM_FILENAME_BASE/(.*)\\.stories/$1/}'
+
+  const meta = {
+    title: '${TM_FILENAME_BASE/(.*)\\.stories/$1/}',
+    component: ${TM_FILENAME_BASE/(.*)\\.stories/$1/},
+    args: {
+      ${1}
+    },
+  } satisfies Meta<typeof ${TM_FILENAME_BASE/(.*)\\.stories/$1/}>
+
+  export default meta
+
+  type Story = StoryObj<typeof meta>
+
+  export const ${TM_FILENAME_BASE/(.*)\\.stories/$1/}Story = {
+    name: "${TM_FILENAME_BASE/(.*)\\.stories/$1/}",
+  } satisfies Story
+

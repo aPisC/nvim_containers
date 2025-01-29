@@ -1,4 +1,5 @@
 local wezterm = require 'wezterm'
+local act = wezterm.action
 
 return function(config)
   config.disable_default_key_bindings = true
@@ -24,8 +25,8 @@ return function(config)
     { key = 's', mods = 'LEADER', action = wezterm.action.SplitPane { direction = 'Right' } },
     { key = 'o', mods = 'LEADER', action = wezterm.action.TogglePaneZoomState },
     { key = 'x', mods = 'LEADER', action = wezterm.action.CloseCurrentPane { confirm = true } },
-    { key = 'J', mods = 'LEADER', action = wezterm.action.ActivateTabRelative(-1) },
-    { key = 'K', mods = 'LEADER', action = wezterm.action.ActivateTabRelative(1) },
+    { key = 't', mods = 'LEADER|SHIFT', action = wezterm.action.ActivateTabRelative(-1) },
+    { key = 't', mods = 'LEADER', action = wezterm.action.ActivateTabRelative(1) },
     { key = 'P', mods = 'LEADER', action = wezterm.action.ActivateCommandPalette },
     { key = 'f', mods = 'LEADER', action = wezterm.action.DecreaseFontSize },
     { key = 'F', mods = 'LEADER', action = wezterm.action.IncreaseFontSize },
@@ -48,12 +49,26 @@ return function(config)
     { key = 'j', mods = 'LEADER', action = wezterm.action.ActivatePaneDirection('Down') },
     -- { key = 's', mods = 'LEADER', action = wezterm.action.ShowLauncher },
   }
+  config.bypass_mouse_reporting_modifiers = 'SHIFT'
+  -- config.disable_default_mouse_bindings = true
   config.mouse_bindings = {
     {
       event = { Up = { streak = 1, button = 'Left' } },
       mods = 'CTRL',
       action = wezterm.action.OpenLinkAtMouseCursor,
     },
-  }
+    -- Scrolling up while holding CTRL increases the font size
+    {
+      event = { Down = { streak = 1, button = { WheelUp = 1 } } },
+      mods = 'CTRL',
+      action = act.IncreaseFontSize,
+    },
 
+    -- Scrolling down while holding CTRL decreases the font size
+    {
+      event = { Down = { streak = 1, button = { WheelDown = 1 } } },
+      mods = 'CTRL',
+      action = act.DecreaseFontSize,
+    },
+  }
 end

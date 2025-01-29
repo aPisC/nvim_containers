@@ -14,6 +14,7 @@ return {
       formatters = {
         scala = function() return {
           function() return { ['exe']= 'scalafmt', ['args']= { '--stdin' }, ['stdin']= 1 } end
+          -- function() vim.lsp.buf.format() end
         } end,
       },
       test_adapters = {
@@ -42,22 +43,25 @@ return {
       { 'nvim-lua/plenary.nvim' },
     },
     opts = {
-      root_patterns=  {'.git'},
+      root_patterns=  {'.git', 'build.sbt'},
       settings = {
-        -- testUserInterface = "code lenses",
+        testUserInterface = "code lenses",
+        -- testUserInterface = "Test Explorer",
+        showInferredType=true,
         showImplicitArguments = true,
         showImplicitConversionsAndClasses = true,
-        -- superMethodLensesEnabled = true,
-        showInferredType=true,
+        superMethodLensesEnabled = true,
         enableSemanticHighlighting = true,
         excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
-        serverVersion = "1.3.0",
+        serverVersion = "1.5.1",
+        serverProperties = {
+
+        },
       },
       init_options = {statusBarProvider = "on"},
     },
     config = function(plug, opts)
       local has_cmp_nvim_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-      local has_dap, dap = pcall(require, "dap")
 
 
       -- Create metals config
@@ -80,12 +84,17 @@ return {
         {
           capabilities = capabilities,
           on_attach = function(client, bufnr)
+            local has_dap, dap = pcall(require, "dap")
             if has_dap then
+              vim.notify("Metals: DAP enabled", "info")
               require("metals").setup_dap()
             end
             if type(opts.on_attach) == "function" then
               opts.on_attach(client, bufnr)
             end
+              vim.api.nvim_create_user_command("MetalsScalaTree", function()
+                require("metals.tvp").toggle_tree_view()
+              end, {})
           end,
         }
       )

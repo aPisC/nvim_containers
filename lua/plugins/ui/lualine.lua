@@ -44,14 +44,17 @@ return {
 
       local lsp_icons = {
         copilot = " ",
+        ["GitHub Copilot"] = " ",
         tsserver = " ",
         ["typescript-tools"] = " ",
+        tailwind = "󱏿 ",
+        tailwindcss = "󱏿 ",
         emmet_ls = " ",
         metals = " ",
         omnisharp = "󰌛 ",
-        tailwind = "󱏿 ",
         lua = " ",
         jsonls = "",
+        texlab = " ",
       }
 
       local function lsp_client()
@@ -102,7 +105,7 @@ return {
           },
           ignore_focus = {},
           always_divide_middle = true,
-          globalstatus = false,
+          globalstatus = true,
           refresh = {
             statusline = 1000,
             tabline = 1000,

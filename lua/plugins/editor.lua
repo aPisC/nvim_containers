@@ -1,16 +1,4 @@
 return {
-  -- {
-  --   name = "keymaps",
-  --   keys = {
-  --     {"<C-s>", function() vim.cmd"w" end }
-  --   },
-  -- },
-  --
-  -- {
-  --   'smoka7/multicursors.nvim',
-  --   event = "VeryLazy",
-  --   opts = {},
-  -- },
   {
     "mg979/vim-visual-multi",
     event = "VeryLazy",
@@ -18,17 +6,7 @@ return {
       vim.g["VM_set_statusline"] = '0'
     end,
   },
-  {'AndrewRadev/tagalong.vim'},
   {'mbbill/undotree'},
-  {
-    'folke/trouble.nvim',
-    opts = { },
-    event = "VeryLazy",
-    keys = {
-      {'<C-g>E', function() vim.cmd('TroubleToggle') end},
-    }
-  },
-  {'tpope/vim-sensible'},
   {
     'tpope/vim-commentary', 
     opts = {
@@ -48,10 +26,6 @@ return {
   },
   {'michaeljsmith/vim-indent-object'},
   {
-    'tiagovla/scope.nvim',
-    opts = {},
-  },
-  {
     'stevearc/stickybuf.nvim',
     opts = {
       get_auto_pin = function(bufnr)
@@ -67,6 +41,7 @@ return {
         if vim.startswith(filetype, "dbout") then return "filetype" end
         if vim.startswith(filetype, "dbui") then return "filetype" end
         if vim.startswith(filetype, "Neogit") then return nil end
+        if vim.startswith(filetype, "neo-tree") then return nil end
 
         return require("stickybuf").should_auto_pin(bufnr)
       end
@@ -250,50 +225,5 @@ return {
         },
       },},
     config = function(plug, opts) require'nvim-treesitter.configs'.setup(opts) end,
-  },
-  {
-    'jedrzejboczar/toggletasks.nvim',
-    opts =  {
-      debug = false,
-      silent = false,  -- don't show "info" messages
-      short_paths = true,  -- display relative paths when possible
-      search_paths = { '.vscode/toggletasks' },
-      scan = {
-        global_cwd = true,    -- vim.fn.getcwd(-1, -1)
-      },
-      tasks = { },
-      -- toggleterm = {
-      --   start_in_insert=true,
-      --   close_on_exit = false,
-      --   hidden = false,
-      --   direction = "tab"
-      -- },
-      telescope = {
-        spawn = {
-          open_single = true,  -- auto-open terminal window when spawning a single task
-          show_running = false, -- include already running tasks in picker candidates
-          mappings = {
-            select_float = '<C-f>',
-            spawn_smart = '<C-a>',  -- all if no entries selected, else use multi-select
-            spawn_all = '<M-a>',    -- all visible entries
-            spawn_selected = nil,   -- entries selected via multi-select (default <tab>)
-          },
-        },
-        select = {
-          mappings = {
-            select_float = '<C-f>',
-            open_smart = '<C-a>',
-            open_all = '<M-a>',
-            open_selected = nil,
-            kill_smart = '<C-Q>',
-            kill_all = '<M-q>',
-            kill_selected = '<C-q>',
-            respawn_smart = '<C-s>',
-            respawn_all = '<M-s>',
-            respawn_selected = nil,
-          },
-        },
-      },
-    }
   },
 }

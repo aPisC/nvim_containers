@@ -59,7 +59,7 @@ return function(system_dist_config)
       {import="plugins.theme"},
       {import="plugins.hydra"},
       {import="plugins.lsp.lsp"},
-      {import="plugins.lsp.cmp"},
+      {import="plugins.lsp.blink"},
       {import="plugins.lsp.dap"},
       {import="plugins.lsp.treesitter"},
       {import="plugins.lsp.formatter"},

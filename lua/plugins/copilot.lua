@@ -1,24 +1,25 @@
 return {
-  {
-    "github/copilot.vim",
-    opts = {
-      no_tab_map = true,
-      filetypes = {
-        ["*"] = false,
-        python = true,
-        lua = true,
-        scala = true,
-      }
-    },
-    config = function(_, opts) 
-      vim.g.copilot_enabled = false
-      vim.g.copilot_filetypes = opts.filetypes
-      vim.g.copilot_no_tab_map = opts.no_tab_map
-
-    end
-  }
+	{
+		"github/copilot.vim",
+		opts = {
+			no_tab_map = true,
+			filetypes = {
+				["*"] = false,
+				python = true,
+				lua = true,
+				scala = true,
+				typescriptreact = true,
+				typescript = true,
+			},
+		},
+		init = function() end,
+		config = function(_, opts)
+			vim.g.copilot_enabled = true
+			vim.g.copilot_filetypes = opts.filetypes
+			vim.g.copilot_no_tab_map = opts.no_tab_map
+		end,
+	},
 }
-
 
 -- return {
 --   {

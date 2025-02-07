@@ -11,6 +11,12 @@ return {
 			"fang2hou/blink-copilot",
 		},
 		opts = {
+      _initialize_lazy = {
+        -- completion = function()
+        --   local Promise = require("promise")
+        --   return Promise.rejected("Lazy loading blink completion is not supported")
+        -- end
+      },
 			_initialize = {
 				completion = function(_, opts)
 					local tabpresstime = vim.call("reltime")
@@ -64,12 +70,11 @@ return {
 							},
 						},
 						keymap = {
-							preset = "super-tab",
+							preset = "enter",
 							cmdline = {
+							  preset = "super-tab",
 								["<Up>"] = { "fallback" },
 								["<Down>"] = { "fallback" },
-								["<Tab>"] = { "select_next", "fallback" },
-								["<S-Tab>"] = { "select_prev", "fallback" },
 							},
 							["<Tab>"] = {
 								function(cmp)
@@ -106,10 +111,10 @@ return {
 								"select_prev",
 								"fallback",
 							},
-							["<CR>"] = {
-								"accept",
-								"fallback",
-							},
+							-- ["<CR>"] = {
+							-- 	"accept",
+							-- 	"fallback",
+							-- },
 							-- ["<space>"] = {
 							--   function(cmp)
 							--     if cmp.get_selected_item() then

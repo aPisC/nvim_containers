@@ -1,4 +1,5 @@
 function initialize_treesitter(plug, opts)
+  if not opts.treesitter_install  then return end
   require("nvim-treesitter.configs").setup({
     ensure_installed = vim.tbl_filter(
     function(lang) return opts.treesitter_install[lang] end,

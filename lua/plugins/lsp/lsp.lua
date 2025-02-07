@@ -1,4 +1,8 @@
+local Promise = require"promise"
+
 function initialize_language_server(plug, opts)
+      if not opts.servers then return end
+
       -- setup LSP servers
       local has_cmp_nvim_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
       local lspconfig = require("lspconfig")
@@ -10,15 +14,15 @@ function initialize_language_server(plug, opts)
           vim.lsp.protocol.make_client_capabilities(),
           has_cmp_nvim_lsp and cmp_nvim_lsp.default_capabilities() or {},
           server_config.capabilities or {}
-        )
+        ) 
 
-        for _, extend_capabilities in pairs(opts.extend_capabilities) do
+        for _, extend_capabilities in pairs(opts.extend_capabilities or {}) do
           capabilities = extend_capabilities(capabilities, server)
         end
 
         local on_attach = function(client, bufnr)
           if server_config.on_attach then server_config.on_attach(client, bufnr) end
-          if capabilities.signature_help.enable then
+          if capabilities.signature_help and capabilities.signature_help.enable then
             require("lsp_signature").on_attach(capabilities.signature_help, bufnr)
           end
           -- if capabilities.use_virtual_types then
@@ -37,12 +41,30 @@ function initialize_language_server(plug, opts)
       end
 end
 
+function initialize_language_server_lazy(config)
+  return Promise.new(function(resolve)
+    if config.servers then
+      for server, server_config in pairs(config.servers) do
+          vim.defer_fn(function()
+            pcall(function()
+              vim.notify('Starting LSP server ' .. server)
+              require('lspconfig')[server].setup(server_config)
+              vim.cmd("LspStart ".. server) 
+            end)
+          end, 0)
+      end
+    end
+    resolve()
+  end)
+end
+
 function initialize_mason(plug, opts)
+
   require("mason").setup({})
   require("mason-tool-installer").setup({
     ensure_installed = vim.tbl_filter(
       function(package) return opts.mason_install[package] end,
-      vim.tbl_keys(opts.mason_install)
+      vim.tbl_keys(opts.mason_install or {})
     ),
     auto_update = false,
     run_on_start = true,
@@ -52,6 +74,69 @@ function initialize_mason(plug, opts)
     ensure_installed = {},
     automatic_installion = true,
   })
+end
+
+local function initialize_mason_lazy(opts)
+  return Promise._then(
+    vim.tbl_map(
+      function(package) 
+        return Promise.new(function(resolve)
+          local Package = require "mason-core.package"
+          local registry = require "mason-registry"
+
+          if not opts.mason_install[package] then return resolve() end
+          if registry.is_installed(package) then return resolve() end
+
+          vim.notify("[Mason] Installing package " .. package, "info")
+          local package_name, version = Package.Parse(package)
+          local pkg = registry.get_package(package_name)
+          local handle =  pkg:install({ version = version })
+
+
+          local callback = function()
+            if not handle.package:is_installed() then
+              vim.notify("[Mason] Failed to install package " .. package_name, "error")
+            else 
+              vim.notify("[Mason] Installed package " .. package_name, "info")
+            end
+            resolve()
+          end
+
+          if handle:is_closed() then
+            callback()
+          else
+            handle:once("closed", callback)
+          end
+        end)
+      end,
+      vim.tbl_keys(opts.mason_install or {})
+    )
+  )
+end
+
+local function initialize_plugins_lazy(opts)
+  -- :lua = require"lazy".install({plugins = require"lazy.core.plugin".Spec.new({"Hoffs/omnisharp-extended-lsp.nvim"}).plugins, wait=false, show=false, clear=false})._running:on("done", function() vim.notify("doooone") end)
+  local plugins = vim.tbl_filter(
+    function(plugin) return opts.plugins[plugin] end,
+    vim.tbl_keys(opts.plugins or {})
+  )
+  if #plugins == 0 then return Promise.resolved() end
+
+  local spec = require"lazy.core.plugin".Spec.new(plugins)
+  local missing_plugins = vim.tbl_filter(
+    function(plugin) 
+      local dir = plugin.dir
+      local dirstat = vim.loop.fs_stat(dir)
+      return not dirstat
+    end,
+    spec.plugins
+  )
+  if #missing_plugins == 0 then return Promise.resolved() end
+
+  return Promise.new(function(resolve)
+    vim.notify("Installing plugins " .. table.concat(plugins, ", "), "info")
+    require"lazy".install({plugins = spec.plugins, wait=false, show=true, clear=false})._running:on("done", resolve)
+  end)
 end
 
 return {
@@ -90,6 +175,7 @@ return {
     },
     lazy = false,
     opts = {
+      plugins = {},
       servers = {},
       capabilities = {},
       mason_install =  {},
@@ -108,9 +194,16 @@ return {
         mason = initialize_mason,
         language_server = initialize_language_server,
       },
+      _initialize_lazy = {
+        plugins = initialize_plugins_lazy,
+        mason = initialize_mason_lazy,
+        language_server = initialize_language_server_lazy
+
+      },
     },
     config = function(plug, opts)
       local init_components = {
+        "plugins",
         "mason",
         "treesitter",
         "formatter",
@@ -121,18 +214,119 @@ return {
         "completion",
       }
 
+      -- Preloader
+      local preloaded_modules = vim.tbl_filter(function(module) return ((not opts.modules[module].lazy) and opts.modules[module].auto) end, vim.tbl_keys(opts.modules))
+      local preload_config = vim.tbl_deep_extend("force", {}, opts)
+      for _, module in ipairs(preloaded_modules) do preload_config = vim.tbl_deep_extend("force", preload_config, opts.modules[module]) end
+
       for _, component in ipairs(init_components) do
         if opts._initialize[component] then
           local _, error = pcall(
             opts._initialize[component],
             plug, 
-            opts
+            preload_config
           )
           if error then
             print("Error initializing " .. component .. ": " .. error)
           end
         end
       end
+
+
+
+      -- Lazy loader
+        function lazy_load_module(module_name)
+          Promise._join(
+            Promise._then(
+              vim.tbl_map(
+                function(component)
+                  if opts._initialize_lazy[component] then
+                    return Promise.catch(
+                      opts._initialize_lazy[component](opts.modules[module_name]),
+                      function(error)
+                        vim.notify("[LSP] Error initializing " .. component .. "\n\n" .. error, "error")
+                      end
+                    )
+                  end
+                  return Promise.resolved()
+                end,
+                init_components
+              )
+            ) 
+          )
+        end
+
+        local filetype_handled = {}
+        local module_handled = {}
+
+        local augroup = vim.api.nvim_create_augroup("lsp-lazyloading", { clear = true })
+        vim.api.nvim_create_autocmd({"Filetype"}, {callback=function() 
+          local filetype = vim.bo.filetype
+          if filetype_handled[filetype] then return false end
+
+          local lazy_module_keys = vim.tbl_filter(
+              function(module_name)
+              if type(opts.modules[module_name].filetype) == "function" then
+                return opts.modules[module_name]()
+              end
+              if type(opts.modules[module_name].filetype) == "table" then
+                return vim.tbl_contains(opts.modules[module_name].filetype, filetype)
+              end
+              if type(opts.modules[module_name].filetype) == "string" then
+                return opts.modules[module_name].filetype == filetype
+              end
+              return module_name == filetype
+            end, 
+            vim.tbl_keys(opts.modules)
+          )
+
+          if #lazy_module_keys == 0 then 
+            filetype_handled[filetype] = true
+            return
+          end
+
+
+          vim.tbl_map(
+            function(module_name)
+              if module_handled[module_name] then return end
+              if not opts.modules[module_name].lazy then return end 
+
+              if opts.modules[module_name].auto then
+                module_handled[module_name] = true
+                filetype_handled[filetype] = true
+                lazy_load_module(module_name)
+                return
+              end
+
+              vim.ui.select(
+                { 'yes', 'no' }, 
+                { prompt = 'Would you like to enable ' .. module_name .. ' support?' }, 
+                function(choice)
+                  module_handled[module_name] = true
+                  filetype_handled[filetype] = true
+                  if choice == 'yes' then
+                    lazy_load_module(module_name)
+                  end
+                end
+              )
+            end, 
+            lazy_module_keys
+          )
+        end})
+
+        vim.api.nvim_create_user_command("LspLoad", function(args)
+          if not opts.modules[args.args] then 
+            vim.notify("Module " .. args.args .. " not found", "error")
+            return
+          end
+          if not module_handled[args.args] then
+            module_handled[args.args] = true
+            lazy_load_module(args.args)
+          end
+        end, {nargs="?"})
+
+
+        -- Lazy loader end
     end,
   },
 }

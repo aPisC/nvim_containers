@@ -10,7 +10,7 @@ return {
   {
     'neovim/nvim-lspconfig',
     dependencies = {
-        "micangl/cmp-vimtex",
+        -- "micangl/cmp-vimtex",
     },
     opts = {
       mason_install = {

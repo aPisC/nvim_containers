@@ -69,9 +69,8 @@ return function(system_dist_config)
 
       {import="plugins.copilot", enabled = dist_config.copilot},
       {import="plugins.db", enabled = dist_config.db},
+      {import="plugins.langs.defaults"},
       {import="plugins.langs.csharp", enabled = dist_config.csharp},
-      {import="plugins.langs.html", enabled = dist_config.html},
-      {import="plugins.langs.emmet", enabled = dist_config.emmet},
       {import="plugins.langs.http", enabled = dist_config.http},
       {import="plugins.langs.json", enabled = dist_config.json},
       {import="plugins.langs.latex", enabled = dist_config.latex},

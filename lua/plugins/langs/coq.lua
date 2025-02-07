@@ -1,6 +1,7 @@
 return {
   {
     'whonore/Coqtail',
+    enabled = false,
     config = function() 
       vim.api.nvim_create_autocmd({"FileType"}, { pattern = {"coq"}, callback=function()
         vim.keymap.set({'n', 'i'}, '<C-Down>', function() vim.cmd"CoqNext" end, {buffer=true})

@@ -1,4 +1,5 @@
 function initialize_testing(plug, opts)
+  if not opts.test_adapters  then return end
       -- Setup test adapters
       require("neotest").setup({
         adapters = vim.tbl_values(vim.tbl_map(

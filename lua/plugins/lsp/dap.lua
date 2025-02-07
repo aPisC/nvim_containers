@@ -47,12 +47,26 @@ return {
     opts = {
       dap_adapters = {},
       dap_configurations = {},
+      _initialize_lazy = {
+        debugger = function(opts)
+          local Promise = require("promise")
+          return Promise.new(function(resolve)
+            for adapter_name, adapter in pairs(opts.dap_adapters or {}) do
+              require("dap").adapters[adapter_name] = adapter
+            end
+            for configuration_name, configuration in pairs(opts.dap_configurations or {}) do
+              require("dap").configurations[configuration_name] = configuration
+            end
+            resolve()
+          end)
+        end
+      },
       _initialize = {
         debugger = function(plug, opts)
-          for adapter_name, adapter in pairs(opts.dap_adapters) do
+          for adapter_name, adapter in pairs(opts.dap_adapters or {}) do
             require("dap").adapters[adapter_name] = adapter
           end
-          for configuration_name, configuration in pairs(opts.dap_configurations) do
+          for configuration_name, configuration in pairs(opts.dap_configurations or {}) do
             require("dap").configurations[configuration_name] = configuration
           end
         end

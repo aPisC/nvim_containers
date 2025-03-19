@@ -48,14 +48,16 @@ function Segment.__prototype.configure_window(self, pos)
 		focusable = true,
 		zindex = 2,
 	}
-	if self.win and vim.api.nvim_win_is_valid(self.win) then
+	if self.win and self.win > 0 and vim.api.nvim_win_is_valid(self.win) then
 		vim.api.nvim_win_set_config(self.win, win_config)
     vim.wo[self.win].winhighlight = vim.wo[self.win].winhighlight
-	else
+	elseif self.buf and vim.api.nvim_buf_is_valid(self.buf) then
+    vim.b[self.buf]["sider-rendering"] = true
 		local win = vim.api.nvim_open_win(self.buf, false, win_config)
 		if self.win == -2 then
 			vim.api.nvim_set_current_win(win)
 		end
+    vim.b[self.buf]["sider-rendering"] = false
 		self.buf = nil
 		self.win = win
 	end
@@ -98,7 +100,7 @@ function Segment.__prototype:mount(buf, win)
 		once = true,
 		group = Const.augroup,
 		callback = function(event)
-			self.win = nil
+			if self.win and self.win > 0 then self.win = nil end
 			self.parent:render()
 			self.parent:close_if_empty()
 		end,
@@ -126,6 +128,14 @@ function Segment.__prototype:unrender()
 	end
 end
 
+function Segment.__prototype:hide()
+	if self.win and vim.api.nvim_win_is_valid(self.win) then
+		self.buf = vim.api.nvim_win_get_buf(self.win)
+		vim.api.nvim_win_close(self.win, true)
+		self.win = nil
+	end
+end
+
 function Segment.__prototype:close()
 	if self.win and vim.api.nvim_win_is_valid(self.win) then
 		vim.api.nvim_win_close(self.win, true)
@@ -139,11 +149,11 @@ function Segment.__prototype:close()
 end
 
 function Segment.__prototype:is_open()
-	return self.win and vim.api.nvim_win_is_valid(self.win)
+	return self.win and (vim.api.nvim_win_is_valid(self.win) or self.win < 0)
 end
 
 function Segment.__prototype:is_visible()
-	return self.pinned or self.win
+	return self.pinned or self.win or self.buf
 end
 
 function Segment.__prototype:render(props)
@@ -161,7 +171,7 @@ function Segment.__prototype:render(props)
 
 	local lines = {}
 
-	if not self.win and not self.pinned then
+	if not self.win and not self.pinned and not self.buf then
 		return lines
 	end
 
@@ -171,6 +181,7 @@ function Segment.__prototype:render(props)
 
 	if self.win then
 		table.insert(lines, {
+      title = title,
 			callback = function(window_props)
 				self:configure_window({
 					win = window_props.win,
@@ -188,11 +199,11 @@ function Segment.__prototype:render(props)
 end
 
 function Segment.__prototype:focus()
-	if self.win and vim.api.nvim_win_is_valid(self.win) then
+	if self.win and self.win > 0 and vim.api.nvim_win_is_valid(self.win) then
 		vim.api.nvim_set_current_win(self.win)
-	-- elseif self.buf and vim.api.nvim_buf_is_valid(self.buf) then
-	-- 	self.win = -2
-	-- 	self.parent:render()
+	elseif self.buf and vim.api.nvim_buf_is_valid(self.buf) then
+		self.win = -2
+		self.parent:render()
 	elseif self.open then
 		if type(self.open) == "string" then
 			vim.cmd(self.open)

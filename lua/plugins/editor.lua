@@ -27,6 +27,7 @@ return {
   {'michaeljsmith/vim-indent-object'},
   {
     'stevearc/stickybuf.nvim',
+    enabled = false,
     opts = {
       get_auto_pin = function(bufnr)
         local buftype = vim.bo[bufnr].buftype
@@ -92,6 +93,7 @@ return {
             "sbt",
             "OverseerForm",
             "OverseerList",
+            "oil",
           }, filetype)
         then return false end
 
@@ -110,9 +112,42 @@ return {
     }
   },
   {
+    "ryanmsnyder/toggleterm-manager.nvim",
+    dependencies = {
+      "akinsho/nvim-toggleterm.lua",
+      "nvim-telescope/telescope.nvim",
+      {
+          'mrjones2014/legendary.nvim',
+          opts = {
+            toggleterm = {
+              itemgroup = "toggleterm",
+              icon = "📟",
+              description = "Toggleterm",
+              keymaps = {
+                {"<C-g>t", ":Telescope toggleterm_manager<CR>", mode={'n'}, description="Toggleterm manager" },
+              },
+            },
+          }
+      }
+    },
+    opts = function() 
+      local actions = require("toggleterm-manager").actions
+      return {
+        mappings = { -- key mappings bound inside the telescope window
+          i = {
+            ["<CR>"] = { action = actions.toggle_term, exit_on_action = false }, -- toggles terminal open/closed
+            ["<C-i>"] = { action = actions.create_term, exit_on_action = true }, -- creates a new terminal buffer
+            ["<C-d>"] = { action = actions.delete_term, exit_on_action = false }, -- deletes a terminal buffer
+            ["<F2>"] = { action = actions.rename_term, exit_on_action = false }, -- provides a prompt to rename a terminal
+          },
+        },
+      } 
+    end,
+  },
+  {
     'akinsho/toggleterm.nvim',
     dependencies = {
-      'tknightz/telescope-termfinder.nvim',
+      "nvim-lua/plenary.nvim",
     }, 
     opts = {
       size = 10,
@@ -124,13 +159,12 @@ return {
     },
     config = function(_, opts)
       require("toggleterm").setup(opts)
-      local has_telescope, telescope = pcall(require, "telescope")
-      if has_telescope then
-        telescope.load_extension("termfinder")
-        vim.keymap.set("n", "<C-g>T", function() vim.cmd("Telescope termfinder find") end)
-      end
+      -- local has_telescope, telescope = pcall(require, "telescope")
+      -- if has_telescope then
+      --   telescope.load_extension("termfinder")
+      --   vim.keymap.set("n", "<C-g>T", function() vim.cmd("Telescope termfinder find") end)
+      -- end
     end
-
   },
   {
     "folke/flash.nvim",
@@ -142,24 +176,11 @@ return {
           enabled = true,
           search = { wrap = true },
           jump = { register = false },
-
---           label = {
---             style = "overlay",
---             current = false,
---             after = false,
---             before = false,
---             distance = false,
---           },
-
           highlight = {
             backdrop = true,
             matches = false,
             priority = 5000,
-            groups = {
-              -- label = 'GreenHighlight', -- :hi for f/F
-              -- cursor = 'BlueHighlight', -- :hi for t/T
-              -- match = 'BlueHighlight', -- :hi for t/T
-            },
+            groups = { },
           },
         }
       }
@@ -208,9 +229,6 @@ return {
             ["aa"] = "@parameter.outer",
             ["i?"] = "@conditional.inner",
             ["a?"] = "@conditional.outer",
-            -- You can optionally set descriptions to the mappings (used in the desc parameter of
-            --
-            -- nvim_buf_set_keymap) which plugins like which-key display
 
 
             -- You can also use captures from other query groups like `locals.scm`

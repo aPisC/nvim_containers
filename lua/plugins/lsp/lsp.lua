@@ -39,6 +39,33 @@ function initialize_language_server(plug, opts)
 
         lspconfig[server].setup(config)
       end
+
+      -- Initialize EFM
+      local efmls_config = {
+        filetypes = vim.tbl_keys(opts.efm),
+        settings = {
+          rootMarkers = { '.git/' },
+          languages = vim.tbl_map(
+            function(modules)
+              return vim.tbl_map(
+                function(module)
+                  if type(module) == "function" then return module() end
+                  if type(module) == "string" then return require(module) end
+                  return module
+                end,
+                modules
+              )
+            end,
+            opts.efm
+          )
+        },
+        init_options = {
+          documentFormatting = true,
+          documentRangeFormatting = true,
+        },
+      }
+      lspconfig.efm.setup(efmls_config)
+
 end
 
 function initialize_language_server_lazy(config)
@@ -153,12 +180,40 @@ return {
             keymaps = {
                {'<F12>',  {n=":Telescope lsp_definitions<CR>"}, description="LSP Show definitions" },
                {'<F24>',  {n=":Telescope lsp_references<CR>"}, description="LSP Show references" },
-               {'gd',     {n=":Telescope lsp_definitions<CR>"}, description="", hide=true },
-               {'gr',     {n=":Telescope lsp_references<CR>"}, description="", hide=true },
+               {'gd',     {n=":Telescope lsp_definitions<CR>"}, description="LSP Show definitions" },
+               {'gr',     {n=":Telescope lsp_references<CR>"}, description="LSP Show references" },
                {'gi',     {n=":Telescope lsp_implementations<CR>"}, description="LSP Show implementations" },
+               {'gK',     {n=":Telescope diagnostics<CR>"}, description="LSP Show workspace diagnostic" },
+               {'gp',     {n=":Telescope lsp_document_symbols<CR>"}, description="LSP Show document symbols" },
+               {
+                 '<C-f>',     
+                 { n = function(ev) 
+                     local efm = vim.lsp.get_active_clients({ name = 'efm', bufnr = vim.api.nvim_get_current_buf() })
+
+                     if vim.tbl_isempty(efm) then
+                       return
+                     end
+
+                     vim.lsp.buf.format({ name = 'efm' })
+                 end }, 
+                 description="LSP Format"
+               },
+               {
+                  'gP',     
+                  { n = function()
+                    local query = vim.fn.input("Search for: ")
+                    if query == "" or query == nil then
+                      vim.cmd(":Telescope lsp_dynamic_workspace_symbols")
+                    else
+                      vim.cmd(":Telescope lsp_workspace_symbols query=" .. query)
+                    end
+                  end
+                }, 
+                description="LSP Show workspace diagnostic" 
+               },
                {'<F2>',   {n=vim.lsp.buf.rename}, description="LSP Rename symbol" },
                {'<M-CR>', {n=vim.lsp.buf.code_action, v=vim.lsp.buf.code_action, i=vim.lsp.buf.code_action }, description="LSP Code actions" },
-               {'<M-S-CR>', {n=vim.lsp.codelens.run, v=vim.lsp.codelens.run, i=vim.lsp.codelens.run }, description="LSP Code actions" },
+               {'<M-S-CR>', {n=vim.lsp.codelens.run, v=vim.lsp.codelens.run, i=vim.lsp.codelens.run }, description="LSP Code lens" },
                {'K',      {n=vim.lsp.buf.hover}, description="LSP Hover" },
                {'<C-g>e', {n=vim.diagnostic.goto_next}, description="LSP Next diagnostic" },
                {'<C-?>',  {i=vim.lsp.buf.signature_help}, description="LSP Signature help" },
@@ -172,13 +227,17 @@ return {
       'williamboman/mason.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
       'williamboman/mason-lspconfig.nvim',
+      'creativenull/efmls-configs-nvim',
     },
     lazy = false,
     opts = {
       plugins = {},
       servers = {},
+      efm = {},
       capabilities = {},
-      mason_install =  {},
+      mason_install =  {
+        efm = true,
+      },
       extend_capabilities = {
         signature_help = function(capabilities, server)
           return vim.tbl_deep_extend("force", capabilities, {

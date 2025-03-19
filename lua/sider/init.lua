@@ -40,9 +40,8 @@ local function register_autocmds()
 			end
 
 			local window = vim.fn.bufwinid(ev.buf)
-			if vim.w[window]["sider-win"] then
-				return
-			end
+			if vim.w[window]["sider-win"] then return end
+      if vim.b[ev.buf]["sider-rendering"] then return end
 
 
       for sidebar_key, sidebar in pairs(Sider_sidebars) do
@@ -76,6 +75,7 @@ function Sider.setup(opts)
     Sider_sidebars[sb_key] = Sidebar.new({
       position = sb_config.position or sb_key,
       close_if_empty = vim.tbl_get(sb_config, "close_if_empty", true),
+      single = sb_config.single,
     })
     for _, segment in ipairs(vim.tbl_get(sb_config, "segments") or {}) do
       Sider_sidebars[sb_key]:add_segment(segment)

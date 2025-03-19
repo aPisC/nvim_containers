@@ -2,6 +2,7 @@ return function(system_dist_config)
   -- Start Lazy package manager
   require("keymaps")
   require("vimopts")
+  require("neovide")
 
   local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
   if not vim.loop.fs_stat(lazypath) then
@@ -57,12 +58,11 @@ return function(system_dist_config)
       {import="plugins.git"},
       {import="plugins.ui"},
       {import="plugins.theme"},
-      {import="plugins.hydra"},
       {import="plugins.lsp.lsp"},
       {import="plugins.lsp.blink"},
       {import="plugins.lsp.dap"},
       {import="plugins.lsp.treesitter"},
-      {import="plugins.lsp.formatter"},
+      -- {import="plugins.lsp.formatter"},
       {import="plugins.lsp.testing"},
       {import="plugins.overseer"},
       {import="plugins.experimental"},
@@ -108,7 +108,7 @@ return function(system_dist_config)
 
     vim.api.nvim_create_autocmd({ "BufWritePost" }, { pattern = { "nvim.lua" }, callback=function()
       if (vim.fn.expand("%:.") == ".vscode/nvim.lua") then
-        print("Reload workspace config...")
+        vim.notify("Reload workspace config...")
         dofile(workspaceInitFile)
       end
     end })

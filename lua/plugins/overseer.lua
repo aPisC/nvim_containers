@@ -29,6 +29,7 @@ return {
 			},
 		},
 		opts = {
+      strategy = "toggleterm",
 			custom_templates = {},
 			templates = { "builtin" },
 			task_list = {
@@ -45,41 +46,7 @@ return {
 					["dd"] = "<CMD>OverseerQuickAction dispose<CR>",
 				},
 			},
-			actions = {
-				["open docked"] = {
-					desc = "open terminal",
-					condition = function(task)
-						local bufnr = task:get_bufnr()
-						return bufnr and vim.api.nvim_buf_is_valid(bufnr)
-					end,
-					run = function(task)
-						local util = require("overseer.util")
-
-						for _, win in ipairs(vim.api.nvim_list_wins()) do
-							local win_bufnr = vim.api.nvim_win_get_buf(win)
-							if vim.b[win_bufnr].overseer_edgy then
-								vim.api.nvim_win_set_buf(win, task:get_bufnr())
-								vim.api.nvim_set_current_win(win)
-								util.scroll_to_end(0)
-								return
-							end
-						end
-
-						vim.cmd([[vsplit]])
-						util.set_term_window_opts()
-						vim.b[task:get_bufnr()].overseer_edgy = true
-						vim.api.nvim_win_set_buf(0, task:get_bufnr())
-						util.scroll_to_end(0)
-					end,
-				},
-			},
-			-- log = {
-			--   {
-			--     type = "file",
-			--     filename = "overseer.log",
-			--     level = vim.log.levels.TRACE, -- or TRACE for max verbosity
-			--   },
-			-- },
+			actions = { },
 		},
 		event = "VeryLazy",
 		config = function(_, opts)

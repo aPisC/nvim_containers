@@ -1,9 +1,9 @@
 return {
 	{
+    enabled=false,
 		dir = "~/.config/nvim/lua/sider",
 		opts = {
-			__left = {
-        position = "left",
+			left = {
         close_if_empty = true,
 				segments = {
 					{
@@ -91,6 +91,8 @@ return {
         },
       },
       bottom = {
+        single = true,
+        -- close_if_empty = false,
         segments = {
           {
             ft = "toggleterm",
@@ -114,6 +116,11 @@ return {
             ft = "qf",
             size = { height = 10 },
             multi=true,
+          },
+          {
+            title="Copilot",
+            ft="copilot-chat",
+            size={ height=20 },
           },
           -- {
           --   ft = "Trouble",

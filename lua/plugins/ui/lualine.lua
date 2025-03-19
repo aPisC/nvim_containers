@@ -25,9 +25,31 @@ local function lsp_progress(_, is_active)
   return table.concat(status, "  ") .. " " .. spinners[frame + 1]
 end
 
+local function dirname()
+  return " " .. vim.fn.fnamemodify(vim.fn.getcwd(), ':t') .. " "
+
+end
+
 return {
   {
+      "smiteshp/nvim-navic",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      "nvim-tree/nvim-web-devicons",
+    },
+    opts = {
+      lsp = {
+        auto_attach = true,
+        preference = nil,
+      },
+      highlight = true,
+    }
+  },
+  {
     'nvim-lualine/lualine.nvim',
+    dependencies = {
+      "smiteshp/nvim-navic",
+    },
       -- enabled = false,
       opts = function()
       local colors = {
@@ -55,6 +77,7 @@ return {
         lua = " ",
         jsonls = "",
         texlab = " ",
+        efm = "󱌣 ",
       }
 
       local function lsp_client()
@@ -150,8 +173,23 @@ return {
           lualine_z = {}
         },
         tabline = {},
-        winbar = {},
-        inactive_winbar = {},
+        winbar = {
+          lualine_a = { { dirname } },
+          lualine_b = { "filename"},
+          lualine_c = { "navic" },
+          lualine_x = {},
+          lualine_y = {},
+          lualine_z = {}
+        },
+        inactive_winbar = {
+          lualine_a = {},
+          lualine_b = { "filename"},
+          lualine_c = {},
+          lualine_x = {},
+          lualine_y = {},
+          lualine_z = {}
+
+        },
         extensions = {}
 
       }

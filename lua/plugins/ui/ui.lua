@@ -3,7 +3,7 @@ return {
   {
     'rcarriga/nvim-notify',
     opts = {
-      background_colour = "#000000",
+      background_colour = "#272727",
       top_down = false,
       render = "wrapped-compact",
       timeout = 3000,
@@ -27,14 +27,6 @@ return {
     init=function()
       vim.opt.termguicolors = true
     end
-  },
-  {
-    'utilyre/barbecue.nvim',
-    dependencies = {
-      "smiteshp/nvim-navic",
-      "nvim-tree/nvim-web-devicons",
-    },
-    opts = {}
   },
   {
     'akinsho/bufferline.nvim',

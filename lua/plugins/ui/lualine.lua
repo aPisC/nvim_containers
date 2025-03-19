@@ -174,10 +174,10 @@ return {
         },
         tabline = {
           lualine_a = { dirname },
-          lualine_b = { "tabs" },
+          lualine_b = { "buffers" },
           lualine_c = {},
           lualine_x = {},
-          lualine_y = {},
+          lualine_y = { "tabs" },
           lualine_z = {}
         },
         winbar = {

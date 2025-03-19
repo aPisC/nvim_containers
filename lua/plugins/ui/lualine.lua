@@ -143,7 +143,7 @@ return {
           lualine_b = {
             'branch',
             'diff',
-            'diagnostics'
+            { 'diagnostics', on_click=function() vim.diagnostic.setqflist() end }
           },
           lualine_c = {
             -- 'filename',
@@ -172,9 +172,16 @@ return {
           lualine_y = {},
           lualine_z = {}
         },
-        tabline = {},
+        tabline = {
+          lualine_a = { dirname },
+          lualine_b = { "tabs" },
+          lualine_c = {},
+          lualine_x = {},
+          lualine_y = {},
+          lualine_z = {}
+        },
         winbar = {
-          lualine_a = { { dirname } },
+          lualine_a = { },
           lualine_b = { "filename"},
           lualine_c = { "navic" },
           lualine_x = {},

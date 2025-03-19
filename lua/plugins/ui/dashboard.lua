@@ -23,8 +23,7 @@ return {
     "coffebar/neovim-project",
     opts = {
       projects = {
-        "/home/bendeguz/workspace/hiya/*",
-        "/home/bendeguz/.config/nvim",
+        "~/.config/nvim",
       },
       picker = {
         type = "telescope",

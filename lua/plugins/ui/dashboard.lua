@@ -8,7 +8,6 @@ return {
     event = 'VimEnter',
     opts = {
       config = {
-        -- path = require("neovim-project.utils.path").historyfile,
         project = { enable = true, limit = 8, action = function(path) vim.cmd('NeovimProjectLoad ' .. path:gsub(vim.env.HOME, '~')) end},
       }
     },
@@ -31,8 +30,10 @@ return {
       last_session_on_startup = false,
     },
     init = function()
-      -- enable saving the state of plugins in the session
-      vim.opt.sessionoptions:append("globals") -- save global variables that start with an uppercase letter and contain at least one lowercase letter.
+      vim.opt.sessionoptions:append("options")
+      vim.opt.sessionoptions:remove("buffers")
+      vim.opt.sessionoptions:remove("help")
+      vim.opt.sessionoptions:append("globals")
     end,
     dependencies = {
       { "nvim-lua/plenary.nvim" },

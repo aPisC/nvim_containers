@@ -10,6 +10,7 @@ return {
 				scala = true,
 				typescriptreact = true,
 				typescript = true,
+        javascript = true,
         yaml = true,
 			},
 		},

@@ -188,13 +188,14 @@ return {
                {
                  '<C-f>',     
                  { n = function(ev) 
-                     local efm = vim.lsp.get_active_clients({ name = 'efm', bufnr = vim.api.nvim_get_current_buf() })
+                     -- local efm = vim.lsp.get_active_clients({ name = 'efm', bufnr = vim.api.nvim_get_current_buf() })
 
-                     if vim.tbl_isempty(efm) then
-                       return
-                     end
+                     -- if vim.tbl_isempty(efm) then 
+                     -- else
+                     --   vim.lsp.buf.format({ name = 'efm' })
+                     -- end
 
-                     vim.lsp.buf.format({ name = 'efm' })
+                     vim.lsp.buf.format()
                  end }, 
                  description="LSP Format"
                },
@@ -222,7 +223,6 @@ return {
         }
       },
       'nvim-neotest/nvim-nio',
-      'antoinemadec/FixCursorHold.nvim',
       'nvim-lua/plenary.nvim',
       'williamboman/mason.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',

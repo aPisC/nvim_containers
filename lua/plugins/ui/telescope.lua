@@ -16,7 +16,7 @@ return {
       "protex/better-digraphs.nvim",
 		},
 		keys = {
-			{ "<C-p>", telescope_open_action("git_files") },
+			{ "<C-p>", telescope_open_action("find_files") },
 			{ "<C-S-p>", telescope_open_action("commands") },
 			{ "<C-g>f", telescope_open_action("buffers") },
 			{ "<C-g>a", telescope_open_action("find_files") },

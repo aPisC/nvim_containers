@@ -1,4 +1,4 @@
-local metals_au_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
+local metals_au_group = vim.api.nvim_create_augroup("local-nvim-metals", { clear = true })
 
 
 return {
@@ -19,7 +19,7 @@ return {
       -- },
       --
       efm = {
-        scala = { "efmls-configs.formatters.scalafmt" } 
+        -- scala = { "efmls-configs.formatters.scalafmt" } 
       },
       test_adapters = {
         ["scala"] = function() return require("neotest-scala")({

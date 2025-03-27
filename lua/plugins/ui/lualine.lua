@@ -1,7 +1,7 @@
 local function lsp_progress(_, is_active)
-  if not is_active then
-    return
-  end
+  -- if not is_active then
+  --   return
+  -- end
   -- local messages = vim.lsp.util.get_progress_messages()
   local messages = (vim.lsp.status or vim.lsp.util.get_progress_messages)()
   if #messages == 0 then
@@ -25,10 +25,6 @@ local function lsp_progress(_, is_active)
   return table.concat(status, "  ") .. " " .. spinners[frame + 1]
 end
 
-local function dirname()
-  return " " .. vim.fn.fnamemodify(vim.fn.getcwd(), ':t') .. " "
-
-end
 
 return {
   {
@@ -63,45 +59,6 @@ return {
         blue = '#51afef',
         red = '#ec5f67'
       }
-
-      local lsp_icons = {
-        copilot = " ",
-        ["GitHub Copilot"] = " ",
-        tsserver = " ",
-        ["typescript-tools"] = " ",
-        tailwind = "󱏿 ",
-        tailwindcss = "󱏿 ",
-        emmet_ls = " ",
-        metals = " ",
-        omnisharp = "󰌛 ",
-        lua = " ",
-        jsonls = "",
-        texlab = " ",
-        efm = "󱌣 ",
-      }
-
-      local function lsp_client()
-        local has_dap, dap = pcall(require, dap)
-        local buf_clients = vim.lsp.buf_get_clients()
-
-        local buf_client_names = {}
-
-        if has_dap and dap.session() ~= nil then
-          table.insert(buf_client_names, " ")
-        end
-
-
-        for _, client in pairs(buf_clients) do
-          if lsp_icons[client.name] ~= nil then
-            table.insert(buf_client_names, lsp_icons[client.name])
-          elseif lsp_icons[client.name] ~= false then
-            table.insert(buf_client_names, "[" .. client.name .. "]")
-          end
-        end
-
-        if #buf_client_names == 0 then return "" end
-        return table.concat(buf_client_names, " ")
-      end
 
 
       local function VMInfoSegment()
@@ -159,7 +116,7 @@ return {
             'encoding',
             'fileformat',
             'filetype',
-            { lsp_client },
+            "lsp_clients",
           },
           lualine_y = {'progress'},
           lualine_z = {'location'}
@@ -173,7 +130,7 @@ return {
           lualine_z = {}
         },
         tabline = {
-          lualine_a = { dirname },
+          lualine_a = { "project_name" },
           lualine_b = { "buffers" },
           lualine_c = {},
           lualine_x = {},
@@ -182,7 +139,16 @@ return {
         },
         winbar = {
           lualine_a = { },
-          lualine_b = { "filename"},
+          lualine_b = { 
+            {
+              "filename", 
+              cond = function() return not vim.api.nvim_buf_get_name(0):match("^oil://") end
+            },
+            {
+              function() return require('oil').get_current_dir() end,
+              cond = function() return vim.api.nvim_buf_get_name(0):match("^oil://") and true end
+            },
+          },
           lualine_c = { "navic" },
           lualine_x = {},
           lualine_y = {},
@@ -190,7 +156,16 @@ return {
         },
         inactive_winbar = {
           lualine_a = {},
-          lualine_b = { "filename"},
+          lualine_b = {
+            {
+              "filename", 
+              cond = function() return not vim.api.nvim_buf_get_name(0):match("^oil://") end
+            },
+            {
+              function() return require('oil').get_current_dir() end,
+              cond = function() return vim.api.nvim_buf_get_name(0):match("^oil://") and true end
+            },
+          },
           lualine_c = {},
           lualine_x = {},
           lualine_y = {},
@@ -198,7 +173,6 @@ return {
 
         },
         extensions = {}
-
       }
 
       return config

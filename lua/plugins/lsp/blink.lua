@@ -8,7 +8,6 @@ return {
 			},
 			{ "L3MON4D3/LuaSnip", version = "v2.*", build = "make install_jsregexp" },
 			"rafamadriz/friendly-snippets",
-			"fang2hou/blink-copilot",
 		},
 		opts = {
       _initialize_lazy = {
@@ -29,6 +28,7 @@ return {
 
 					require("blink.cmp").setup({
 						snippets = { preset = "luasnip" },
+            cmdline =  { enabled = true },
 						signature = { enabled = true },
 						completion = {
 							ghost_text = {
@@ -71,14 +71,9 @@ return {
 						},
 						keymap = {
 							preset = "enter",
-							cmdline = {
-							  preset = "super-tab",
-								["<Up>"] = { "fallback" },
-								["<Down>"] = { "fallback" },
-							},
 							["<Tab>"] = {
 								function(cmp)
-									local copilotvim_success, copilotvim_suggestion =
+                  local copilotvim_success, copilotvim_suggestion =
 										pcall(vim.fn["copilot#GetDisplayedSuggestion"])
 									if
 										copilotvim_success

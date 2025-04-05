@@ -27,10 +27,12 @@ return {
 					require("luasnip.loaders.from_vscode").load({ paths = "./snippets" })
 
 					require("blink.cmp").setup({
+            enabled = function() return not vim.tbl_contains({ "copilot-chat" }, vim.bo.filetype) end,
 						snippets = { preset = "luasnip" },
             cmdline =  { enabled = true },
 						signature = { enabled = true },
 						completion = {
+              accept = { auto_brackets = { enabled = false }, },
 							ghost_text = {
 								enabled = false,
 								show_with_selection = false,
@@ -42,9 +44,10 @@ return {
 							},
 							menu = {
 								-- auto_show = true,
+                auto_show = false,
 							},
 							list = {
-								selection = { preselect = false, auto_insert = true },
+								selection = { preselect = false, auto_insert = false },
 							},
 							trigger = {
 								-- show_on_trigger_character = false,
@@ -56,18 +59,6 @@ return {
 						},
 						sources = {
 							default = { "lsp", "path", "snippets", "buffer" },
-							-- default = { "copilot", "snippets" },
-							providers = {
-								copilot = {
-									name = "copilot",
-									module = "blink-copilot",
-									score_offset = 100,
-									async = true,
-									opts = {
-										max_completions = 3,
-									},
-								},
-							},
 						},
 						keymap = {
 							preset = "enter",
@@ -106,20 +97,6 @@ return {
 								"select_prev",
 								"fallback",
 							},
-							-- ["<CR>"] = {
-							-- 	"accept",
-							-- 	"fallback",
-							-- },
-							-- ["<space>"] = {
-							--   function(cmp)
-							--     if cmp.get_selected_item() then
-							--       cmp.accept()
-							--     end
-							--    vim.fn["feedkeys"](" ", "n")
-
-							--   end,
-							--   -- "fallback"
-							-- },
 							["<esc>"] = {
 								function(cmp)
 									local copilotvim_success, copilotvim_suggestion =

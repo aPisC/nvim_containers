@@ -125,7 +125,7 @@ return {
               icon = "📟",
               description = "Toggleterm",
               keymaps = {
-                {"<C-g>t", ":Telescope toggleterm_manager<CR>", mode={'n'}, description="Toggleterm manager" },
+                {"<C-g>t", function() vim.cmd((vim.v.count or 1) .. "ToggleTerm") end, mode={'n'}, description="Toggleterm manager" },
               },
             },
           }
@@ -156,6 +156,12 @@ return {
       direction="horizontal",
       winbar = {
         enable = true,
+      },
+      responsiveness = {
+        -- breakpoint in terms of `vim.o.columns` at which terminals will start to stack on top of each other
+        -- instead of next to each other
+        -- default = 0 which means the feature is turned off
+        horizontal_breakpoint = 135,
       }
     },
     config = function(_, opts)

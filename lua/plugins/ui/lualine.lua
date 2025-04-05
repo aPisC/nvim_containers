@@ -110,13 +110,14 @@ return {
                 return has_git_blame and git_blame.is_blame_text_available()
               end
             },
-            { lsp_progress },
           },
           lualine_x = {
+            { "lsp_progress" },
             'encoding',
             'fileformat',
             'filetype',
-            "lsp_clients",
+            { "lsp_clients"},
+            { "toggleterm_icons"  }
           },
           lualine_y = {'progress'},
           lualine_z = {'location'}
@@ -134,7 +135,8 @@ return {
           lualine_b = { "buffers" },
           lualine_c = {},
           lualine_x = {},
-          lualine_y = { "tabs" },
+          -- lualine_x = {{ function() return '%0@v:lua.print@Clicky stuff%T' end }},
+          lualine_y = { "tabs", },
           lualine_z = {}
         },
         winbar = {

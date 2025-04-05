@@ -13,6 +13,8 @@ return {
           if name == nil then return true end
           if name == ".." then return true end
 
+          if name == ".vscode" then return false end
+
           -- Check if the file is ignored by git 
           local path = vim.api.nvim_buf_get_name(bufnr):gsub("^oil://", "") .. "/" .. name
           local proc = vim.system({"git", "check-ignore", "--", path})

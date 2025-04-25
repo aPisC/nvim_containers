@@ -23,15 +23,16 @@ return {
     enabled = true,
     version = false, -- Never set this value to "*"! Never!
     opts = {
-      provider = "copilot",
-      -- provider = "claude",
+      provider = osu.cond({
+        linux = "claude",
+        windows = "copilot",
+      }),
       -- cursor_applying_provider = "claude-haiku",
       behaviour = {
         enable_cursor_planning_mode = false,
         enable_claude_text_editor_tool_mode = false,
       },
-      selector = {
-      },
+      selector = { },
       mappings = {
         sidebar = {
           switch_windows = "<PageDown>",
@@ -41,7 +42,7 @@ return {
     },
     build = osu.cond({
       linux = "make",
-      windowns = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false",
+      windows = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false",
     }),
     dependencies = {
       "nvim-treesitter/nvim-treesitter",

@@ -1,3 +1,5 @@
+local osu = require("utils.os")
+
 return {
   {
     'olimorris/codecompanion.nvim',
@@ -12,7 +14,10 @@ return {
       log_level = "DEBUG",
       strategies = {
         chat = {
-          adapter = "anthropic",
+          adapter = osu.cond({
+            linux = "anthropic",
+            windows = "copilot",
+          }),
           keymaps = {
             completion = {
               modes = { i = "<C-Space>" },

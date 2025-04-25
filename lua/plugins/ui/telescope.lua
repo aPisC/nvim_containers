@@ -1,8 +1,11 @@
+local osu = require("utils.os")
+
 function telescope_open_action(action)
 	return function()
 		require("telescope.command").load_command(action)
 	end
 end
+
 
 return {
 	{
@@ -10,9 +13,6 @@ return {
 		priority = 60,
 		dependencies = {
 			"nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope-ui-select.nvim",
-      "prochri/telescope-all-recent.nvim",
-      "kkharji/sqlite.lua",
       "protex/better-digraphs.nvim",
 		},
 		keys = {
@@ -40,11 +40,30 @@ return {
 				},
 			}
 		end,
-    config = function(_, opts)
-      local telescope = require("telescope")
-      telescope.setup(opts)
-			telescope.load_extension("ui-select")
-      require("telescope-all-recent").setup({})
-    end
 	},
+  {
+      "prochri/telescope-all-recent.nvim",
+      dependencies = {
+        "nvim-telescope/telescope.nvim",
+        "kkharji/sqlite.lua",
+      },
+      init = function()
+        vim.g.sqlite_clib_path = osu.cond({
+          linux = nil,
+          windows = "C:\\Program Files\\Neovim\\sqlite3.dll"
+        })
+      end,
+      config = function()
+        require("telescope-all-recent").setup({})
+      end
+  },
+  {
+      "nvim-telescope/telescope-ui-select.nvim",
+      dependencies = {
+        "nvim-telescope/telescope.nvim",
+      },
+      config = function()
+        require("telescope").load_extension("ui-select")
+      end
+  },
 }

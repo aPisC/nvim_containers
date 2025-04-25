@@ -1,6 +1,9 @@
 function initialize_treesitter(plug, opts)
+  local treesitter_available, treesitter_config = pcall(require, "nvim-treesitter.configs")
+  if not treesitter_available then return end
   if not opts.treesitter_install  then return end
-  require("nvim-treesitter.configs").setup({
+
+  treesitter_config.setup({
     ensure_installed = vim.tbl_filter(
     function(lang) return opts.treesitter_install[lang] end,
     vim.tbl_keys(opts.treesitter_install)

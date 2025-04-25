@@ -52,7 +52,6 @@ return {
   {
     'junegunn/fzf',
     dependencies = {{'junegunn/fzf.vim'}},
-    build = function() vim.fn['fzf#install']() end,
     event = "VeryLazy",
     keys = {
       {"<C-f>", "\"zy:Ag <C-r>z<CR>", mode="v"}

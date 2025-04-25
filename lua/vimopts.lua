@@ -1,3 +1,4 @@
+local osu = require("utils.os")
 -- Vim options
 --
 --
@@ -26,7 +27,18 @@ vim.g.python3_host_prog = '/usr/bin/python3'
 -- vim.api.nvim_create_autocmd({ "BufEnter" }, { pattern = { "*" }, command = "normal zx", })
 -- vim.opt.signcolumn = "auto:2-5"
 -- vim.opt.equalalways = false
-vim.opt.shell="/bin/bash"
+
+vim.opt.shell = osu.cond({
+  linux = "/bin/bash",
+  windows = "powershell"
+})
+
+if osu.get_os() == "windows" then
+  vim.opt.shellcmdflag='-command'
+  vim.opt.shellquote=''
+  vim.opt.shellxquote=''
+end
+
 vim.noswapfile = true
 
 vim.opt.splitkeep = "screen"

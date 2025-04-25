@@ -1,3 +1,5 @@
+local osu = require("utils.os")
+
 return {
   {
     "saghen/blink.cmp",
@@ -10,6 +12,9 @@ return {
       disable_file_type = {
         "copilot-chat",
         "DressingInput"  
+      },
+      fuzzy = {
+        implementation = osu.cond({windows = "lua" })
       },
       snippets = { preset = "luasnip" },
       cmdline =  { 

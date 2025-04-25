@@ -22,7 +22,7 @@ return {
     "coffebar/neovim-project",
     opts = {
       projects = {
-        "~/.config/nvim",
+        vim.fn.stdpath("config")
       },
       picker = {
         type = "telescope",

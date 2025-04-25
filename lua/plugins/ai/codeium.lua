@@ -1,0 +1,28 @@
+return {
+  -- {
+  --   'saghen/blink.cmp',
+  --   dependencies = {
+  --       'Exafunction/codeium.nvim',
+  --   },
+  --   opts = {
+  --     sources = {
+  --       defaults = { codeium = true },
+  --       providers = {
+  --         codeium = { name = 'Codeium', module = 'codeium.blink', async = true },
+  --       },
+  --     },
+  --   },
+  -- },
+  -- {
+  --   "Exafunction/windsurf.nvim",
+  --   dependencies = {
+  --       "nvim-lua/plenary.nvim",
+  --   },
+  --   opts = {
+  --     enable_cmp_source = false,
+  --   },
+  --   config = function(_, opts)
+  --     require("codeium").setup(opts)
+  --   end,
+  -- },
+}

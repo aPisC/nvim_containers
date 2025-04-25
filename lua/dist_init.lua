@@ -67,8 +67,9 @@ return function(system_dist_config)
       {import="plugins.lsp.testing"},
       {import="plugins.overseer"},
       {import="plugins.experimental"},
+      {import="plugins.ai"},
 
-      {import="plugins.copilot", enabled = dist_config.copilot},
+      -- {import="plugins.copilot", enabled = dist_config.copilot},
       {import="plugins.db", enabled = dist_config.db},
       {import="plugins.langs.defaults"},
       {import="plugins.langs.csharp", enabled = dist_config.csharp},

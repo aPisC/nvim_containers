@@ -1,40 +1,47 @@
 return {
-	{
-		"github/copilot.vim",
-		opts = {
-			no_tab_map = true,
-			filetypes = {
-				["*"] = false,
-				python = true,
-				lua = true,
-				scala = true,
-				typescriptreact = true,
-				typescript = true,
-        javascript = true,
-        yaml = true,
-			},
-		},
-		init = function() end,
-		config = function(_, opts)
-			vim.g.copilot_enabled = true
-			vim.g.copilot_filetypes = opts.filetypes
-			vim.g.copilot_no_tab_map = opts.no_tab_map
-		end,
-	},
   {
-     "CopilotC-Nvim/CopilotChat.nvim",
+    'saghen/blink.cmp',
     dependencies = {
-      { "github/copilot.vim" },
-      { "nvim-lua/plenary.nvim", branch = "master" },
+        "giuxtaposition/blink-cmp-copilot",
+        "zbirenbaum/copilot.lua"
     },
-    build = "make tiktoken",
     opts = {
-      -- model = "",
-      -- See Configuration section for options
+      sources = {
+        default = { copilot = true },
+        providers = {
+          copilot = { name = "copilot", module = "blink-cmp-copilot", score_offset = 100, async = true },
+        },
+      },
     },
-  }
+  },
+  {
+    "zbirenbaum/copilot.lua",
+    cmd = "Copilot",
+    event = "InsertEnter",
+    opts = {
+      suggestion = { enabled = false },
+      panel = { enabled = false },
+      filetypes = {
+        ["*"] = true,
+        yaml = false,
+        markdown = false,
+        help = false,
+        gitcommit = false,
+        gitrebase = false,
+        hgcommit = false,
+        svn = false,
+        cvs = false,
+        toggleterm = false,
+        conf = false,
+        ["."] = false,
+        sh = function ()
+          if string.match(vim.fs.basename(vim.api.nvim_buf_get_name(0)), '^%.env.*') then return false end
+          return true
+        end,
+      },
+    },
+  },
 }
-
 -- return {
 --   {
 --     'neovim/nvim-lspconfig',

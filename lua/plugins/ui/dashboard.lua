@@ -30,10 +30,10 @@ return {
       last_session_on_startup = false,
     },
     init = function()
-      vim.opt.sessionoptions:append("options")
+      vim.opt.sessionoptions:remove("options")
       vim.opt.sessionoptions:remove("buffers")
       vim.opt.sessionoptions:remove("help")
-      vim.opt.sessionoptions:append("globals")
+      vim.opt.sessionoptions:remove("globals")
     end,
     dependencies = {
       { "nvim-lua/plenary.nvim" },

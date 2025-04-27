@@ -7,7 +7,11 @@ local function create_config(opts)
 
   return {
       name = "nvim_file_open", 
-      description = "Open a file in the nvim UI",  -- Description shown to AI
+      description = [[
+This tool can open a file in the Nvim UI. 
+Use this tool if the user requests you to show them something or you want to show something in the file for the user.
+You can combine this tool with add_file_to_context to make both the user, and the agent able to read the file you two are talking about.
+]],  -- Description shown to AI
       param = {  
         type = "table",
         fields = {
@@ -58,6 +62,9 @@ local function create_config(opts)
           local buf_id = vim.api.nvim_win_get_buf(win_id)
           local buf_name = vim.api.nvim_buf_get_name(buf_id)
           local buf_type = vim.api.nvim_buf_get_option(buf_id, 'buftype')
+
+          -- Omit fix windows
+          if vim.wo[win_id].winfixbuf then break end
 
           -- Check for a window with no file opened
           if buf_name == "" then

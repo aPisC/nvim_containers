@@ -35,7 +35,7 @@ return {
     enabled = true,
     version = false, -- Never set this value to "*"! Never!
     opts = {
-      debug=true,
+      debug=false,
       provider = osu.cond({ linux = "claude", windows = "copilot" }),
       behaviour = {
         enable_cursor_planning_mode = false,
@@ -55,6 +55,9 @@ return {
       custom_tools = {
         require("llm-tools.nvim-file-open")({}),
         require("llm-tools.nvim-terminal-open")({}),
+        require("llm-tools.nvim-terminal-list")({}),
+        require("llm-tools.nvim-terminal-read")({}),
+        -- require("llm-tools.nvim-terminal-input")({}),
       },
       system_prompt = [[
 Ignore the system language and use english when you communicate with the user.

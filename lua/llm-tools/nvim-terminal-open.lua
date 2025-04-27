@@ -28,6 +28,7 @@ local function create_config(opts)
       description =  [[Executes a given bash command in a persistent shell session with optional timeout, ensuring proper handling and security measures. Do not use bash command to read or modify files, or you will be fired.
 This terminal will be seen and managed by the user. Use this for commands that could run infinitely or requires inputs.  start this terminal in a deattached state, if you are not required to  wait for the command to finish (for example starting a service for the user).
 You will be able to access this terminal in the future, with the nvim_terminal_list and nvim_teminal_read tools.
+This is the terminal for dev servers and long running jobs.
 ]],
       param = {  
         type = "table",
@@ -46,6 +47,12 @@ You will be able to access this terminal in the future, with the nvim_terminal_l
             name = "deattached",
             description = "If true, the command will be run in a deattached state, the output will not be provided to you, and you won't wait to the execution to finish",
             type = "boolean",
+          },
+          {
+            name = "foreground",
+            description = "If true, the terminal will pop up, otherwise it remains in the background",
+            type = "boolean",
+            optional=true,
           },
           {
             name = "display_name",
@@ -102,7 +109,6 @@ You will be able to access this terminal in the future, with the nvim_terminal_l
               return
             end
 
-            local stdout = ""
             local outcome_handled = false
 
             local term = Terminal:new({
@@ -110,19 +116,11 @@ You will be able to access this terminal in the future, with the nvim_terminal_l
               cmd = opts.command,
               dir = abs_path,
               display_name = opts.display_name,
-              on_stdout = function(_, _, data)
-                if not outcome_handled then
-                  stdout = stdout .. table.concat(data, "\n") .. "\n"
-                end
-              end,
-              on_stderr = function(_, _, data)
-                if not outcome_handled then
-                  stdout = stdout .. table.concat(data, "\n") .. "\n"
-                end
-              end,
+              name = opts.display_name,
               on_exit = function(term, _, exit_code, _)
                 if not outcome_handled then
                   outcome_handled = true
+                  local stdout = table.concat(vim.api.nvim_buf_get_lines(term.bufnr, 0, -1, false), "\n")
                   if exit_code ~= 0 then
                     if stdout ~= "" then
                       on_complete(stdout, "Error: " .. stdout .. "; Error code: " .. exit_code)
@@ -136,12 +134,18 @@ You will be able to access this terminal in the future, with the nvim_terminal_l
               end,
             })
             term.ai_accessible = true
-            term:open()
+            if opts.foreground then 
+              term:open() 
+            else
+              term:spawn()
+              vim.notify(string.format("Command `%s` started in the background", opts.command))
+            end
 
             if opts.deattached then 
               vim.defer_fn(function()
                 if not outcome_handled then
                   outcome_handled = true
+                  local stdout = table.concat(vim.api.nvim_buf_get_lines(term.bufnr, 0, -1, false), "\n")
                   on_complete(stdout, nil)
                 end
               end, 5000)

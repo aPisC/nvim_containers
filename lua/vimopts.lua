@@ -30,11 +30,13 @@ vim.g.python3_host_prog = '/usr/bin/python3'
 
 vim.opt.shell = osu.cond({
   linux = "/bin/bash",
-  windows = '"C:\\Program Files\\PowerShell\\7\\pwsh.exe"'
+  windows = 'pwsh'
 })
 
 if osu.get_os() == "windows" then
-  vim.opt.shellcmdflag='-command'
+  vim.opt.shellcmdflag ="-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+  vim.opt.shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait"
+  vim.opt.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
   vim.opt.shellquote=''
   vim.opt.shellxquote=''
 end

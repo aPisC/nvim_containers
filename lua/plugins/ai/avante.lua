@@ -35,15 +35,12 @@ return {
     enabled = true,
     version = false, -- Never set this value to "*"! Never!
     opts = {
-      provider = osu.cond({
-        linux = "claude",
-        windows = "copilot",
-      }),
-      -- cursor_applying_provider = "claude-haiku",
+      debug=true,
+      provider = osu.cond({ linux = "claude", windows = "copilot" }),
       behaviour = {
         enable_cursor_planning_mode = false,
         enable_claude_text_editor_tool_mode = false,
-        use_cwd_as_project_root = false,
+        use_cwd_as_project_root = true,
       },
       selector = { },
       mappings = {
@@ -56,9 +53,12 @@ return {
         }
       },
       custom_tools = {
-        require("llm-tools.nvim-open")({}),
-        require("llm-tools.nvim-terminal")({}),
-      }
+        require("llm-tools.nvim-file-open")({}),
+        require("llm-tools.nvim-terminal-open")({}),
+      },
+      system_prompt = [[
+Ignore the system language and use english when you communicate with the user.
+      ]]
     },
     build = osu.cond({
       linux = "make",

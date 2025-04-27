@@ -6,7 +6,7 @@ local function create_config(opts)
   opts = vim.tbl_deep_extend("force", {}, default_options, opts or {})
 
   return {
-      name = "nvim_open", 
+      name = "nvim_file_open", 
       description = "Open a file in the nvim UI",  -- Description shown to AI
       param = {  
         type = "table",

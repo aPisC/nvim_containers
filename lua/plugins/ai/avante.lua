@@ -7,9 +7,21 @@ return {
         'Kaiser-Yang/blink-cmp-avante',
     },
     opts = {
+      enabled = {
+        ["DressingInput"] = false,
+      },
+      completion = {
+        ghost_text = {
+          enabled = { AvanteInput = false, AvantePromptInput = false },
+        },  
+        menu = {
+          auto_show = { AvanteInput = true, AvantePromptInput = true },
+        }
+      },
       sources = {
         per_filetype = {
-          AvanteInput = { "avante" }
+          AvanteInput = { "avante" },
+          AvantePromptInput = { "avante" }
         },
         providers = {
           avante = { module = 'blink-cmp-avante', name = 'Avante', opts = { } },
@@ -31,13 +43,21 @@ return {
       behaviour = {
         enable_cursor_planning_mode = false,
         enable_claude_text_editor_tool_mode = false,
+        use_cwd_as_project_root = false,
       },
       selector = { },
       mappings = {
+        submit = {
+          insert = "<C-CR>",
+        },
         sidebar = {
-          switch_windows = "<PageDown>",
-          reverse_switch_windows = "<PageUp>",
+          -- switch_windows = "<PageDown>",
+          -- reverse_switch_windows = "<PageUp>",
         }
+      },
+      custom_tools = {
+        require("llm-tools.nvim-open")({}),
+        require("llm-tools.nvim-terminal")({}),
       }
     },
     build = osu.cond({

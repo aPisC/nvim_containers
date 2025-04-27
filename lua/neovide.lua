@@ -3,7 +3,7 @@ local osu = require("utils.os")
 if vim.g.neovide then
   vim.o.guifont = osu.cond({
     linux = "Fira Code:h10",
-    windows = "FiraCode Nerd Font Mono:h10",
+    windows = "FiraCode Nerd Font Propo:h10",
   })
 
   vim.g.neovide_opacity = 0.8

@@ -8,7 +8,14 @@ return {
     event = 'VimEnter',
     opts = {
       config = {
-        project = { enable = true, limit = 8, action = function(path) vim.cmd('NeovimProjectLoad ' .. path:gsub(vim.env.HOME, '~')) end},
+        project = { 
+          enable = true, 
+          limit = 8, 
+          action = function(path) 
+            local home = string.gsub(vim.env.HOME, "\\", "/")
+            vim.cmd('NeovimProjectLoad ' .. path:gsub(home, '~')) 
+          end
+        },
       }
     },
     config = function(_, opts) 

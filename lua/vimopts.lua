@@ -30,7 +30,7 @@ vim.g.python3_host_prog = '/usr/bin/python3'
 
 vim.opt.shell = osu.cond({
   linux = "/bin/bash",
-  windows = "powershell"
+  windows = '"C:\\Program Files\\PowerShell\\7\\pwsh.exe"'
 })
 
 if osu.get_os() == "windows" then

@@ -2,14 +2,17 @@
 local function create_list_config()
   return {
     name = "nvim_terminal_list",
-    description = [[
-List terminals opened in the editor. With this tool you can check if the terminal you started earlier is still running, ang get the details of it.
+    description = [[ List terminals opened in the editor. With this tool you can check if the terminal you started earlier is still running, ang get the details of it.
 Use it if the user refers to siomething in a console or terminal. If you are unsure what terminal the user refers to, ask clarifications.
 ]],
     param = {
       type = "table",
       fields = {
-
+        {
+          type = "boolean",
+          name = "dummy",
+          description = "This tool does not require any parameters. Always provide false in this field",
+        }
       }
     },
     returns = {  

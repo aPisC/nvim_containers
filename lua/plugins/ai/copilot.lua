@@ -3,7 +3,8 @@ return {
     'saghen/blink.cmp',
     dependencies = {
         "giuxtaposition/blink-cmp-copilot",
-        "zbirenbaum/copilot.lua"
+        "zbirenbaum/copilot.lua",
+        "giuxtaposition/blink-cmp-copilot",
     },
     opts = {
       sources = {

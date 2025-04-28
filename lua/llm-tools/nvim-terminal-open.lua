@@ -26,7 +26,9 @@ local function create_config(opts)
   return {
       name = "nvim_teminal_open", 
       description =  [[Executes a given bash command in a persistent shell session with optional timeout, ensuring proper handling and security measures. Do not use bash command to read or modify files, or you will be fired.
-This terminal will be seen and managed by the user. Use this for commands that could run infinitely or requires inputs.  start this terminal in a deattached state, if you are not required to  wait for the command to finish (for example starting a service for the user).
+This terminal will be seen and managed by the user. Use this for commands that could run infinitely or requires inputs.  
+Always start terminals in a deattached state, especially if the command can run indefinitely, or will require user input.
+Only use the attached mode, when you are sure the command will be finished shorly, without any interaction, and you need the whole output,
 You will be able to access this terminal in the future, with the nvim_terminal_list and nvim_teminal_read tools.
 This is the terminal for dev servers and long running jobs.
 ]],

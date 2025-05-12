@@ -11,6 +11,7 @@ local lsp_icons = {
   tailwind = "󱏿 ",
   tailwindcss = "󱏿 ",
   emmet_ls = " ",
+  emmet_language_server = " ",
   metals = " ",
   omnisharp = "󰌛 ",
   lua = " ",

@@ -20,6 +20,7 @@ return function(system_dist_config)
   -- Configure plugins by dist config
   local default_dist_config = {
     -- modules by its name
+    theme = "charleston", -- vscode | charleston
     db = false,
     copilot = false,
     csharp = false,
@@ -58,7 +59,7 @@ return function(system_dist_config)
       {import="plugins.editor"},
       {import="plugins.git"},
       {import="plugins.ui"},
-      {import="plugins.theme"},
+      {import=string.format("plugins.theme.%s", dist_config.theme)},
       {import="plugins.lsp.lsp"},
       {import="plugins.lsp.blink"},
       {import="plugins.lsp.dap"},

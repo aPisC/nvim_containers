@@ -1,7 +1,7 @@
 return {
   {
     "vinnymeller/swagger-preview.nvim",
-    build = "npm install -g swagger-ui-watcher",
+    build = "npm i",
     opts = {
       -- The port to run the preview server on
       port = 8000,

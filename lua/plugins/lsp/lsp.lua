@@ -41,19 +41,40 @@ function initialize_language_server(plug, opts)
       end
 
       -- Initialize EFM
+      local efm_capabilities = vim.tbl_deep_extend("force",
+        {},
+        vim.lsp.protocol.make_client_capabilities(),
+        has_cmp_nvim_lsp and cmp_nvim_lsp.default_capabilities() or {},
+        opts.efm.capabilities or {}
+      ) 
+
+      for _, extend_capabilities in pairs(opts.extend_capabilities or {}) do
+        efm_capabilities = extend_capabilities(efm_capabilities, server)
+      end
+
+      local efm_on_attach = function(client, bufnr)
+        if opts.efm.on_attach then opts.efm.on_attach(client, bufnr) end
+        if efm_capabilities.signature_help and efm_capabilities.signature_help.enable then
+          require("lsp_signature").on_attach(capabilities.signature_help, bufnr)
+        end
+        -- if capabilities.use_virtual_types then
+          -- require("virtual-types").on_attach(client, bufnr)
+        -- end
+      end
+
       local efmls_config = {
         filetypes = vim.tbl_keys(opts.efm),
         settings = {
           rootMarkers = { '.git/' },
           languages = vim.tbl_map(
-            function(modules)
+            function(lang_config)
               return vim.tbl_map(
                 function(module)
                   if type(module) == "function" then return module() end
                   if type(module) == "string" then return require(module) end
                   return module
                 end,
-                modules
+                lang_config
               )
             end,
             opts.efm
@@ -63,6 +84,8 @@ function initialize_language_server(plug, opts)
           documentFormatting = true,
           documentRangeFormatting = true,
         },
+        capabilities = efm_capabilities,
+        on_attach = efm_on_attach,
       }
       lspconfig.efm.setup(efmls_config)
 
@@ -192,10 +215,21 @@ return {
 
                      -- if vim.tbl_isempty(efm) then 
                      -- else
-                     --   vim.lsp.buf.format({ name = 'efm' })
+                     --   vim.lsp.buf.({ name = 'efm' })
                      -- end
+                     --
+                     local lspconfig = require("lspconfig")
+                     local efm_modules = vim.tbl_get(lspconfig, "efm", "manager", "config", "settings", "languages", vim.bo.filetype) or {}
+                     local has_efm_formatter = vim.tbl_filter(
+                       function(module) return module.formatCommand end,
+                       efm_modules
+                     )[1] ~= nil
 
-                     vim.lsp.buf.format()
+                     if has_efm_formatter then
+                       vim.lsp.buf.format({ name = "efm" })
+                     else
+                       vim.lsp.buf.format()
+                     end
                  end }, 
                  description="LSP Format"
                },

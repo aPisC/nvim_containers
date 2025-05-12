@@ -125,7 +125,9 @@ return {
         inactive_sections = {
           lualine_a = {},
           lualine_b = {},
-          lualine_c = {'filename'},
+          lualine_c = { 
+            { 'filename', path=1} 
+          },
           lualine_x = {'location'},
           lualine_y = {},
           lualine_z = {}
@@ -144,7 +146,8 @@ return {
           lualine_b = { 
             {
               "filename", 
-              cond = function() return not vim.api.nvim_buf_get_name(0):match("^oil://") end
+              cond = function() return not vim.api.nvim_buf_get_name(0):match("^oil://") end,
+              path = 1,
             },
             {
               function() return require('oil').get_current_dir() end,
@@ -161,7 +164,8 @@ return {
           lualine_b = {
             {
               "filename", 
-              cond = function() return not vim.api.nvim_buf_get_name(0):match("^oil://") end
+              cond = function() return not vim.api.nvim_buf_get_name(0):match("^oil://") end,
+              filename = 1,
             },
             {
               function() return require('oil').get_current_dir() end,

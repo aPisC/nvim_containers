@@ -4,7 +4,26 @@ return {
     dependencies = {},
     opts = {
       treesitter_install = {
-        javascript = true
+        javascript = true,
+        typescript = true,
+      },
+      efm = {
+         typescript = {
+            "efmls-configs.formatters.prettier_d",
+            "efmls-configs.linters.eslint_d",
+         },
+         typescriptreact = {
+            "efmls-configs.formatters.prettier_d",
+            "efmls-configs.linters.eslint_d",
+         },
+         javascript = {
+            "efmls-configs.formatters.prettier_d",
+            "efmls-configs.linters.eslint_d",
+         },
+         javascriptreact = {
+            "efmls-configs.formatters.prettier_d",
+            "efmls-configs.linters.eslint_d",
+         },
       },
       formatters = {
         javascript = function() return { require"formatter.filetypes.javascriptreact".prettierd } end,

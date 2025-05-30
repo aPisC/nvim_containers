@@ -29,7 +29,13 @@ return {
 			},
 		},
 		opts = {
-      strategy = "toggleterm",
+      strategy = {
+        "toggleterm",
+        direction = "horizontal",
+        on_create = function(term) 
+          term.__lualine_icon = ""
+        end
+      },
 			custom_templates = {},
 			templates = { "builtin" },
 			task_list = {

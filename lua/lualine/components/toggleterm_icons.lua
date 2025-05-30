@@ -42,10 +42,11 @@ M.update_status = function(self)
   local text = table.concat(
     vim.tbl_map(
       function(terminal)
+        local icon = terminal.__lualine_icon or self.options.icons.terminal
         return string.format( 
           "%%%s@v:lua.vim.g.lualine_toggleterm_icons_click_handler@%s%s%%T",
           terminal.id,
-          self.options.icons.terminal,
+          icon,
           terminal.id
         )
       end,

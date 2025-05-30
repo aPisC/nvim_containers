@@ -135,6 +135,7 @@ This is the terminal for dev servers and long running jobs.
                 end
               end,
             })
+            term.__lualine_icon = "󰧑"
             term.ai_accessible = true
             if opts.foreground then 
               term:open() 

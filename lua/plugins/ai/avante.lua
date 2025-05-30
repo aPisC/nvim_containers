@@ -85,6 +85,7 @@ Other things to keep in mind:
 - Write thorough tests for all major functionality
 - Avoid making major changes to the patterns and architecture of how a feature works, after it has shown to work well, unless explicitly instructed
 - Always think about what other methods and areas of code might be affected by code changes
+- Stick to the desired format, prefer showing your ideas in code change blocks that can be applied
 ]])
         end
       },

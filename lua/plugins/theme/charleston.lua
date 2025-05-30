@@ -60,7 +60,9 @@ return {
 
         DiffChange = { bg = "${diff_change_bg}" },
         DiffText = { bg = "${diff_text_bg}" },
-        DiffDelete = { bg = "${diff_delete_bg}" }
+        DiffDelete = { bg = "${diff_delete_bg}" },
+
+        RenderMarkdownCode = { bg = "${bg_dimmed}", fg = "NONE" },
       }
     },
     lazy = false,

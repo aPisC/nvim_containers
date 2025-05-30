@@ -75,6 +75,7 @@ To get the terminal id, you can use the nvim_terminal_list tool and list the ope
           string.format("Terminal %s is not started by the AI assistant. Do you want to proceed with reading its content?", opts.terminal_id),
           function(ok, reason)
             if ok then
+              term.__lualine_icon = "󰧑"
               term.ai_accessible = true
               read_terminal_content()
             else

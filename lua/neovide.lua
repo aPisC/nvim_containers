@@ -15,7 +15,7 @@ if vim.g.neovide then
   vim.keymap.set({ "i" }, "<C-S-V>", "<C-o>:set paste<CR><C-R>+<C-o>:set nopaste<CR>")
   vim.keymap.set({ "c" }, "<C-S-V>", "<C-R>+")
   vim.keymap.set({ "t" }, "<C-S-V>", "<C-\\><C-n>pi")
-  vim.keymap.set({ "n", "v" }, "<C-S-N>", function() vim.fn.jobstart("neovide", { detach = true, cwd=vim.env.HOME }) end)
+  vim.keymap.set({ "n", "v" }, "<C-S-N>", function() vim.fn.jobstart({"neovide", "--no-multigrid"}, { detach = true, cwd=vim.env.HOME }) end)
 
   
   vim.g.neovide_cursor_animation_length = 0.13

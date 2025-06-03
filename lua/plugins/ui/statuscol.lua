@@ -45,7 +45,7 @@ return {
         setopt = true,
         thousands = false,
         relculright = true,
-        ft_ignore = { "neo-tree", "NeogitStatus", "sider-bar" },
+        ft_ignore = { "neo-tree", "NeogitStatus", "sider-bar", "Avante", "AvanteInput", "AvanteSelectedFiles" },
         bt_ignore = { "terminal" },
         segments = {
           { 

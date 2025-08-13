@@ -3,6 +3,7 @@ local osu = require("utils.os")
 --
 --
 --
+vim.g.mapleader = "\\"
 vim.opt.number = true
 vim.opt.relativenumber = false
 vim.opt.tabstop = 2
@@ -66,7 +67,7 @@ vim.opt.listchars = "tab:>\\ ,trail:-,extends:>,precedes:<,nbsp:+"
 vim.opt.autoread = true
 vim.opt.history = 1000
 vim.opt.tabpagemax = 50
-vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,terminal"
+-- vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,terminal"
 vim.opt.viewoptions = "folds,cursor,curdir"
 vim.opt.langremap = false
 

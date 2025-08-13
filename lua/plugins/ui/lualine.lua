@@ -165,7 +165,7 @@ return {
             {
               "filename", 
               cond = function() return not vim.api.nvim_buf_get_name(0):match("^oil://") end,
-              filename = 1,
+              path = 1,
             },
             {
               function() return require('oil').get_current_dir() end,

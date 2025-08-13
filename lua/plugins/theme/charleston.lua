@@ -9,7 +9,8 @@ return {
       
       custom_colors = {
         diff_change_bg = "#2a2e46",
-        diff_text_bg = "#1c4354"
+        diff_text_bg = "#1c4354",
+        dap_stopped_bg = "#4a3c12",
       },
       -- Custom highlight group overrides similar to vscode theme
       -- These can be added based on your preferences
@@ -63,6 +64,12 @@ return {
         DiffDelete = { bg = "${diff_delete_bg}" },
 
         RenderMarkdownCode = { bg = "${bg_dimmed}", fg = "NONE" },
+
+        DapBreakpoint = { fg="${red}" },
+        DapLogPoint = { fg="${blue}" },
+        DapRejected = { fg="${medium_gray}" },
+        DapStopped = { bg="${dap_stopped_bg}" },
+        DapStoppedNumber = { bg="${dap_stopped_bg}", fg="${medium_gray}" },
       }
     },
     lazy = false,

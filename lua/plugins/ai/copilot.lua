@@ -36,7 +36,7 @@ return {
         conf = false,
         ["."] = false,
         sh = function ()
-          if string.match(vim.fs.basename(vim.api.nvim_buf_get_name(0)), '^%.env.*') then return false end
+          if string.match(vim.fs.basename(vim.api.nvim_buf_get_name(0)), '^%..*') then return false end
           return true
         end,
       },

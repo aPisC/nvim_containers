@@ -206,6 +206,7 @@ return {
                {'gd',     {n=":Telescope lsp_definitions<CR>"}, description="LSP Show definitions" },
                {'gr',     {n=":Telescope lsp_references<CR>"}, description="LSP Show references" },
                {'gi',     {n=":Telescope lsp_implementations<CR>"}, description="LSP Show implementations" },
+               {'gk',     {n=function() vim.diagnostics.setloclist() end}, description="LSP show diagnostics in loclist"},
                {'gK',     {n=":Telescope diagnostics<CR>"}, description="LSP Show workspace diagnostic" },
                {'gp',     {n=":Telescope lsp_document_symbols<CR>"}, description="LSP Show document symbols" },
                {

@@ -97,14 +97,17 @@ return function(system_dist_config)
   -- Start lazy with plugins
   require("lazy").setup(create_dist_config())
 
+
+  
+vim.api.nvim_create_autocmd({ "DirChanged" }, { pattern = { "global" }, callback=function()
+  local workspaceInitFile = "./.vscode/nvim.lua"
+  local vscodeLaunchFile = "./.vscode/launch.json"
+
   -- Run workspace local init script
   function file_exists(name)
      local f=io.open(name,"r")
      if f~=nil then io.close(f) return true else return false end
   end
-
-  local workspaceInitFile = "./.vscode/nvim.lua"
-  local vscodeLaunchFile = "./.vscode/launch.json"
 
   if file_exists(workspaceInitFile) then
     dofile(workspaceInitFile)
@@ -112,15 +115,20 @@ return function(system_dist_config)
     vim.api.nvim_create_autocmd({ "BufWritePost" }, { pattern = { "nvim.lua" }, callback=function()
       if (vim.fn.expand("%:.") == ".vscode/nvim.lua") then
         vim.notify("Reload workspace config...")
-        dofile(workspaceInitFile)
+        local success, _ = pcall(dofile, workspaceInitFile)
+        if not success then
+          vim.notify("Failed to reload workspace config: " .. workspaceInitFile, vim.log.levels.ERROR)
+        else
+          vim.notify("Workspace config reloaded successfully.")
+        end
       end
     end })
   end
-
   if file_exists(vscodeLaunchFile) then
     local has_dap, dap = pcall(require, "dap.ext.vscode")
     if has_dap then dap.load_launchjs(vscodeLaunchFile) end
   end
+end })
 
   vim.api.nvim_create_user_command("Notes", function() vim.cmd":e .vscode/notes.md" end, {})
 end

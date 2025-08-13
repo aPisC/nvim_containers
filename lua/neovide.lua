@@ -6,7 +6,7 @@ if vim.g.neovide then
     windows = "FiraCode Nerd Font Propo:h10",
   })
 
-  vim.g.neovide_opacity = 0.8
+  vim.g.neovide_opacity = 1
   vim.g.neovide_normal_opacity = 1
 
   vim.keymap.set({ "n", "v" }, "<C-ScrollWheelDown>", ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1<CR>")

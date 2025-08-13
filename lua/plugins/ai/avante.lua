@@ -36,7 +36,7 @@ return {
     version = false, -- Never set this value to "*"! Never!
     opts = {
       debug=false,
-      provider = osu.cond({ linux = "copilot", windows = "copilot" }),
+      provider = osu.cond({ linux = "claude", windows = "copilot" }),
       behaviour = {
         enable_cursor_planning_mode = false,
         enable_claude_text_editor_tool_mode = false,

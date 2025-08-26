@@ -17,6 +17,7 @@ return {
             icon = module_opts.icon,
             description = module_opts.description,
             keymaps = module_opts.keymaps,
+            commands = module_opts.commands,
           })
         end
 

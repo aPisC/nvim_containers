@@ -200,6 +200,11 @@ return {
           ["nvim-lspconfig"] = {
             icon = '󰢊',
             itemgroup = "LSP",
+            commands = {
+              { ':LspHintInspect', require('utils.lsp-inspect-hint').inspect_hint, description = 'Inspect inlay hints' },
+              { ':LspHintEnable', function() vim.lsp.inlay_hint.enable(true) end, description = 'Enable inlay hints' },
+              { ':LspHintDisable', function() vim.lsp.inlay_hint.enable(false) end, description = 'Disable inlay hints' },
+            },
             keymaps = {
                {'<F12>',  {n=":Telescope lsp_definitions<CR>"}, description="LSP Show definitions" },
                {'<F24>',  {n=":Telescope lsp_references<CR>"}, description="LSP Show references" },

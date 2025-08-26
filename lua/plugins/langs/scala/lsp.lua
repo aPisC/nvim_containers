@@ -53,7 +53,7 @@ return {
         -- superMethodLensesEnabled = true,
         enableSemanticHighlighting = true,
         excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
-        serverVersion = "1.3.5",
+        serverVersion = "1.6.2",
       },
       init_options = {statusBarProvider = "on"},
     },

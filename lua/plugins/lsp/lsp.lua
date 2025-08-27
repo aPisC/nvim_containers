@@ -253,7 +253,15 @@ return {
                 description="LSP Show workspace diagnostic" 
                },
                {'<F2>',   {n=vim.lsp.buf.rename}, description="LSP Rename symbol" },
-               {'<M-CR>', {n=vim.lsp.buf.code_action, v=vim.lsp.buf.code_action, i=vim.lsp.buf.code_action }, description="LSP Code actions" },
+               {
+                 '<M-CR>', 
+                 {
+                   n=function() require"super_lens".run() end, 
+                   v=function() require"super_lens".run() end, 
+                   i=function() require"super_lens".run() end, 
+                 }, 
+                 description="LSP Code actions" 
+               },
                {'<M-S-CR>', {n=vim.lsp.codelens.run, v=vim.lsp.codelens.run, i=vim.lsp.codelens.run }, description="LSP Code lens" },
                {'K',      {n=vim.lsp.buf.hover}, description="LSP Hover" },
                {'<C-g>e', {n=vim.diagnostic.goto_next}, description="LSP Next diagnostic" },
@@ -261,6 +269,10 @@ return {
             }
           }
         }
+      },
+      {
+        enabled=true,
+        dir = "~/.config/nvim/lua/super_lens",
       },
       'nvim-neotest/nvim-nio',
       'nvim-lua/plenary.nvim',

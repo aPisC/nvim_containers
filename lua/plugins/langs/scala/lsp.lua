@@ -42,15 +42,21 @@ return {
     'scalameta/nvim-metals',
     dependencies = {
       { 'nvim-lua/plenary.nvim' },
+      { "mfussenegger/nvim-dap" }
     },
     opts = {
       root_patterns=  {'.git'},
       settings = {
         -- testUserInterface = "code lenses",
         showInferredType=true,
-        showImplicitArguments = true,
-        showImplicitConversionsAndClasses = true,
-        -- superMethodLensesEnabled = true,
+        inlayHints = {
+          byNameParameters = { enable = true },
+          hintsInPatternMatch = { enable = true },
+          implicitArguments = { enable = true },
+          implicitConversions = { enable = true },
+          inferredTypes = { enable = true },
+          typeParameters = { enable = true },
+        },
         enableSemanticHighlighting = true,
         excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
         serverVersion = "1.6.2",
@@ -61,6 +67,47 @@ return {
       local has_cmp_nvim_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
       local has_dap, dap = pcall(require, "dap")
 
+
+      -- patch metals handlers to use vim.ui
+      local metals_handlers = require("metals.handlers")
+      metals_handlers["metals/quickPick"] = function(_, result)
+        local co = coroutine.running()
+
+        vim.ui.select(result.items, {
+          prompt = "Select an item:",
+          format_item = function(item)
+            return item.label
+          end
+        }, function(selected_item)
+          if selected_item then
+            coroutine.resume(co, { itemId = selected_item.id })
+          else
+            coroutine.resume(co, { cancelled = true })
+          end
+        end)
+
+        return coroutine.yield(co)
+      end
+
+      metals_handlers["metals/inputBox"] = function(_, result)
+        local co = coroutine.running()
+
+        local args = { prompt = result.prompt }
+
+        if result.value then
+          args.default = result.value
+        end
+
+        vim.ui.input(args, function(input)
+          if input == nil or input == "" then
+            coroutine.resume(co, { cancelled = true })
+          else
+            coroutine.resume(co, { value = input })
+          end
+        end)
+
+        return coroutine.yield(co)
+      end
 
       -- Create metals config
       local metals_capabilities = vim.tbl_deep_extend("force",

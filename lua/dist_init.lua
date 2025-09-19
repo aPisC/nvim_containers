@@ -36,6 +36,7 @@ return function(system_dist_config)
     python = false,
     tailwind = false,
     openapi = false,
+    yaml = false,
 
     -- plugins on indexes
   }
@@ -69,6 +70,7 @@ return function(system_dist_config)
       {import="plugins.overseer"},
       {import="plugins.experimental"},
       {import="plugins.ai"},
+      {import="plugins.patches"},
 
       -- {import="plugins.copilot", enabled = dist_config.copilot},
       {import="plugins.db", enabled = dist_config.db},
@@ -84,6 +86,7 @@ return function(system_dist_config)
       {import="plugins.langs.python", enabled = dist_config.python},
       {import="plugins.langs.tailwind", enabled = dist_config.tailwind},
       {import="plugins.langs.openapi", enabled = dist_config.openapi},
+      {import="plugins.langs.yaml", enabled = dist_config.yaml},
     }
 
     -- Collect plugins from configs

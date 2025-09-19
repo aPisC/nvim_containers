@@ -20,11 +20,23 @@ return {
     cmd = "Copilot",
     event = "InsertEnter",
     opts = {
+      server_opts_overrides = {
+        handlers = {
+          ["metals/findTextInDependencyJars"] = function() end,
+          ["textDocument/codeLens"] = function() end,
+        },
+      },
       suggestion = { enabled = false },
       panel = { enabled = false },
       filetypes = {
         ["*"] = true,
-        yaml = false,
+        yaml = function() 
+          if vim.bo.filetype == "yaml.openapi" then
+            return true
+          else
+            return false
+          end
+        end,
         markdown = false,
         help = false,
         gitcommit = false,

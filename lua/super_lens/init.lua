@@ -108,7 +108,7 @@ function M.run()
         if not completed then
           provider_results[name] = {
             {
-              label = string.format("%s %s provider did not respond", config.icons.timeout, name),
+              label = string.format("%s %s provider did not respond", M.config.icons.timeout, name),
               callback = function()
                 vim.notify(string.format("Provider '%s' timed out", name), vim.log.levels.WARN)
               end,

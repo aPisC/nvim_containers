@@ -10,8 +10,8 @@ return {
       treesitter_install = {
         lua = true
       },
-      formatters = {
-        ["lua"] = function() return { require"formatter.filetypes.lua".stylua } end,
+      efm = {
+        ["lua"] = { "efmls-configs.formatters.stylua" },
       },
       servers = {
         lua_ls = {}

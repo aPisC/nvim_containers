@@ -17,7 +17,11 @@ return {
 			"rafamadriz/friendly-snippets",
     },
     opts = {
-      enabled = { ["*"] = true },
+      enabled = { 
+        ["*"] = true, 
+        ["dap-repl"] = false,
+        ["DressingInput"] = false,
+      },
       fuzzy = {
         implementation = osu.cond({windows = "lua" })
       },

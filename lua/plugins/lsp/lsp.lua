@@ -211,7 +211,9 @@ return {
                {'gd',     {n=":Telescope lsp_definitions<CR>"}, description="LSP Show definitions" },
                {'gr',     {n=":Telescope lsp_references<CR>"}, description="LSP Show references" },
                {'gi',     {n=":Telescope lsp_implementations<CR>"}, description="LSP Show implementations" },
-               {'gk',     {n=function() vim.diagnostics.setloclist() end}, description="LSP show diagnostics in loclist"},
+               {'gx',     {n=function(...) require"lsplinks".gx(...) end}, description="LSP Open external link" },
+               {'gt',     {n=":Telescope lsp_type_definitions<CR>"}, description="LSP Show type definitions" },
+               {'gk',     {n=function() vim.diagnostic.setloclist() end}, description="LSP show diagnostics in loclist"},
                {'gK',     {n=":Telescope diagnostics<CR>"}, description="LSP Show workspace diagnostic" },
                {'gp',     {n=":Telescope lsp_document_symbols<CR>"}, description="LSP Show document symbols" },
                {
@@ -274,6 +276,7 @@ return {
         enabled=true,
         dir = "~/.config/nvim/lua/super_lens",
       },
+      'icholy/lsplinks.nvim',
       'nvim-neotest/nvim-nio',
       'nvim-lua/plenary.nvim',
       'williamboman/mason.nvim',

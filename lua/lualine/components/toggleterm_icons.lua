@@ -43,11 +43,12 @@ M.update_status = function(self)
     vim.tbl_map(
       function(terminal)
         local icon = terminal.__lualine_icon or self.options.icons.terminal
+        local id_to_display = terminal.__lualine_hide_id and "" or tostring(terminal.id)
         return string.format( 
           "%%%s@v:lua.vim.g.lualine_toggleterm_icons_click_handler@%s%s%%T",
           terminal.id,
           icon,
-          terminal.id
+          id_to_display
         )
       end,
       terminals

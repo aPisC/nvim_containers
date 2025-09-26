@@ -101,6 +101,7 @@ return {
         local disables_file_patterns = {
           "Dependencies.scala$",
           "/tmp/.*",
+          "✻ %[Claude Code%]", 
         }
         local filename = vim.api.nvim_buf_get_name(0)
         for _, pattern in ipairs(disables_file_patterns) do
@@ -116,19 +117,6 @@ return {
     dependencies = {
       "akinsho/nvim-toggleterm.lua",
       "nvim-telescope/telescope.nvim",
-      {
-          'mrjones2014/legendary.nvim',
-          opts = {
-            toggleterm = {
-              itemgroup = "toggleterm",
-              icon = "📟",
-              description = "Toggleterm",
-              keymaps = {
-                {"<C-g>t", function() vim.cmd((vim.v.count or 1) .. "ToggleTerm") end, mode={'n'}, description="Toggleterm manager" },
-              },
-            },
-          }
-      }
     },
     opts = function() 
       local actions = require("toggleterm-manager").actions
@@ -144,10 +132,24 @@ return {
       } 
     end,
   },
+
   {
     'akinsho/toggleterm.nvim',
     dependencies = {
       "nvim-lua/plenary.nvim",
+      {
+        'mrjones2014/legendary.nvim',
+        opts = {
+          toggleterm = {
+            itemgroup = "toggleterm",
+            icon = "📟",
+            description = "Toggleterm",
+            keymaps = {
+              {"<C-g>t", function() vim.cmd((vim.v.count > 0 and vim.v.count or 1) .. "ToggleTerm") end, mode={'n'}, description="Toggleterm manager" },
+            },
+          },
+        }
+      },
     }, 
     opts = {
       size = 10,

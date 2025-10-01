@@ -17,9 +17,22 @@ local function toggleterm_provider(toggleterm_opts)
 				autoscroll = toggleterm_opts.autoscroll or true,
 				direction = toggleterm_opts.direction or "horizontal",
 				close_on_exit = false,
+				is_sticky = true,
+				__lualine_hide_id = true,
+				__lualine_icon = "✻",
+				start_in_insert = true,
+				on_open = function(term)
+					vim.cmd("startinsert!")
+					vim.api.nvim_buf_set_keymap(term.bufnr, "t", "<S-CR>", "<C-j>", { noremap = true, silent = true })
+					vim.api.nvim_buf_set_keymap(term.bufnr, "t", "<esc>", "", {
+						callback = function()
+							term:close()
+						end,
+						noremap = true,
+						silent = true,
+					})
+				end,
 			})
-			M.terminal_instance.__lualine_icon = "✻"
-			M.terminal_instance.__lualine_hide_id = "✻"
 		end
 	end
 
@@ -84,7 +97,7 @@ local function toggleterm_provider(toggleterm_opts)
 
 	function M.get_active_bufnr()
 		---Get the active terminal buffer number
-		if  has_toggleterm and M.terminal_instance and vim.api.nvim_buf_is_valid(M.terminal_instance.bufnr)  then
+		if has_toggleterm and M.terminal_instance and vim.api.nvim_buf_is_valid(M.terminal_instance.bufnr) then
 			return M.terminal_instance.bufnr
 		end
 	end
@@ -120,12 +133,13 @@ return {
 			return {
 				diff_opts = {
 					open_in_new_tab = true,
+					hide_terminal_in_new_tab = true,
 				},
 				terminal = {
 					provider = toggleterm_provider({
-						id = 9,
-						direction = "vertical",
-						size = 80,
+						id = 99,
+						direction = "float",
+						size = 10,
 						autoscroll = true,
 						display_name = "Claude Code",
 					}),

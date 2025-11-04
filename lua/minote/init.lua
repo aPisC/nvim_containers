@@ -11,13 +11,21 @@ Created: %s
 
 ]]
 
-local function get_note_folder()
+local function get_note_folder(dir_override)
 	-- Get the notes directory path
 	local notes_dir = vim.fn.stdpath("data") .. "/notes"
 
-	-- Get current working directory and escape special characters for folder name
-	local cwd = vim.fn.getcwd()
-	local folder_name = cwd:gsub("[^%w]", "_")
+	local cwd, folder_name
+	if dir_override then
+		-- Use provided directory name directly (already escaped)
+		folder_name = dir_override
+		cwd = dir_override
+	else
+		-- Get current working directory and escape special characters for folder name
+		cwd = vim.fn.getcwd()
+		folder_name = cwd:gsub("[^%w]", "_")
+	end
+
 	local note_folder = notes_dir .. "/" .. folder_name
 
 	-- Create the note folder
@@ -132,13 +140,32 @@ local function open_note_file(note_folder, note_name, cwd)
 end
 
 local function open_note(opts)
-	local note_name = opts.args and opts.args ~= "" and opts.args or nil
-	local note_folder, cwd = get_note_folder()
+	local args = vim.split(opts.args or "", "%s+", { trimempty = true })
+	local dir_override, note_name
+
+	if #args == 0 then
+		-- No arguments: open index.md in cwd
+		dir_override = nil
+		note_name = nil
+	elseif #args == 1 then
+		-- One argument: treat as note_name
+		dir_override = nil
+		note_name = args[1]
+	else
+		-- Two or more arguments: first is dir, second is note_name
+		dir_override = args[1]
+		note_name = args[2]
+	end
+
+	local note_folder, cwd = get_note_folder(dir_override)
 	open_note_file(note_folder, note_name, cwd)
 end
 
-local function list_notes()
-	local note_folder, cwd = get_note_folder()
+local function list_notes(opts)
+	local args = vim.split(opts.args or "", "%s+", { trimempty = true })
+	local dir_override = args[1] or nil
+
+	local note_folder, cwd = get_note_folder(dir_override)
 
 	-- Get all markdown files in the note folder
 	local files = vim.fn.globpath(note_folder, "*.md", false, true)
@@ -174,15 +201,16 @@ end
 function M.setup(opts)
 	opts = opts or {}
 
-	-- Register Note command with optional argument
+	-- Register Note command with optional arguments
 	vim.api.nvim_create_user_command("Note", open_note, {
-		nargs = "?",
-		desc = "Open a note in a floating window. Optional: specify note name",
+		nargs = "*",
+		desc = "Open a note. Usage: Note [dir] [note_name]",
 	})
 
 	-- Register Notes command to list and select notes
 	vim.api.nvim_create_user_command("Notes", list_notes, {
-		desc = "List and select a note to open",
+		nargs = "?",
+		desc = "List notes. Usage: Notes [dir]",
 	})
 end
 

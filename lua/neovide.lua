@@ -12,7 +12,7 @@ local update_neovide_title = function(title)
 		}, function(out)
 			vim.schedule(function()
 				local lines = vim.split(out.stdout:gsub("%s+$", ""), "\n")
-				coroutine.resume(co, lines[1])
+				coroutine.resume(co, vim.trim(lines[1]))
 			end)
 		end)
     local neovide_pid = coroutine.yield()
@@ -55,8 +55,8 @@ if vim.g.neovide then
   vim.g.neovide_opacity = 1
   vim.g.neovide_normal_opacity = 1
 
-  vim.keymap.set({ "n", "v" }, "<C-ScrollWheelDown>", ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1<CR>")
-  vim.keymap.set({ "n", "v" }, "<C-ScrollWheelUp>", ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1<CR>")
+  vim.keymap.set({ "n", "v" }, "<C-ScrollWheelDown>", ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1<CR>")
+  vim.keymap.set({ "n", "v" }, "<C-ScrollWheelUp>", ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1<CR>")
   vim.keymap.set({ "n", "v" }, "<C-0>", ":lua vim.g.neovide_scale_factor = 1<CR>")
   vim.keymap.set({ "i" }, "<C-S-V>", "<C-o>:set paste<CR><C-R>+<C-o>:set nopaste<CR>")
   vim.keymap.set({ "c" }, "<C-S-V>", "<C-R>+")
@@ -71,6 +71,22 @@ if vim.g.neovide then
     vim.g.neovide_cursor_animation_length = vim.g.neovide_cursor_animation_length == 0 and 0.13 or 0
     vim.g.neovide_cursor_vfx_mode = vim.g.neovide_cursor_vfx_mode == "" and "pixiedust" or ""
   end, {})
+
+  vim.api.nvim_create_user_command('NeovideToggleOpacity', function(opts)
+     local opacity
+
+     if opts.args and opts.args ~= "" then
+       opacity = tonumber(opts.args)
+       if not opacity or opacity < 0 or opacity > 1 then
+         vim.notify("Invalid opacity value. Must be between 0 and 1", vim.log.levels.ERROR)
+         return
+       end
+     else
+       opacity = vim.g.neovide_normal_opacity == 1 and 0.8 or 1
+     end
+
+     vim.g.neovide_normal_opacity = opacity
+  end, { nargs = "?" })
 
   vim.api.nvim_create_autocmd("DirChanged", {
     pattern = "*",

@@ -8,6 +8,16 @@ local function file_type_mapper(opts)
   end
 end
 
+local M = {}
+
+M.setup = function(opts)
+
+end
+
+M.reload = function(opts)
+
+end
+
 return {
   {
     "saghen/blink.cmp",

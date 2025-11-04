@@ -1,137 +1,158 @@
 return function(system_dist_config)
-  -- Start Lazy package manager
-  require("keymaps")
-  require("vimopts")
-  require("neovide")
+	-- Start Lazy package manager
+	require("keymaps")
+	require("vimopts")
+	require("neovide")
 
-  local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-  if not vim.loop.fs_stat(lazypath) then
-    vim.fn.system({
-      "git",
-      "clone",
-      "--filter=blob:none",
-      "https://github.com/folke/lazy.nvim.git",
-      "--branch=stable",
-      lazypath,
-    })
-  end
-  vim.opt.rtp:append(lazypath)
+	local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+	if not vim.loop.fs_stat(lazypath) then
+		vim.fn.system({
+			"git",
+			"clone",
+			"--filter=blob:none",
+			"https://github.com/folke/lazy.nvim.git",
+			"--branch=stable",
+			lazypath,
+		})
+	end
+	vim.opt.rtp:append(lazypath)
 
-  -- Configure plugins by dist config
-  local default_dist_config = {
-    -- modules by its name
-    theme = "charleston", -- vscode | charleston
-    db = false,
-    copilot = false,
-    csharp = false,
-    emmet = false,
-    http = false,
-    json = true,
-    html = true,
-    latex = false,
-    lua = false,
-    scala = false,
-    javascript = false,
-    typescript = false,
-    python = false,
-    tailwind = false,
-    openapi = false,
-    yaml = false,
+	-- Configure plugins by dist config
+	local default_dist_config = {
+		-- modules by its name
+		theme = "charleston", -- vscode | charleston
+		db = false,
+		copilot = false,
+		csharp = false,
+		emmet = false,
+		http = false,
+		json = true,
+		html = true,
+		latex = false,
+		lua = false,
+		scala = false,
+		javascript = false,
+		typescript = false,
+		python = false,
+		tailwind = false,
+		openapi = false,
+		yaml = false,
 
-    -- plugins on indexes
-  }
+		-- plugins on indexes
+	}
 
-  function create_dist_config()
-    -- Load dist configs from system -> workspace
-    local has_workspace_configs, workspace_configs = pcall(dofile, "./.vscode/plugins.lua")
-    local dist_config = vim.tbl_deep_extend(
-      "force", 
-      default_dist_config, 
-      system_dist_config,
-      has_workspace_configs and workspace_configs or {}
-    )
+	function create_dist_config()
+		-- Load dist configs from system -> workspace
+		local has_workspace_configs, workspace_configs = pcall(dofile, "./.vscode/plugins.lua")
+		local dist_config = vim.tbl_deep_extend(
+			"force",
+			default_dist_config,
+			system_dist_config,
+			has_workspace_configs and workspace_configs or {}
+		)
 
-    local collected_plugins = {}
+		local collected_plugins = {}
 
+		local config = {
+			-- { dir = vim.fn.stdpath("config") .. "/lua/custom" },
+			{ import = "plugins.keymaps" },
+			{ import = "plugins.editor" },
+			{ import = "plugins.git" },
+			{ import = "plugins.ui" },
+			{ import = string.format("plugins.theme.%s", dist_config.theme) },
+			{ import = "plugins.lsp.lsp" },
+			{ import = "plugins.lsp.core" },
+			{ import = "plugins.lsp.blink" },
+			{ import = "plugins.lsp.dap" },
+			{ import = "plugins.lsp.treesitter" },
+			-- {import="plugins.lsp.formatter"},
+			{ import = "plugins.lsp.testing" },
+			{ import = "plugins.overseer" },
+			{ import = "plugins.experimental" },
+			{ import = "plugins.ai" },
+			{ import = "plugins.patches" },
 
-    local config = {
-      -- { dir = vim.fn.stdpath("config") .. "/lua/custom" },
-      {import="plugins.keymaps"},
-      {import="plugins.editor"},
-      {import="plugins.git"},
-      {import="plugins.ui"},
-      {import=string.format("plugins.theme.%s", dist_config.theme)},
-      {import="plugins.lsp.lsp"},
-      {import="plugins.lsp.blink"},
-      {import="plugins.lsp.dap"},
-      {import="plugins.lsp.treesitter"},
-      -- {import="plugins.lsp.formatter"},
-      {import="plugins.lsp.testing"},
-      {import="plugins.overseer"},
-      {import="plugins.experimental"},
-      {import="plugins.ai"},
-      {import="plugins.patches"},
+			-- {import="plugins.copilot", enabled = dist_config.copilot},
+			{ import = "plugins.db", enabled = dist_config.db },
+			{ import = "plugins.langs.defaults" },
+			{ import = "plugins.langs.csharp", enabled = dist_config.csharp },
+			{ import = "plugins.langs.http", enabled = dist_config.http },
+			{ import = "plugins.langs.json", enabled = dist_config.json },
+			{ import = "plugins.langs.latex", enabled = dist_config.latex },
+			{ import = "plugins.langs.lua", enabled = dist_config.lua },
+			{ import = "plugins.langs.scala", enabled = dist_config.scala },
+			{ import = "plugins.langs.javascript", enabled = dist_config.javascript },
+			{ import = "plugins.langs.typescript", enabled = dist_config.typescript },
+			{ import = "plugins.langs.python", enabled = dist_config.python },
+			{ import = "plugins.langs.tailwind", enabled = dist_config.tailwind },
+			{ import = "plugins.langs.openapi", enabled = dist_config.openapi },
+			{ import = "plugins.langs.yaml", enabled = dist_config.yaml },
+		}
 
-      -- {import="plugins.copilot", enabled = dist_config.copilot},
-      {import="plugins.db", enabled = dist_config.db},
-      {import="plugins.langs.defaults"},
-      {import="plugins.langs.csharp", enabled = dist_config.csharp},
-      {import="plugins.langs.http", enabled = dist_config.http},
-      {import="plugins.langs.json", enabled = dist_config.json},
-      {import="plugins.langs.latex", enabled = dist_config.latex},
-      {import="plugins.langs.lua", enabled = dist_config.lua},
-      {import="plugins.langs.scala", enabled = dist_config.scala},
-      {import="plugins.langs.javascript", enabled = dist_config.javascript},
-      {import="plugins.langs.typescript", enabled = dist_config.typescript},
-      {import="plugins.langs.python", enabled = dist_config.python},
-      {import="plugins.langs.tailwind", enabled = dist_config.tailwind},
-      {import="plugins.langs.openapi", enabled = dist_config.openapi},
-      {import="plugins.langs.yaml", enabled = dist_config.yaml},
-    }
+		-- Collect plugins from configs
+		for _, plugin in ipairs(default_dist_config) do
+			table.insert(config, plugin)
+		end
+		for _, plugin in ipairs(system_dist_config) do
+			table.insert(config, plugin)
+		end
+		for _, plugin in ipairs(has_workspace_configs and workspace_configs or {}) do
+			table.insert(config, plugin)
+		end
 
-    -- Collect plugins from configs
-    for _, plugin in ipairs(default_dist_config) do table.insert(config, plugin) end
-    for _, plugin in ipairs(system_dist_config) do table.insert(config, plugin) end
-    for _, plugin in ipairs(has_workspace_configs and workspace_configs or {}) do table.insert(config, plugin) end
+		return config
+	end
 
-    return config
-  end
+	-- Start lazy with plugins
+	require("lazy").setup(create_dist_config())
 
-  -- Start lazy with plugins
-  require("lazy").setup(create_dist_config())
+	vim.api.nvim_create_autocmd({ "DirChanged" }, {
+		pattern = { "global" },
+		callback = function()
+			local workspaceInitFile = "./.vscode/nvim.lua"
+			local vscodeLaunchFile = "./.vscode/launch.json"
 
+			-- Run workspace local init script
+			function file_exists(name)
+				local f = io.open(name, "r")
+				if f ~= nil then
+					io.close(f)
+					return true
+				else
+					return false
+				end
+			end
 
-  
-vim.api.nvim_create_autocmd({ "DirChanged" }, { pattern = { "global" }, callback=function()
-  local workspaceInitFile = "./.vscode/nvim.lua"
-  local vscodeLaunchFile = "./.vscode/launch.json"
+			if file_exists(workspaceInitFile) then
+				dofile(workspaceInitFile)
 
-  -- Run workspace local init script
-  function file_exists(name)
-     local f=io.open(name,"r")
-     if f~=nil then io.close(f) return true else return false end
-  end
+				vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+					pattern = { "nvim.lua" },
+					callback = function()
+						if vim.fn.expand("%:.") == ".vscode/nvim.lua" then
+							vim.notify("Reload workspace config...")
+							local success, _ = pcall(dofile, workspaceInitFile)
+							if not success then
+								vim.notify(
+									"Failed to reload workspace config: " .. workspaceInitFile,
+									vim.log.levels.ERROR
+								)
+							else
+								vim.notify("Workspace config reloaded successfully.")
+							end
+						end
+					end,
+				})
+			end
+			if file_exists(vscodeLaunchFile) then
+				local has_dap, dap = pcall(require, "dap.ext.vscode")
+				if has_dap then
+					dap.load_launchjs(vscodeLaunchFile)
+				end
+			end
+		end,
+	})
 
-  if file_exists(workspaceInitFile) then
-    dofile(workspaceInitFile)
-
-    vim.api.nvim_create_autocmd({ "BufWritePost" }, { pattern = { "nvim.lua" }, callback=function()
-      if (vim.fn.expand("%:.") == ".vscode/nvim.lua") then
-        vim.notify("Reload workspace config...")
-        local success, _ = pcall(dofile, workspaceInitFile)
-        if not success then
-          vim.notify("Failed to reload workspace config: " .. workspaceInitFile, vim.log.levels.ERROR)
-        else
-          vim.notify("Workspace config reloaded successfully.")
-        end
-      end
-    end })
-  end
-  if file_exists(vscodeLaunchFile) then
-    local has_dap, dap = pcall(require, "dap.ext.vscode")
-    if has_dap then dap.load_launchjs(vscodeLaunchFile) end
-  end
-end })
-
-  vim.api.nvim_create_user_command("Notes", function() vim.cmd":e .vscode/notes.md" end, {})
+	-- Setup minote plugin
+	require("minote").setup()
 end

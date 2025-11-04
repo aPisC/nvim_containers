@@ -5,10 +5,14 @@ return {
       mason_install = {
         eslint_d = true,
         prettierd = true,
+        vtsls = true,
+      },
+      servers = {
+        vtsls = {},
       },
       formatters = {
-        ["typescript"] = function() return { require"formatter.filetypes.typescriptreact".prettierd } end,
-        ["typescriptreact"] = function() return { require"formatter.filetypes.typescriptreact".prettierd } end,
+        ["typescript"] = function() return { require"formatter.filetypes.typescriptreact".prettier } end,
+        ["typescriptreact"] = function() return { require"formatter.filetypes.typescriptreact".prettier } end,
       },
       linters = {
         tyescript = {"eslintd"},
@@ -26,6 +30,7 @@ return {
   },
   {
     "pmizio/typescript-tools.nvim",
+    enabled = false,
     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
     opts = {
       settings = {

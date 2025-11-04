@@ -145,7 +145,19 @@ return {
             icon = "📟",
             description = "Toggleterm",
             keymaps = {
-              {"<C-g>t", function() vim.cmd((vim.v.count > 0 and vim.v.count or 1) .. "ToggleTerm") end, mode={'n'}, description="Toggleterm manager" },
+              {"<C-g>t", function() 
+                local term_id = vim.v.count > 0 and vim.v.count or 1
+                local term = require("toggleterm.terminal").get(term_id)
+                if term == nil then
+                  term = require("toggleterm.terminal").Terminal:new({ id = term_id })
+                end
+                
+                if vim.api.nvim_get_current_buf() == term.bufnr then
+                  term:close()
+                else
+                  term:open(10, "horizontal")
+                end
+              end, mode={'n'}, description="Toggleterm manager" },
             },
           },
         }
@@ -163,6 +175,10 @@ return {
         -- instead of next to each other
         -- default = 0 which means the feature is turned off
         horizontal_breakpoint = 135,
+      },
+      highlights = {
+        NormalFloat = {link = "NormalFloat"},
+        FloatBorder = {link = "FloatBorder"},
       }
     },
     config = function(_, opts)

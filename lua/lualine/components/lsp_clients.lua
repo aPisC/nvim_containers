@@ -8,6 +8,7 @@ local lsp_icons = {
   ["GitHub Copilot"] = " ",
   tsserver = " ",
   ["typescript-tools"] = " ",
+  ["vtsls"] = " ",
   tailwind = "󱏿 ",
   tailwindcss = "󱏿 ",
   emmet_ls = " ",

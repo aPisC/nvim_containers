@@ -24,7 +24,7 @@ local function toggleterm_provider(toggleterm_opts)
 				on_open = function(term)
 					vim.cmd("startinsert!")
 					vim.api.nvim_buf_set_keymap(term.bufnr, "t", "<S-CR>", "<C-j>", { noremap = true, silent = true })
-					vim.api.nvim_buf_set_keymap(term.bufnr, "t", "<esc>", "", {
+					vim.api.nvim_buf_set_keymap(term.bufnr, "t", "<esc><esc>", "", {
 						callback = function()
 							term:close()
 						end,
@@ -117,10 +117,15 @@ return {
 					{
 						"<C-g>c",
 						function()
-							vim.cmd(":ClaudeCodeFocus")
+							local mode = vim.fn.mode()
+							if mode == "v" or mode == "V" or mode == "\22" then
+								vim.cmd(":ClaudeCodeSend")
+							else
+								vim.cmd(":ClaudeCodeFocus")
+							end
 						end,
-						mode = { "n" },
-						description = "Focus Claude Code terminal",
+						mode = { "n", "v" },
+						description = "Focus Claude Code terminal or send selection",
 					},
 				},
 			},

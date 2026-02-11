@@ -53,10 +53,10 @@ return {
         }
       },
       custom_tools = {
-        require("llm-tools.nvim-file-open")({}),
-        require("llm-tools.nvim-terminal-open")({}),
-        require("llm-tools.nvim-terminal-list")({}),
-        require("llm-tools.nvim-terminal-read")({}),
+        -- require("llm-tools.nvim-file-open")({}),
+        -- require("llm-tools.nvim-terminal-open")({}),
+        -- require("llm-tools.nvim-terminal-list")({}),
+        -- require("llm-tools.nvim-terminal-read")({}),
         -- require("llm-tools.nvim-terminal-input")({}),
       },
       system_prompt =function(arg)

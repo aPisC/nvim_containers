@@ -1,214 +1,335 @@
 return {
-  {
-    "mg979/vim-visual-multi",
-    event = "VeryLazy",
-    init = function()
-      vim.g["VM_set_statusline"] = '0'
-      vim.g["VM_silent_exit"] = 1
-    end,
-  },
-  {'mbbill/undotree'},
-  {
-    'tpope/vim-commentary', 
-    opts = {
-      commentstring = { }
-    },
-    config = function(_, opts)
-      local augroup = vim.api.nvim_create_augroup("commentary-filetypes", { clear = true })
-      for filetype, cs in pairs(opts.commentstring) do
-        vim.api.nvim_create_autocmd({"Filetype"}, {pattern = {filetype}, callback=function() vim.bo.commentstring = cs end })
-      end
-    end
-  },
-  {
-    "kylechui/nvim-surround",
-    event = "VeryLazy",
-    opts = { }
-  },
-  {'michaeljsmith/vim-indent-object'},
-  {
-    'stevearc/stickybuf.nvim',
-    enabled = false,
-    opts = {
-      get_auto_pin = function(bufnr)
-        local buftype = vim.bo[bufnr].buftype
-        local filetype = vim.bo[bufnr].filetype
-        local bufname = vim.api.nvim_buf_get_name(bufnr)
+	-- {
+	--   "mg979/vim-visual-multi",
+	--   event = "VeryLazy",
+	--   init = function()
+	--     vim.g["VM_set_statusline"] = '0'
+	--     vim.g["VM_silent_exit"] = 1
+	--   end,
+	-- },
+	{
+		"aPisC/actions-nvim",
+		dir = "~/.config/nvim/lua/actions-nvim",
+		config = function(_, opts)
+			require("actions-nvim").setup(opts)
+		end,
+	},
+	{
+		"jake-stewart/multicursor.nvim",
+		dependencies = {
+			{
+				"aPisC/actions-nvim",
+				opts = {
+					["select.multi_match_next"] = function()
+						local mc = require("multicursor-nvim")
+						mc.matchAddCursor(1)
+					end,
+					["select.multi_match_skip"] = function()
+						local mc = require("multicursor-nvim")
+						mc.matchSkipCursor(1)
+					end,
+					["select.multi_match_all"] = function()
+						local mc = require("multicursor-nvim")
+						mc.matchAllAddCursors()
+					end,
+					["select.multi_range_end"] = function()
+						local mc = require("multicursor-nvim")
+						mc.appendVisual()
+					end,
+					["select.multi_click"] = function(...)
+						local mc = require("multicursor-nvim")
+						mc.handleMouse(...)
+					end,
+					["select.multi_drag"] = function(...)
+						local mc = require("multicursor-nvim")
+						mc.handleMouseDrag(...)
+					end,
+					["select.multi_release"] = function()
+						local mc = require("multicursor-nvim")
+						mc.handleMouseRelease()
+					end,
+				},
+			},
+		},
+		branch = "1.0",
+		opts = {},
+	},
+	{ "mbbill/undotree" },
+	{
+		"numToStr/Comment.nvim",
+		dependencies = {
+			{
+				"aPisC/actions-nvim",
+				opts = {
+					["edit.comment_line"] = function()
+						local mode = vim.fn.mode()
+						local api = require("Comment.api")
+						if mode == "n" then
+							api.toggle.linewise.current()
+						else
+							local esc = vim.api.nvim_replace_termcodes("<ESC>", true, false, true)
+							vim.api.nvim_feedkeys(esc, "nx", false)
+							api.toggle.linewise(vim.fn.visualmode())
+						end
+					end,
+					["edit.comment_block"] = function()
+						local mode = vim.fn.mode()
+						local api = require("Comment.api")
+						if mode == "n" then
+							api.toggle.blockwise.current()
+						else
+							local esc = vim.api.nvim_replace_termcodes("<ESC>", true, false, true)
+							vim.api.nvim_feedkeys(esc, "nx", false)
+							api.toggle.blockwise(vim.fn.visualmode())
+						end
+					end,
+				},
+			},
+		},
+		opts = {
+			-- add any options here
+		},
+	},
+	-- {
+	-- 	"tpope/vim-commentary",
+	-- dependencies = {{
+	-- "apisC/actions-nvim",
 
-        if vim.startswith(filetype, "dapui_") then return "filetype" end
-        if vim.startswith(filetype, "dap-") then return "filetype" end
-        if vim.startswith(filetype, "toggleterm") then return "filetype" end
-        -- if vim.startswith(filetype, "httpResult") then return "filetype" end
-        if vim.startswith(filetype, "blame") then return "filetype" end
-        if vim.startswith(filetype, "dbout") then return "filetype" end
-        if vim.startswith(filetype, "dbui") then return "filetype" end
-        if vim.startswith(filetype, "Neogit") then return nil end
-        if vim.startswith(filetype, "neo-tree") then return nil end
+	-- }},
+	-- 	opts = {
+	-- 		commentstring = {},
+	-- 	},
+	-- 	config = function(_, opts)
+	-- 		local augroup = vim.api.nvim_create_augroup("commentary-filetypes", { clear = true })
+	-- 		for filetype, cs in pairs(opts.commentstring) do
+	-- 			vim.api.nvim_create_autocmd({ "Filetype" }, {
+	-- 				pattern = { filetype },
+	-- 				callback = function()
+	-- 					vim.bo.commentstring = cs
+	-- 				end,
+	-- 			})
+	-- 		end
+	-- 	end,
+	-- },
+	{
+		"kylechui/nvim-surround",
+		event = "VeryLazy",
+		opts = {},
+	},
+	{ "michaeljsmith/vim-indent-object" },
+	{
+		"stevearc/stickybuf.nvim",
+		enabled = false,
+		opts = {
+			get_auto_pin = function(bufnr)
+				local buftype = vim.bo[bufnr].buftype
+				local filetype = vim.bo[bufnr].filetype
+				local bufname = vim.api.nvim_buf_get_name(bufnr)
 
-        return require("stickybuf").should_auto_pin(bufnr)
-      end
-    },
-  },
-  {
-    'junegunn/fzf',
-    dependencies = {{'junegunn/fzf.vim'}},
-    event = "VeryLazy",
-    keys = {
-      {"<C-f>", "\"zy:Ag <C-r>z<CR>", mode="v"}
-    },
-  },
-  {
-    'm4xshen/autoclose.nvim',
-    enabled = true,
-    opts = {
-      options = {
-        disable_when_touch = true,
-      }
-    },
-  },
-  {
-    'Pocco81/auto-save.nvim',
-    opts = {
-      trigger_events = {"InsertLeave"},
-      condition = function(buf)
-        local fn = vim.fn
-        local filetype = fn.getbufvar(buf, "&filetype")
+				if vim.startswith(filetype, "dapui_") then
+					return "filetype"
+				end
+				if vim.startswith(filetype, "dap-") then
+					return "filetype"
+				end
+				if vim.startswith(filetype, "toggleterm") then
+					return "filetype"
+				end
+				-- if vim.startswith(filetype, "httpResult") then return "filetype" end
+				if vim.startswith(filetype, "blame") then
+					return "filetype"
+				end
+				if vim.startswith(filetype, "dbout") then
+					return "filetype"
+				end
+				if vim.startswith(filetype, "dbui") then
+					return "filetype"
+				end
+				if vim.startswith(filetype, "Neogit") then
+					return nil
+				end
+				if vim.startswith(filetype, "neo-tree") then
+					return nil
+				end
 
-        -- Only enable in normal mode
-        if vim.api.nvim_get_mode().mode ~= 'n' then return false end
+				return require("stickybuf").should_auto_pin(bufnr)
+			end,
+		},
+	},
+	{
+		"junegunn/fzf",
+		dependencies = { { "junegunn/fzf.vim" } },
+		event = "VeryLazy",
+	},
+	{
+		"m4xshen/autoclose.nvim",
+		enabled = true,
+		opts = {
+			options = {
+				disable_when_touch = true,
+			},
+		},
+	},
+	{
+		"Pocco81/auto-save.nvim",
+		opts = {
+			trigger_events = { "InsertLeave" },
+			condition = function(buf)
+				local fn = vim.fn
+				local filetype = fn.getbufvar(buf, "&filetype")
 
-        -- Disable on non-exsting buffers
-        if not vim.api.nvim_buf_is_valid(buf) then return false end
+				-- Only enable in normal mode
+				if vim.api.nvim_get_mode().mode ~= "n" then
+					return false
+				end
 
-        -- Disable on not modifiable buffers
-        if not fn.getbufvar(buf, "&modifiable") == 1 then return false end
+				-- Disable on non-exsting buffers
+				if not vim.api.nvim_buf_is_valid(buf) then
+					return false
+				end
 
-        -- Disable on Neogit buffers
-        if string.match(filetype, "^Neogit") then return false end
-        -- Disable on specific filetypes
-        --
-        if vim.tbl_contains({
-            "sql",
-            "neo-tree",
-            "sbt",
-            "OverseerForm",
-            "OverseerList",
-            "oil",
-          }, filetype)
-        then return false end
+				-- Disable on not modifiable buffers
+				if not fn.getbufvar(buf, "&modifiable") == 1 then
+					return false
+				end
 
-        -- Disable on specific file names
-        local disables_file_patterns = {
-          "Dependencies.scala$",
-          "/tmp/.*",
-          "✻ %[Claude Code%]", 
-        }
-        local filename = vim.api.nvim_buf_get_name(0)
-        for _, pattern in ipairs(disables_file_patterns) do
-          if string.match(filename, pattern) then return false end
-        end
+				-- Disable on Neogit buffers
+				if string.match(filetype, "^Neogit") then
+					return false
+				end
+				-- Disable on specific filetypes
+				--
+				if
+					vim.tbl_contains({
+						"sql",
+						"neo-tree",
+						"sbt",
+						"OverseerForm",
+						"OverseerList",
+						"oil",
+					}, filetype)
+				then
+					return false
+				end
 
-        return true
-      end,
-    }
-  },
-  {
-    "ryanmsnyder/toggleterm-manager.nvim",
+				-- Disable on specific file names
+				local disables_file_patterns = {
+					"Dependencies.scala$",
+					"/tmp/.*",
+					"✻ %[Claude Code%]",
+				}
+				local filename = vim.api.nvim_buf_get_name(0)
+				for _, pattern in ipairs(disables_file_patterns) do
+					if string.match(filename, pattern) then
+						return false
+					end
+				end
+
+				return true
+			end,
+		},
+	},
+	{
+		"ryanmsnyder/toggleterm-manager.nvim",
+		dependencies = {
+			"akinsho/nvim-toggleterm.lua",
+			"nvim-telescope/telescope.nvim",
+		},
+		opts = function()
+			local actions = require("toggleterm-manager").actions
+			return {
+				mappings = { -- key mappings bound inside the telescope window
+					i = {
+						["<CR>"] = { action = actions.toggle_term, exit_on_action = false }, -- toggles terminal open/closed
+						["<C-i>"] = { action = actions.create_term, exit_on_action = true }, -- creates a new terminal buffer
+						["<C-d>"] = { action = actions.delete_term, exit_on_action = false }, -- deletes a terminal buffer
+						["<F2>"] = { action = actions.rename_term, exit_on_action = false }, -- provides a prompt to rename a terminal
+					},
+				},
+			}
+		end,
+	},
+
+	{
+		"akinsho/toggleterm.nvim",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			{
+				"mrjones2014/legendary.nvim",
+				opts = {
+					toggleterm = {
+						itemgroup = "toggleterm",
+						icon = "📟",
+						description = "Toggleterm",
+					},
+				},
+			},
+		},
+		opts = {
+			size = 15,
+			start_in_insert = false,
+			direction = "horizontal",
+			winbar = {
+				enable = true,
+			},
+			responsiveness = {
+				-- breakpoint in terms of `vim.o.columns` at which terminals will start to stack on top of each other
+				-- instead of next to each other
+				-- default = 0 which means the feature is turned off
+				horizontal_breakpoint = 135,
+			},
+			highlights = {
+				NormalFloat = { link = "NormalFloat" },
+				FloatBorder = { link = "FloatBorder" },
+			},
+		},
+		config = function(_, opts)
+			require("toggleterm").setup(opts)
+			-- local has_telescope, telescope = pcall(require, "telescope")
+			-- if has_telescope then
+			--   telescope.load_extension("termfinder")
+			--   vim.keymap.set("n", "<C-g>T", function() vim.cmd("Telescope termfinder find") end)
+			-- end
+		end,
+	},
+	{
+		"folke/flash.nvim",
     dependencies = {
-      "akinsho/nvim-toggleterm.lua",
-      "nvim-telescope/telescope.nvim",
-    },
-    opts = function() 
-      local actions = require("toggleterm-manager").actions
-      return {
-        mappings = { -- key mappings bound inside the telescope window
-          i = {
-            ["<CR>"] = { action = actions.toggle_term, exit_on_action = false }, -- toggles terminal open/closed
-            ["<C-i>"] = { action = actions.create_term, exit_on_action = true }, -- creates a new terminal buffer
-            ["<C-d>"] = { action = actions.delete_term, exit_on_action = false }, -- deletes a terminal buffer
-            ["<F2>"] = { action = actions.rename_term, exit_on_action = false }, -- provides a prompt to rename a terminal
-          },
-        },
-      } 
-    end,
-  },
-
-  {
-    'akinsho/toggleterm.nvim',
-    dependencies = {
-      "nvim-lua/plenary.nvim",
       {
-        'mrjones2014/legendary.nvim',
+        "aPisC/actions-nvim",
         opts = {
-          toggleterm = {
-            itemgroup = "toggleterm",
-            icon = "📟",
-            description = "Toggleterm",
-            keymaps = {
-              {"<C-g>t", function() 
-                local term_id = vim.v.count > 0 and vim.v.count or 1
-                local term = require("toggleterm.terminal").get(term_id)
-                if term == nil then
-                  term = require("toggleterm.terminal").Terminal:new({ id = term_id })
-                end
-                
-                if vim.api.nvim_get_current_buf() == term.bufnr then
-                  term:close()
-                else
-                  term:open(10, "horizontal")
-                end
-              end, mode={'n'}, description="Toggleterm manager" },
-            },
-          },
-        }
-      },
-    }, 
-    opts = {
-      size = 10,
-      start_in_insert = false,
-      direction="horizontal",
-      winbar = {
-        enable = true,
-      },
-      responsiveness = {
-        -- breakpoint in terms of `vim.o.columns` at which terminals will start to stack on top of each other
-        -- instead of next to each other
-        -- default = 0 which means the feature is turned off
-        horizontal_breakpoint = 135,
-      },
-      highlights = {
-        NormalFloat = {link = "NormalFloat"},
-        FloatBorder = {link = "FloatBorder"},
-      }
-    },
-    config = function(_, opts)
-      require("toggleterm").setup(opts)
-      -- local has_telescope, telescope = pcall(require, "telescope")
-      -- if has_telescope then
-      --   telescope.load_extension("termfinder")
-      --   vim.keymap.set("n", "<C-g>T", function() vim.cmd("Telescope termfinder find") end)
-      -- end
-    end
-  },
-  {
-    "folke/flash.nvim",
-    event = "VeryLazy",
-    ---@type Flash.Config
-    opts = {
-      modes = {
-        char = {
-          enabled = true,
-          search = { wrap = true },
-          jump = { register = false },
-          highlight = {
-            backdrop = true,
-            matches = false,
-            priority = 5000,
-            groups = { },
-          },
+          ["nvim.flash.jump"] = function()
+            require("flash").jump()
+          end,
+          ["nvim.flash.treesitter"] = function()
+            require("flash").treesitter()
+          end,
+          ["nvim.flash.remote"] = function()
+            require("flash").remote()
+          end,
+          ["nvim.flash.treesitter_search"] = function()
+            require("flash").treesitter_search()
+          end,
         }
       }
     },
+		event = "VeryLazy",
+		---@type Flash.Config
+		opts = {
+			modes = {
+				char = {
+					enabled = true,
+					search = { wrap = true },
+					jump = { register = false },
+					highlight = {
+						backdrop = true,
+						matches = false,
+						priority = 5000,
+						groups = {},
+					},
+				},
+			},
+		},
     -- stylua: ignore
     config = function(plug, opts)
       require("flash").setup(opts)
@@ -216,56 +337,49 @@ return {
       vim.api.nvim_create_user_command("FlashEnable", function() require("flash").enable() end, {})
       vim.api.nvim_create_user_command("Flashdisable", function() require("flash").disale() end, {})
     end,
-    keys = {
-      -- { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-      -- { "S", mode = { "n", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-      { "<Tab>", mode = { "n", "o", "x" }, function() require("flash").jump() end, desc = "Flash" },
-      -- { "<S-Tab>", mode = { "n", "o", "x" }, function() require("flash").jump() end, desc = "Flash" },
-      { "<S-Tab>", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-      { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
-      { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
-    },
-  },
-  {
-    'nvim-treesitter/nvim-treesitter-textobjects',
-    dependencies = { { 'nvim-treesitter/nvim-treesitter' } },
-    opts = {
-      textobjects = {
-        select = {
-          enable = true,
+	},
+	{
+		"nvim-treesitter/nvim-treesitter-textobjects",
+		dependencies = { { "nvim-treesitter/nvim-treesitter" } },
+		opts = {
+			textobjects = {
+				select = {
+					enable = true,
 
-          -- Automatically jump forward to textobj, similar to targets.vim
-          lookahead = true,
+					-- Automatically jump forward to textobj, similar to targets.vim
+					lookahead = true,
 
-          keymaps = {
-            -- You can use the capture groups defined in textobjects.scm
-            ["af"] = "@function.outer",
-            ["if"] = "@function.inner",
-            ["ac"] = "@class.outer",
-            ["ic"] = "@class.inner",
-            ["aC"] = "@comment.outer",
-            ["iC"] = "@comment.inner",
-            ["ab"] = "@block.outer",
-            ["ib"] = "@block.inner",
-            ["in"] = "@number.inner",
-            ["as"] = "@statement.outer",
-            ["ia"] = "@parameter.inner",
-            ["aa"] = "@parameter.outer",
-            ["i?"] = "@conditional.inner",
-            ["a?"] = "@conditional.outer",
+					keymaps = {
+						-- You can use the capture groups defined in textobjects.scm
+						["af"] = "@function.outer",
+						["if"] = "@function.inner",
+						["ac"] = "@class.outer",
+						["ic"] = "@class.inner",
+						["aC"] = "@comment.outer",
+						["iC"] = "@comment.inner",
+						["ab"] = "@block.outer",
+						["ib"] = "@block.inner",
+						["in"] = "@number.inner",
+						["as"] = "@statement.outer",
+						["ia"] = "@parameter.inner",
+						["aa"] = "@parameter.outer",
+						["i?"] = "@conditional.inner",
+						["a?"] = "@conditional.outer",
 
-
-            -- You can also use captures from other query groups like `locals.scm`
-            -- ["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
-          },
-          selection_modes = {
-            ['@parameter.outer'] = 'v', -- charwise
-            ['@function.outer'] = 'V', -- linewise
-            ['@class.outer'] = '<c-v>', -- blockwise
-          },
-          include_surrounding_whitespace = false,
-        },
-      },},
-    config = function(plug, opts) require'nvim-treesitter.configs'.setup(opts) end,
-  },
+						-- You can also use captures from other query groups like `locals.scm`
+						-- ["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
+					},
+					selection_modes = {
+						["@parameter.outer"] = "v", -- charwise
+						["@function.outer"] = "V", -- linewise
+						["@class.outer"] = "<c-v>", -- blockwise
+					},
+					include_surrounding_whitespace = false,
+				},
+			},
+		},
+		config = function(plug, opts)
+			require("nvim-treesitter.configs").setup(opts)
+		end,
+	},
 }

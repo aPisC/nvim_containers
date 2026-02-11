@@ -59,7 +59,7 @@ return {
         },
         enableSemanticHighlighting = true,
         excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
-        serverVersion = "1.6.2",
+        serverVersion = "1.6.4",
       },
       init_options = {statusBarProvider = "on"},
     },

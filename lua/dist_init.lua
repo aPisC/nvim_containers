@@ -54,6 +54,7 @@ return function(system_dist_config)
 		local collected_plugins = {}
 
 		local config = {
+
 			-- { dir = vim.fn.stdpath("config") .. "/lua/custom" },
 			{ import = "plugins.keymaps" },
 			{ import = "plugins.editor" },

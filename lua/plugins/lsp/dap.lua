@@ -49,95 +49,45 @@ return {
 			"mfussenegger/nvim-dap",
 			"rcarriga/nvim-dap-ui",
 			{
-				"mrjones2014/legendary.nvim",
+				"aPisC/actions-nvim",
 				opts = {
-					["dap"] = {
-						icon = "",
-						itemgroup = "Dap",
-						keymaps = {
-							{
-								"<F5>",
-								function()
-									require("dap").continue()
-								end,
-								mode = { "n", "i" },
-								description = "Continue debugging",
-							},
-							{
-								"<F41>",
-								function()
-									require("dap").run_last()
-								end,
-								mode = { "n", "i" },
-								description = "Run last debugging configuration (󰘳 󰘶 󱊯 )",
-							},
-							{
-								"<F17>",
-								function()
-									require("dap").terminate()
-								end,
-								mode = { "n", "i" },
-								description = "Stop debugging (󰘶 󱊯 )",
-							},
-							{
-								"<F9>",
-								function()
-									require("dap").toggle_breakpoint()
-								end,
-								mode = { "n", "i" },
-								description = "Toggle breakpoint",
-							},
-							{
-								"<F21>",
-								function()
-									local condition = vim.fn.input("Condition: ")
-									if condition ~= "" then
-										require("dap").set_breakpoint(condition)
-										return
-									end
+					["debugger.continue"] = function()
+						require("dap").continue()
+					end,
+					["debugger.run_last"] = function()
+						require("dap").run_last()
+					end,
+					["debugger.stop"] = function()
+						require("dap").terminate()
+					end,
+					["debugger.toggle_breakpoint"] = function()
+						require("dap").toggle_breakpoint()
+					end,
+					["debugger.conditional_breakpoint"] = function()
+						local condition = vim.fn.input("Condition: ")
+						if condition ~= "" then
+							require("dap").set_breakpoint(condition)
+							return
+						end
 
-									local logMessage = vim.fn.input("Log message: ")
-									if logMessage ~= "" then
-										require("dap").set_breakpoint(nil, nil, logMessage)
-										return
-									end
+						local logMessage = vim.fn.input("Log message: ")
+						if logMessage ~= "" then
+							require("dap").set_breakpoint(nil, nil, logMessage)
+							return
+						end
 
-									require("dap").set_breakpoint()
-								end,
-								mode = { "n", "i" },
-								description = "Toggle conditional breakpoint (󰘶 󱊳 )",
-							},
-							{
-								"<F10>",
-								function()
-									require("dap").step_over()
-								end,
-								mode = { "n", "i" },
-								description = "Step over",
-							},
-							{
-								"<F11>",
-								function()
-									require("dap").step_into()
-								end,
-								mode = { "n", "i" },
-								description = "Step into",
-							},
-							{
-								"<F23>",
-								function()
-									require("dap").step_out()
-								end,
-								mode = { "n", "i" },
-								description = "Step out (󰘶 󱊵 )",
-							},
-							{
-								"<C-g>r",
-								function() _toggleterm_repl() end,
-								description = "Open Dap Repl",
-							},
-						},
-					},
+						require("dap").set_breakpoint()
+					end,
+          ["debugger.step_over"] = function ()
+            require("dap").step_over()
+          end,
+          ["debugger.step_into"] = function ()
+            require("dap").step_into()
+          end,
+          ["debugger.step_out"] = function ()
+            require("dap").step_out()
+          end,
+          ["tools.debugger"] = _toggleterm_repl,
 				},
 			},
 		},

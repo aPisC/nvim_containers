@@ -20,14 +20,14 @@ return {
       }
     },
   },
-  {
-    'tpope/vim-commentary',
-    opts = {
-      commentstring = {
-        typescriptreact='{/* %s */}'
-      }
-    }
-  },
+  -- {
+  --   'tpope/vim-commentary',
+  --   opts = {
+  --     commentstring = {
+  --       typescriptreact='{/* %s */}'
+  --     }
+  --   }
+  -- },
   {
     "pmizio/typescript-tools.nvim",
     enabled = false,

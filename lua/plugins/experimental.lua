@@ -1,5 +1,11 @@
 return {
   {
+    "ellisonleao/dotenv.nvim",
+    opts = {
+      event = "DirChanged"
+    }
+  },
+  {
     'mrded/nvim-lsp-notify',
     dependencies = {
       'rcarriga/nvim-notify',

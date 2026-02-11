@@ -62,13 +62,34 @@ return {
 				require("neogit").open()
 			end, { nargs = 0, force = true })
 		end,
-		keys = {
-			{
-				"<C-g><C-g>",
-				function()
-					require("neogit").open()
-				end,
-			},
+	},
+	{
+		"aPisC/actions-nvim",
+		opts = {
+			["tools.git"] = function() 
+        require("neogit").open()
+      end,
+			--
+			-- ls.git"] = setmetatable({}, {
+			-- 	__index = function(self, key)
+			-- 		if key == "terminal" then
+			-- 			local Terminal = require("toggleterm.terminal").Terminal
+			-- 			local lazygit = Terminal:new({
+			-- id = 100,
+			-- cmd = "lazygit",
+			-- hidden = false,
+			-- start_in_insert = true,
+			-- __lualine_hide_id = true,
+			-- __lualine_icon = "󰊢",
+			-- })
+			-- 			self["terminal"] = lazygit
+			-- 			return lazygit
+			-- 		end
+			-- 	end,
+			-- 	__call = function(self)
+			-- 		self.terminal:toggle()
+			-- 	end,
+			-- }),
 		},
 	},
 	{

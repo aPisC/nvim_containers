@@ -16,6 +16,7 @@ local lsp_icons = {
   metals = " ",
   omnisharp = "󰌛 ",
   lua = " ",
+  lua_ls = " ",
   jsonls = "",
   texlab = " ",
   efm = "󱌣 ",

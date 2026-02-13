@@ -9,7 +9,7 @@ return {
 	-- },
 	{
 		"aPisC/actions-nvim",
-		dir = "~/.config/nvim/lua/actions-nvim",
+		dir = vim.fn.stdpath("config") .. "/lua/actions-nvim",
 		config = function(_, opts)
 			require("actions-nvim").setup(opts)
 		end,
@@ -155,11 +155,6 @@ return {
 				return require("stickybuf").should_auto_pin(bufnr)
 			end,
 		},
-	},
-	{
-		"junegunn/fzf",
-		dependencies = { { "junegunn/fzf.vim" } },
-		event = "VeryLazy",
 	},
 	{
 		"m4xshen/autoclose.nvim",

@@ -54,7 +54,8 @@ function M.setup(opts)
 		local has_coq, coq = pcall(require, "coq")
 		config = has_coq and coq.lsp_ensure_capabilities(config) or config
 
-		lspconfig[server].setup(config)
+   	-- lspconfig[server].setup(config)
+    vim.lsp.config("server", config)
 	end
 
 	-- Initialize EFM
@@ -105,7 +106,8 @@ function M.setup(opts)
 		capabilities = efm_capabilities,
 		on_attach = efm_on_attach,
 	}
-	lspconfig.efm.setup(efmls_config)
+	-- lspconfig.efm.setup(efmls_config)
+  vim.lsp.config("efm", efmls_config)
 
 end
 
@@ -117,7 +119,8 @@ function M.reload(config)
 				vim.defer_fn(function()
 					pcall(function()
 						vim.notify("Starting LSP server " .. server)
-						require("lspconfig")[server].setup(server_config)
+						-- require("lspconfig")[server].setup(server_config)
+            vim.lsp.config(server, server_config)
 						vim.cmd("LspStart " .. server)
 					end)
 				end, 0)

@@ -13,7 +13,7 @@ return {
 			},
 			{
 				enabled = true,
-				dir = "~/.config/nvim/lua/super_lens",
+				dir = vim.fn.stdpath("config") .. "/lua/super_lens",
 			},
 			"icholy/lsplinks.nvim",
 			"nvim-neotest/nvim-nio",

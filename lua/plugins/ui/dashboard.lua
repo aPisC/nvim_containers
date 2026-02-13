@@ -25,6 +25,7 @@ return {
       for i = 1, 8 do
         local path = projects[i]
         if path then
+          path = path:gsub('\\', '/')
           table.insert(actions, {
           icon = ' ',
           icon_hl = 'Title',
@@ -38,15 +39,6 @@ return {
         })
         end
       end
-
-      -- {
-      --   icon = ' ',
-      --   desc = 'Find Dotfiles',
-      --   key = 'f',
-      --   keymap = 'SPC f d',
-      --   key_format = ' %s', -- remove default surrounding `[]`
-      --   action = 'lua print(3)'
-      -- },
 
       return {  
         theme = 'doom',
@@ -73,26 +65,7 @@ return {
         }
       }
     end,
-      -- config = {
-      --   project = { 
-      --     enable = true, 
-      --     limit = 8, 
-      --     action = function(path) 
-      --       vim.notify(path)
-      --       return
-      --       -- if path == "[Browse]" then
-      --       --   vim.cmd('NeovimProjectDiscover') 
-      --       --   return
-      --       -- end
-      --       -- local home = string.gsub(vim.env.HOME, "\\", "/")
-      --       -- vim.cmd('NeovimProjectLoad ' .. path:gsub(home, '~')) 
-      --     end
-      --   },
-      -- }
     config = function(_, opts) 
-      -- local utils = require("dashboard.utils")
-      -- local path = utils.path_join(vim.fn.stdpath("cache"), "dashboard/cache")
-      -- vim.fn.writefile({ 'local projects = require("neovim-project.utils.history").get_recent_projects(); table.insert(projects, ".."); return projects' }, path)
       vim.api.nvim_set_hl(0, "DashboardHeader", { link="Constant" })
       vim.api.nvim_set_hl(0, "DashboardFooter", { link="Comment" })
       require('dashboard').setup(opts)

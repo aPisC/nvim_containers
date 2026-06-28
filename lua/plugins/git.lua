@@ -55,13 +55,6 @@ return {
 			"Git",
 			"Neogit",
 		},
-		config = function(plug, opts)
-			require("neogit").setup(opts)
-
-			vim.api.nvim_create_user_command("Git", function()
-				require("neogit").open()
-			end, { nargs = 0, force = true })
-		end,
 	},
 	{
 		"aPisC/actions-nvim",

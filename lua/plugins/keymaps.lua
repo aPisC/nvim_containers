@@ -85,6 +85,16 @@ local opts = {
 			{ "<C-S-P>", action("n", "tools.commands"), description = "Show commands" },
 			{ "<F1>", action("n", "tools.help"), description = "Help tools" },
 		},
+    commands = {
+      { ":Commands", ACTIONS["tools.commands"], description = "Show commands" },
+      { ":Term", ACTIONS["tools.terminal"], description = "Open terminal" },
+      { ":Git", ACTIONS["tools.git"], description = "Git tools" },
+      { ":Diagnostics", ACTIONS["tools.diagnostics"], description = "Diagnostic tools" },
+      { ":Debug", ACTIONS["tools.debugger"], description = "Open Dap Repl" },
+      { ":Help", ACTIONS["tools.help"], description = "Help tools" },
+      { ":Files", ACTIONS["find.file"], description = "File tools" },
+      { ":Grep", ACTIONS["find.text"], description = "Grep in project" },
+    }
 	},
 
 	["dap"] = {
